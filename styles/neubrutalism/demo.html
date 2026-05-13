@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neubrutalism · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:        #ffffff;
+    --s1:        #f8f8f8;
+    --t1:        #1a1a1a;
+    --t2:        #3a3a3a;
+    --t3:        #6a6a6a;
+    --coral:     #ff6b35;
+    --teal:      #4ecdc4;
+    --lavender:  #a29bfe;
+    --yellow:    #ffe66d;
+    --lime:      #55efc4;
+    --black:     #1a1a1a;
+    --ac:        var(--coral);
+    --r:         4px;
+    --f:         'Space Grotesk', 'Inter', system-ui, sans-serif;
+    --f-disp:    'Space Grotesk', 'Inter', sans-serif;
+    --f-mono:    'JetBrains Mono', 'Courier New', monospace;
+    --ease:      cubic-bezier(0.4,0,0.2,1);
+    --spring:    cubic-bezier(0.34,1.56,0.64,1);
+    --shadow-sm: 3px 3px 0 var(--black);
+    --shadow-md: 4px 4px 0 var(--black);
+    --shadow-lg: 6px 6px 0 var(--black);
+    --shadow-xl: 8px 8px 0 var(--black);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--f);
+    background: var(--bg);
+    color: var(--t1);
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; border-radius: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ═══════════════════════════════════════
+     NEUBRUTALISM BASE (.nb)
+  ═══════════════════════════════════════ */
+  .nb {
+    border: 2px solid var(--black);
+    box-shadow: var(--shadow-md);
+    border-radius: var(--r);
+    transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+  }
+  .nb:hover  { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
+  .nb:active { transform: translate(3px,3px);  box-shadow: 1px 1px 0 var(--black); }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg);
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.75rem;
+    border-bottom: 2px solid var(--black);
+    box-shadow: 0 2px 0 var(--black);
+  }
+  .tnav-back {
+    display: flex; align-items: center; gap: 0.375rem;
+    font-size: 0.875rem; font-weight: 600; font-family: var(--f);
+    color: var(--t2); text-decoration: none;
+    transition: color 0.15s;
+  }
+  .tnav-back:hover { color: var(--t1); }
+  .tnav-title {
+    font-size: 0.9375rem; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--t1); font-family: var(--f);
+  }
+  .tnav-dl {
+    display: inline-flex; align-items: center; gap: 0.375rem;
+    padding: 0.4rem 1rem;
+    background: var(--coral); color: var(--black);
+    border: 2px solid var(--black); box-shadow: var(--shadow-sm);
+    border-radius: var(--r);
+    font-family: var(--f); font-size: 0.8125rem; font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+  }
+  .tnav-dl:hover  { transform: translate(-2px,-2px); box-shadow: var(--shadow-md); }
+  .tnav-dl:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 var(--black); }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS DOTS (SQUARE)
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%);
+    z-index: 90; display: flex; flex-direction: column; gap: 10px;
+  }
+  .prog-dot {
+    width: 8px; height: 8px;
+    border-radius: 1px;
+    background: transparent;
+    border: 2px solid var(--black);
+    cursor: pointer; padding: 0;
+    transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  }
+  .prog-dot:hover  { transform: scale(1.35); }
+  .prog-dot.active { box-shadow: 2px 2px 0 var(--black); }
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page { max-width: 900px; margin: 0 auto; padding: 0 1.75rem 7rem; }
+
+  .sec {
+    margin-top: 5rem; position: relative;
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  /* Section heading row */
+  .sec-hd {
+    position: relative; display: flex; align-items: center; gap: 0.875rem;
+    margin-bottom: 2rem; padding-bottom: 1.25rem;
+    border-bottom: 2px solid var(--black);
+  }
+  .sec-ghost {
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    font-size: 6rem; font-weight: 700; line-height: 1;
+    color: rgba(0,0,0,0.04);
+    pointer-events: none; user-select: none; letter-spacing: -0.05em;
+    font-family: var(--f);
+  }
+  .sec-pill {
+    display: inline-flex; align-items: center;
+    font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--black); background: var(--yellow);
+    border: 2px solid var(--black); box-shadow: var(--shadow-sm);
+    border-radius: var(--r); padding: 0.2rem 0.5rem;
+    flex-shrink: 0; font-family: var(--f-mono);
+  }
+  .sec-title {
+    font-size: 1.375rem; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--t1); font-family: var(--f);
+  }
+  .u-coral   { text-decoration: underline 3px solid var(--coral);   text-underline-offset: 4px; }
+  .u-teal    { text-decoration: underline 3px solid var(--teal);    text-underline-offset: 4px; }
+  .u-lav     { text-decoration: underline 3px solid var(--lavender);text-underline-offset: 4px; }
+  .u-yellow  { text-decoration: underline 3px solid #d4b800;        text-underline-offset: 4px; }
+  .u-lime    { text-decoration: underline 3px solid #00b894;        text-underline-offset: 4px; }
+
+  /* Spec callout (yellow bg) */
+  .spec-callout {
+    background: var(--yellow); border: 2px solid var(--black);
+    box-shadow: var(--shadow-md); border-radius: var(--r);
+    padding: 1.25rem; margin-bottom: 1.875rem;
+    display: flex; align-items: flex-start; gap: 0.875rem;
+  }
+  .spec-ico  { font-size: 0.875rem; flex-shrink: 0; margin-top: 0.1rem; font-family: var(--f-mono); font-weight: 500; }
+  .spec-text { font-size: 0.8125rem; line-height: 1.55; color: var(--t1); font-family: var(--f); }
+  .spec-text strong { font-weight: 700; font-family: var(--f-mono); font-size: 0.75rem; }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero { padding: 3.5rem 0 4rem; }
+
+  .hero-stripe {
+    display: flex; height: 8px; width: 200px; overflow: hidden;
+    border: 2px solid var(--black); box-shadow: var(--shadow-sm);
+    border-radius: var(--r); margin-bottom: 1.5rem;
+  }
+  .hero-stripe > div { flex: 1; }
+  .hero-stripe > div + div { border-left: 1px solid var(--black); }
+
+  .hero-kicker {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--black); background: var(--yellow);
+    border: 2px solid var(--black); box-shadow: var(--shadow-sm); border-radius: var(--r);
+    padding: 0.3rem 0.875rem; margin-bottom: 1.5rem; font-family: var(--f-mono);
+  }
+
+  .hero-h1 {
+    font-size: clamp(3.5rem, 9vw, 6rem); font-weight: 700;
+    letter-spacing: -0.04em; line-height: 0.95;
+    color: var(--t1); margin-bottom: 1.25rem; font-family: var(--f-disp);
+  }
+  .hero-h1 .accent { color: var(--coral); }
+
+  .hero-desc {
+    font-size: 1.0625rem; line-height: 1.65; color: var(--t2);
+    max-width: 55ch; margin-bottom: 2rem;
+  }
+
+  .hero-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .hero-tag {
+    background: var(--bg); border: 2px solid var(--black);
+    box-shadow: var(--shadow-sm); border-radius: var(--r);
+    padding: 0.375rem 0.875rem;
+    font-size: 0.8125rem; font-weight: 600; color: var(--t1);
+  }
+
+  .hero-widget { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+  .hero-widget-card {
+    background: var(--bg); border: 2px solid var(--black); box-shadow: var(--shadow-lg);
+    border-radius: var(--r); padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    flex: 1; min-width: 200px; max-width: 280px; cursor: pointer;
+    transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+  }
+  .hero-widget-card:hover  { transform: translate(-3px,-3px); box-shadow: var(--shadow-xl); }
+  .hero-widget-card:active { transform: translate(4px,4px);  box-shadow: 2px 2px 0 var(--black); }
+  .hw-icon {
+    width: 48px; height: 48px; flex-shrink: 0;
+    border: 2px solid var(--black); box-shadow: var(--shadow-sm); border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center; font-size: 1.375rem;
+  }
+  .hw-c { background: var(--coral); }
+  .hw-t { background: var(--teal); }
+  .hw-title { font-size: 0.9375rem; font-weight: 700; color: var(--t1); margin-bottom: 0.15rem; }
+  .hw-sub   { font-size: 0.6875rem; font-weight: 500; color: var(--t3); font-family: var(--f-mono); }
+
+  /* ═══════════════════════════════════════
+     01 · COLORS
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(126px, 1fr)); gap: 1rem;
+  }
+  .swatch {
+    border: 2px solid var(--black); box-shadow: var(--shadow-md);
+    border-radius: var(--r); overflow: hidden; cursor: pointer;
+    transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+  }
+  .swatch:hover  { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
+  .swatch:active { transform: translate(3px,3px);  box-shadow: 1px 1px 0 var(--black); }
+  .swatch-color { height: 72px; }
+  .swatch-body  {
+    padding: 0.75rem 0.875rem; background: white;
+    border-top: 2px solid var(--black);
+  }
+  .swatch-hex  { font-size: 0.8125rem; font-weight: 500; color: var(--t1); display: block; margin-bottom: 0.15rem; font-family: var(--f-mono); }
+  .swatch-name { font-size: 0.5625rem; font-weight: 600; color: var(--t3); letter-spacing: 0.04em; text-transform: uppercase; }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    border: 2px solid var(--black); box-shadow: var(--shadow-lg);
+    border-radius: var(--r); overflow: hidden;
+  }
+  .tr {
+    display: grid; grid-template-columns: 90px 1fr; gap: 1rem;
+    align-items: center; padding: 1.125rem 1.75rem;
+    border-bottom: 1px solid rgba(26,26,26,0.1);
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { text-align: right; }
+  .tr-lbl  { font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--coral); display: block; margin-bottom: 0.15rem; font-family: var(--f-mono); }
+  .tr-spec { font-size: 0.5625rem; color: var(--t3); line-height: 1.5; font-family: var(--f-mono); }
+  .ts-disp { font-size: 3rem;      font-weight: 700; letter-spacing: -0.04em; line-height: 1.0;  font-family: var(--f-disp); }
+  .ts-h1   { font-size: 2.25rem;   font-weight: 700; letter-spacing: -0.03em; line-height: 1.1;  font-family: var(--f-disp); }
+  .ts-h2   { font-size: 1.75rem;   font-weight: 700; letter-spacing: -0.025em;line-height: 1.15; font-family: var(--f-disp); }
+  .ts-h3   { font-size: 1.375rem;  font-weight: 600; letter-spacing: -0.015em;line-height: 1.2;  font-family: var(--f-disp); }
+  .ts-h4   { font-size: 1.125rem;  font-weight: 600;                           line-height: 1.3;  font-family: var(--f-disp); }
+  .ts-lg   { font-size: 1.0625rem; font-weight: 400;                           line-height: 1.6;  font-family: var(--f); }
+  .ts-base { font-size: 1rem;      font-weight: 400;                           line-height: 1.55; font-family: var(--f); }
+  .ts-sm   { font-size: 0.875rem;  font-weight: 400;                           line-height: 1.5;  font-family: var(--f); }
+  .ts-mono { font-size: 0.9375rem; font-weight: 400;                           line-height: 1.6;  font-family: var(--f-mono); color: var(--t2); }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    border: 2px solid var(--black); box-shadow: var(--shadow-md); border-radius: var(--r);
+    padding: 0.75rem 1.75rem; background: white; color: var(--black);
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 600;
+    cursor: pointer; white-space: nowrap; text-decoration: none; line-height: 1;
+    transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+  }
+  .btn:hover:not(:disabled)  { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
+  .btn:active:not(:disabled) { transform: translate(3px,3px);  box-shadow: 1px 1px 0 var(--black); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; transform: none; }
+  .btn-coral  { background: var(--coral); }
+  .btn-teal   { background: var(--teal); }
+  .btn-lav    { background: var(--lavender); }
+  .btn-yellow { background: var(--yellow); }
+  .btn-lime   { background: var(--lime); }
+  .btn-sm     { padding: 0.5rem 1.25rem; font-size: 0.875rem; }
+  .btn-lg     { padding: 1rem 2.25rem; font-size: 1.0625rem; font-weight: 700; }
+  .btn-icon   { width: 44px; height: 44px; padding: 0; }
+
+  .state-hover  { transform: translate(-2px,-2px) !important; box-shadow: var(--shadow-lg) !important; }
+  .state-active { transform: translate(3px,3px) !important;  box-shadow: 1px 1px 0 var(--black) !important; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 2.5rem; }
+  .state-row-label { font-size: 0.625rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--t3); margin-bottom: 1rem; font-family: var(--f-mono); }
+  .state-row  { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .state-lbl  { font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--t3); font-family: var(--f-mono); }
+  .btn-variants {
+    display: flex; gap: 0.875rem; flex-wrap: wrap; align-items: center;
+    padding-top: 2rem; margin-top: 2rem; border-top: 2px solid rgba(26,26,26,0.1);
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    border: 2px solid var(--black); box-shadow: var(--shadow-lg);
+    border-radius: var(--r); padding: 2.25rem; background: white;
+  }
+  .form-title { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.015em; color: var(--t1); margin-bottom: 0.25rem; }
+  .form-sub   { font-size: 0.875rem; color: var(--t2); margin-bottom: 2rem; line-height: 1.5; }
+  .form-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 1.375rem; }
+  .fg-full    { grid-column: 1 / -1; }
+  .field      { display: flex; flex-direction: column; gap: 0.4rem; }
+  .label      { font-size: 0.875rem; font-weight: 600; color: var(--t1); }
+  .hint       { font-size: 0.75rem; color: var(--t3); margin-top: 0.15rem; }
+
+  .inp {
+    background: white; border: 2px solid var(--black); box-shadow: var(--shadow-sm);
+    border-radius: var(--r); padding: 0.75rem 1rem;
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 500; color: var(--t1);
+    outline: none; width: 100%;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .inp::placeholder { color: var(--t3); font-weight: 400; }
+  .inp:focus {
+    border-color: var(--coral);
+    box-shadow: var(--shadow-sm), 0 0 0 3px rgba(255,107,53,0.2);
+  }
+  .inp-wrap { position: relative; }
+  .inp-ico  { position: absolute; right: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none; }
+  .inp.has-ico { padding-right: 2.5rem; }
+
+  .sel {
+    -webkit-appearance: none;
+    background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%231a1a1a' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.875rem center;
+    border: 2px solid var(--black); box-shadow: var(--shadow-sm); border-radius: var(--r);
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 500; color: var(--t1);
+    outline: none; width: 100%; cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .sel:focus { border-color: var(--coral); box-shadow: var(--shadow-sm), 0 0 0 3px rgba(255,107,53,0.2); }
+  .ta { resize: vertical; min-height: 96px; line-height: 1.55; }
+
+  /* Checkbox */
+  .chk-group { display: flex; flex-direction: column; gap: 0.875rem; }
+  .chk-row   { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; user-select: none; position: relative; }
+  .chk-in    { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 22px; height: 22px; flex-shrink: 0;
+    background: white; border: 2px solid var(--black); box-shadow: var(--shadow-sm); border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.1s;
+  }
+  .chk-mark { opacity: 0; transition: opacity 0.1s; }
+  .chk-in:checked + .chk-box { background: var(--coral); }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-in:focus-visible + .chk-box { outline: 2px solid var(--coral); outline-offset: 2px; }
+  .chk-txt { font-size: 0.9375rem; font-weight: 500; color: var(--t1); }
+
+  /* Radio */
+  .rad-box {
+    width: 22px; height: 22px; flex-shrink: 0;
+    background: white; border: 2px solid var(--black); box-shadow: var(--shadow-sm); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.1s;
+  }
+  .rad-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: white;
+    opacity: 0; transform: scale(0.4);
+    transition: opacity 0.15s, transform 0.2s var(--spring);
+  }
+  .chk-in:checked + .rad-box { background: var(--coral); }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1); }
+  .chk-in:focus-visible + .rad-box { outline: 2px solid var(--coral); outline-offset: 2px; }
+
+  /* Toggle */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row  {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 0; gap: 1rem; border-bottom: 1px solid rgba(26,26,26,0.08);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info  { flex: 1; }
+  .tgl-title { font-size: 0.9375rem; font-weight: 600; color: var(--t1); }
+  .tgl-desc  { font-size: 0.8125rem; color: var(--t3); margin-top: 0.125rem; }
+  .tgl       { flex-shrink: 0; cursor: pointer; position: relative; }
+  .tgl-in    { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block; width: 56px; height: 30px;
+    background: white; border: 2px solid var(--black); box-shadow: var(--shadow-sm);
+    border-radius: 6px; position: relative;
+    transition: background 0.25s var(--ease);
+  }
+  .tgl-thumb {
+    position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+    background: white; border: 2px solid var(--black); border-radius: 3px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s var(--spring);
+  }
+  .tgl-in:checked ~ .tgl-track { background: var(--coral); }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb { transform: translateX(24px); }
+  .tgl-in:focus-visible ~ .tgl-track { outline: 2px solid var(--coral); outline-offset: 3px; }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;
+  }
+  .card-nb {
+    background: white; border: 2px solid var(--black); box-shadow: var(--shadow-lg);
+    border-radius: var(--r); overflow: hidden; cursor: pointer;
+    transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+  }
+  .card-nb:hover  { transform: translate(-3px,-3px); box-shadow: var(--shadow-xl); }
+  .card-nb:active { transform: translate(4px,4px);  box-shadow: 2px 2px 0 var(--black); }
+
+  .card-hdr {
+    height: 108px; border-bottom: 2px solid var(--black);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ct-coral    { background: var(--coral); }
+  .ct-teal     { background: var(--teal); }
+  .ct-lavender { background: var(--lavender); }
+
+  .geo-circle {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: 3px solid var(--black); background: rgba(255,255,255,0.5);
+  }
+  .geo-square {
+    width: 44px; height: 44px;
+    border: 3px solid var(--black); background: rgba(255,255,255,0.5);
+    transform: rotate(12deg);
+  }
+  .geo-tri {
+    width: 0; height: 0;
+    border-left: 26px solid transparent; border-right: 26px solid transparent;
+    border-bottom: 48px solid rgba(255,255,255,0.65);
+    filter: drop-shadow(2px 2px 0 rgba(26,26,26,0.6));
+  }
+
+  .card-in        { padding: 1.25rem 1.5rem 1.625rem; }
+  .card-eye       { font-size: 0.625rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--coral); margin-bottom: 0.375rem; font-family: var(--f-mono); }
+  .card-h         { font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.015em; color: var(--t1); margin-bottom: 0.5rem; }
+  .card-body-text { font-size: 0.875rem; line-height: 1.55; color: var(--t2); margin-bottom: 1.25rem; }
+  .card-ft        {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1rem; border-top: 2px solid rgba(26,26,26,0.08);
+  }
+  .card-dt  { font-size: 0.75rem; font-weight: 500; color: var(--t3); font-family: var(--f-mono); }
+  .card-act {
+    background: var(--yellow); border: 2px solid var(--black); box-shadow: var(--shadow-sm);
+    border-radius: var(--r); padding: 0.3rem 0.75rem;
+    font-family: var(--f); font-size: 0.75rem; font-weight: 700; color: var(--black);
+    cursor: pointer;
+    transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+  }
+  .card-act:hover  { transform: translate(-1px,-1px); box-shadow: var(--shadow-md); }
+  .card-act:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 var(--black); }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ */
+  .player {
+    border: 2px solid var(--black); box-shadow: var(--shadow-lg);
+    border-radius: var(--r); padding: 2rem; background: white;
+  }
+  .player-top {
+    display: grid; grid-template-columns: auto 1fr;
+    align-items: center; gap: 1.25rem; margin-bottom: 1.75rem;
+  }
+  .player-art {
+    width: 72px; height: 72px; background: var(--coral); font-size: 2rem;
+    border: 2px solid var(--black); box-shadow: var(--shadow-md); border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .player-title  { font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.015em; color: var(--t1); margin-bottom: 0.2rem; }
+  .player-artist { font-size: 0.875rem; color: var(--t3); font-family: var(--f-mono); }
+
+  .pc-row {
+    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+    margin-bottom: 1.75rem;
+  }
+  .pc-btn {
+    background: white; border: 2px solid var(--black); box-shadow: var(--shadow-sm);
+    border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--t2);
+    transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+  }
+  .pc-btn:hover  { transform: translate(-2px,-2px); box-shadow: var(--shadow-md); }
+  .pc-btn:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 var(--black); }
+  .pc-sm { width: 40px; height: 40px; }
+  .pc-lg { width: 56px; height: 56px; background: var(--coral); color: var(--black); }
+  .pc-lg[aria-pressed="true"]  .play-ico  { display: none; }
+  .pc-lg[aria-pressed="false"] .pause-ico { display: none; }
+
+  /* Progress range */
+  .progress-outer { margin-bottom: 1.5rem; }
+  .progress-rng {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 12px;
+    border: 2px solid var(--black); box-shadow: var(--shadow-sm); border-radius: var(--r);
+    background: white; outline: none; cursor: pointer;
+  }
+  .progress-rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px; border-radius: var(--r);
+    background: white; border: 2px solid var(--black); box-shadow: var(--shadow-sm); cursor: pointer;
+  }
+  .progress-rng::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: var(--r);
+    background: white; border: 2px solid var(--black); box-shadow: var(--shadow-sm); cursor: pointer;
+  }
+  .progress-times { display: flex; justify-content: space-between; margin-top: 0.4rem; }
+  .ptime { font-size: 0.6875rem; font-weight: 500; color: var(--t3); font-family: var(--f-mono); }
+
+  .slider-list {
+    display: flex; flex-direction: column; gap: 1.25rem;
+    margin-top: 1.75rem; padding-top: 1.75rem; border-top: 2px solid rgba(26,26,26,0.08);
+  }
+  .slider-item { display: flex; align-items: center; gap: 1rem; }
+  .sl-lbl { font-size: 0.8125rem; font-weight: 600; color: var(--t2); min-width: 5.5rem; }
+  .sl-val { font-size: 0.8125rem; font-weight: 500; color: var(--coral); min-width: 2.5rem; text-align: right; font-family: var(--f-mono); }
+  .rng {
+    -webkit-appearance: none; appearance: none;
+    flex: 1; height: 12px;
+    border: 2px solid var(--black); box-shadow: var(--shadow-sm); border-radius: var(--r);
+    background: white; outline: none; cursor: pointer;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px; height: 24px; border-radius: var(--r);
+    background: white; border: 2px solid var(--black); box-shadow: var(--shadow-sm); cursor: pointer;
+    transition: transform 0.1s var(--spring);
+  }
+  .rng::-webkit-slider-thumb:hover { transform: translate(-1px,-1px); }
+  .rng::-moz-range-thumb {
+    width: 24px; height: 24px; border-radius: var(--r);
+    background: white; border: 2px solid var(--black); cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAVIGATION
+  ═══════════════════════════════════════ */
+  .navdemo {
+    border: 2px solid var(--black); box-shadow: var(--shadow-lg);
+    border-radius: var(--r); overflow: hidden; max-width: 420px; margin: 0 auto;
+    background: white;
+  }
+  .nd-screen { padding: 1.75rem 1.5rem 0; }
+  .nd-title  { font-size: 1.375rem; font-weight: 700; letter-spacing: -0.02em; color: var(--t1); margin-bottom: 0.2rem; }
+  .nd-sub    { font-size: 0.875rem; color: var(--t3); margin-bottom: 1.25rem; font-family: var(--f-mono); }
+  .nd-search {
+    background: var(--s1); border: 2px solid var(--black); box-shadow: var(--shadow-sm);
+    border-radius: var(--r); padding: 0.625rem 1rem;
+    display: flex; align-items: center; gap: 0.625rem;
+    color: var(--t3); font-size: 0.875rem; margin-bottom: 1.25rem;
+  }
+  .nd-items { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.75rem; }
+  .nd-item {
+    border: 2px solid var(--black); box-shadow: var(--shadow-sm); border-radius: var(--r);
+    padding: 0.875rem 1rem; display: flex; align-items: center; gap: 0.875rem;
+    background: white; cursor: pointer;
+    transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+  }
+  .nd-item:hover  { transform: translate(-2px,-2px); box-shadow: var(--shadow-md); }
+  .nd-item:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 var(--black); }
+  .nd-ico {
+    width: 38px; height: 38px; flex-shrink: 0;
+    border: 2px solid var(--black); box-shadow: var(--shadow-sm); border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  }
+  .nd-ico-c { background: var(--coral); }
+  .nd-ico-t { background: var(--teal); }
+  .nd-ico-l { background: var(--lavender); }
+  .nd-item-title { font-size: 0.9375rem; font-weight: 700; color: var(--t1); }
+  .nd-item-sub   { font-size: 0.75rem;   font-weight: 500; color: var(--t3); font-family: var(--f-mono); }
+
+  /* Tab nav */
+  .nb-navbar {
+    border-top: 2px solid var(--black); box-shadow: 0 -2px 0 var(--black);
+    display: flex; background: white;
+  }
+  .ni {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+    padding: 0.75rem 0.5rem 0.625rem;
+    background: none; border: none; border-right: 2px solid var(--black);
+    cursor: pointer; font-family: var(--f);
+    transition: background 0.12s var(--ease);
+  }
+  .ni:last-child { border-right: none; }
+  .ni:hover:not(.ni-on) { background: var(--s1); }
+  .ni-on { background: var(--coral); }
+  .ni-lbl { font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t3); transition: color 0.12s; }
+  .ni-on .ni-lbl { color: var(--black); }
+  .ni-ico { font-size: 1.125rem; }
+  .ni-ico-wrap { position: relative; }
+  .ni-badge { position: absolute; top: -3px; right: -3px; width: 8px; height: 8px; background: var(--coral); border: 2px solid white; border-radius: 50%; }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .tr { grid-template-columns: 72px 1fr; gap: 0.75rem; padding: 0.875rem 1.25rem; }
+    .ts-disp { font-size: 2rem; }
+    .ts-h1   { font-size: 1.75rem; }
+    .palette-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+    .state-row { gap: 0.75rem; }
+    .hero-h1 { font-size: clamp(2.5rem, 12vw, 4rem); }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 2.5L4.5 7 9 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Gallery
+  </a>
+  <span class="tnav-title">Neubrutalism</span>
+  <a class="tnav-dl" href="style-guide.md" download="neubrutalism-style-guide.md">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 2v7.5M4.5 7l2.5 2.5 2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress dots (square) ──── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"    aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"      aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"  aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"     aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Form Inputs" aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"       aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"    aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"  aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <div class="hero-stripe" aria-hidden="true">
+      <div style="background:var(--coral)"></div>
+      <div style="background:var(--teal)"></div>
+      <div style="background:var(--lavender)"></div>
+      <div style="background:var(--yellow)"></div>
+      <div style="background:var(--lime)"></div>
+    </div>
+    <div class="hero-kicker">GEN Z · DIGITAL NATIVE · 2022–PRESENT</div>
+    <h1 class="hero-h1"><span class="accent">Neu</span>brutalism</h1>
+    <p class="hero-desc">Structural honesty meets vivid color. Thick black borders. Sharp offset shadows that press into the page like physical buttons. Not trying to be subtle — trying to be alive.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Space Grotesk 700</span>
+      <span class="hero-tag">2px black border · everywhere</span>
+      <span class="hero-tag">Offset shadow · zero blur</span>
+      <span class="hero-tag">5 Gen Z accents</span>
+      <span class="hero-tag">Press = shadow disappears</span>
+    </div>
+    <div class="hero-widget">
+      <div class="hero-widget-card" role="button" tabindex="0" aria-label="Demo card — press to feel the effect">
+        <div class="hw-icon hw-c">◼</div>
+        <div><div class="hw-title">Press me</div><div class="hw-sub">shadow → 1px on active</div></div>
+      </div>
+      <div class="hero-widget-card" role="button" tabindex="0" aria-label="Demo card — five vivid accents">
+        <div class="hw-icon hw-t">◆</div>
+        <div><div class="hw-title">5 vivid accents</div><div class="hw-sub">coral / teal / lav / yellow / lime</div></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ─────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">01</span>
+      <h2 class="sec-title u-coral" id="colors-h">Color Palette</h2>
+      <span class="sec-ghost" aria-hidden="true">01</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-ico">◉</span>
+      <p class="spec-text">Coral, turquoise, lavender, yellow, lime. Not because they're tasteful — because they're vivid. Neubrutalism refuses to be polite about color. White base keeps it legible. <strong>border: 2px solid #1a1a1a</strong> on every single element — no exceptions.</p>
+    </div>
+    <div class="palette-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#ffffff;border-bottom:none"></div><div class="swatch-body"><span class="swatch-hex">#ffffff</span><span class="swatch-name">--bg · base</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ff6b35"></div><div class="swatch-body"><span class="swatch-hex">#ff6b35</span><span class="swatch-name">--coral · primary</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#4ecdc4"></div><div class="swatch-body"><span class="swatch-hex">#4ecdc4</span><span class="swatch-name">--teal · secondary</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#a29bfe"></div><div class="swatch-body"><span class="swatch-hex">#a29bfe</span><span class="swatch-name">--lavender · tertiary</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ffe66d"></div><div class="swatch-body"><span class="swatch-hex">#ffe66d</span><span class="swatch-name">--yellow · highlight</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#55efc4"></div><div class="swatch-body"><span class="swatch-hex">#55efc4</span><span class="swatch-name">--lime · alt</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#1a1a1a"></div><div class="swatch-body"><span class="swatch-hex">#1a1a1a</span><span class="swatch-name">--black · border</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#3a3a3a"></div><div class="swatch-body"><span class="swatch-hex">#3a3a3a</span><span class="swatch-name">--t2 · secondary</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#6a6a6a"></div><div class="swatch-body"><span class="swatch-hex">#6a6a6a</span><span class="swatch-name">--t3 · muted</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#f8f8f8;border:1px solid #eee"></div><div class="swatch-body"><span class="swatch-hex">#f8f8f8</span><span class="swatch-name">--s1 · surface</span></div></div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ─────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">02</span>
+      <h2 class="sec-title u-teal" id="type-h">Typography Scale</h2>
+      <span class="sec-ghost" aria-hidden="true">02</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-ico">Aa</span>
+      <p class="spec-text"><strong>Space Grotesk</strong>: quirky, confident, designed for this exact moment. Wide proportions and quirky terminals give it personality without gimmickry. <strong>JetBrains Mono</strong> for anything that looks like code or data — values, tokens, labels, timestamps.</p>
+    </div>
+    <div class="typescale">
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Display</span><span class="tr-spec">48px / 700<br>−0.04em lh 1.0</span></div><div class="ts-disp">Space Grotesk</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H1</span><span class="tr-spec">36px / 700<br>−0.03em</span></div><div class="ts-h1">Bold heading</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H2</span><span class="tr-spec">28px / 700<br>−0.025em</span></div><div class="ts-h2">Section title</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H3</span><span class="tr-spec">22px / 600<br>−0.015em</span></div><div class="ts-h3">Subsection heading</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H4</span><span class="tr-spec">18px / 600</span></div><div class="ts-h4">Card heading text</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Lg</span><span class="tr-spec">17px / 400<br>lh 1.6</span></div><div class="ts-lg">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body</span><span class="tr-spec">16px / 400<br>lh 1.55</span></div><div class="ts-base">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Sm</span><span class="tr-spec">14px / 400<br>lh 1.5</span></div><div class="ts-sm">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Mono</span><span class="tr-spec">15px / 400<br>JetBrains</span></div><div class="ts-mono">box-shadow: 4px 4px 0 #1a1a1a;</div></div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">03</span>
+      <h2 class="sec-title u-lav" id="btn-h">Buttons</h2>
+      <span class="sec-ghost" aria-hidden="true">03</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-ico">↓</span>
+      <p class="spec-text">The offset shadow IS the button. Press it and the shadow disappears — the physical illusion is complete. <strong>transform: translate(3px, 3px)</strong> + <strong>box-shadow: 1px 1px 0 black</strong> on :active. Each accent is a different emotional register. Hover raises, press sinks.</p>
+    </div>
+    <div class="btn-states">
+      <div>
+        <p class="state-row-label">Coral · Primary</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-coral">Default</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-coral state-hover" tabindex="-1" aria-hidden="true">Hover</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-coral state-active" tabindex="-1" aria-hidden="true">Pressed</button><span class="state-lbl">Pressed ↓</span></div>
+          <div class="state-wrap"><button class="btn btn-coral" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Teal · Secondary</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-teal">Default</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-teal state-hover" tabindex="-1" aria-hidden="true">Hover</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-teal state-active" tabindex="-1" aria-hidden="true">Pressed</button><span class="state-lbl">Pressed ↓</span></div>
+          <div class="state-wrap"><button class="btn btn-teal" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div class="btn-variants">
+        <button class="btn btn-lav">Lavender</button>
+        <button class="btn btn-yellow">Yellow</button>
+        <button class="btn btn-lime">Lime</button>
+        <button class="btn">Ghost</button>
+        <button class="btn btn-coral btn-sm">Small</button>
+        <button class="btn btn-coral btn-lg">Large</button>
+        <button class="btn btn-icon btn-coral" aria-label="Add">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </button>
+        <button class="btn btn-icon btn-teal" aria-label="Heart">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 14.5S2.5 11 2.5 6A3.5 3.5 0 0 1 9 4.25 3.5 3.5 0 0 1 15.5 6c0 5-6.5 8.5-6.5 8.5Z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+        </button>
+        <button class="btn btn-icon btn-lavender" style="background:var(--lavender)" aria-label="More">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="4.5" cy="9" r="1.5" fill="currentColor"/><circle cx="9" cy="9" r="1.5" fill="currentColor"/><circle cx="13.5" cy="9" r="1.5" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">04</span>
+      <h2 class="sec-title u-yellow" id="inputs-h">Form Inputs</h2>
+      <span class="sec-ghost" aria-hidden="true">04</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-ico">⊙</span>
+      <p class="spec-text">Bordered inputs with offset shadows. Focus: <strong>border-color: var(--coral)</strong> + <strong>0 0 0 3px rgba(255,107,53,0.2)</strong> ring. The form has the same visual weight as everything else — no hierarchy suppression. Checkboxes: square, coral fill on check.</p>
+    </div>
+    <div class="form-panel">
+      <div class="form-title">Account Settings</div>
+      <p class="form-sub">All six input types — text, select, textarea, checkbox, radio, toggle — in full neubrutalist form.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">Full name</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="text" id="fi-name" placeholder="Jane Smith" autocomplete="name">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="5" r="2.75" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 13c0-2.76 2.24-4.5 5-4.5s5 1.74 5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">Email</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="email" id="fi-email" placeholder="jane@example.com" autocomplete="email">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="3.5" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M1.5 5.5l6 4 6-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-role">Role</label>
+          <select class="inp sel" id="fi-role">
+            <option value="">Select…</option>
+            <option>Product Designer</option>
+            <option>Engineer</option>
+            <option>Product Manager</option>
+            <option>Researcher</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-pass">Password</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="password" id="fi-pass" placeholder="••••••••">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="3.5" y="6.5" width="8" height="6.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 6.5V4.5a2 2 0 0 1 4 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-bio">Bio</label>
+          <textarea class="inp ta" id="fi-bio" placeholder="Tell us about yourself…" rows="3"></textarea>
+          <span class="hint">Max 280 characters. Shown on your public profile.</span>
+        </div>
+        <div class="field">
+          <span class="label" id="chk-lbl">Interests</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox" checked>
+              <span class="chk-box"><svg class="chk-mark" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="chk-txt">Visual Design</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox">
+              <span class="chk-box"><svg class="chk-mark" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="chk-txt">Interaction Design</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox" checked>
+              <span class="chk-box"><svg class="chk-mark" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="chk-txt">Design Systems</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="rad-lbl">Seniority</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="sen" value="jr">
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Junior (0–2 yrs)</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="sen" value="mid" checked>
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Mid (2–5 yrs)</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="sen" value="sr">
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Senior (5+ yrs)</span>
+            </label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">Notifications</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Email digests</div><div class="tgl-desc">Weekly summary of activity</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Email digests"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Push notifications</div><div class="tgl-desc">Mentions and replies in real time</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" aria-label="Push notifications"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Auto-save drafts</div><div class="tgl-desc">Save changes every 30 seconds</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Auto-save drafts"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ──────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">05</span>
+      <h2 class="sec-title u-lime" id="cards-h">Cards</h2>
+      <span class="sec-ghost" aria-hidden="true">05</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-ico">▣</span>
+      <p class="spec-text">Three cards, three accent colors. Each identical in structure, totally different in personality. The offset shadow creates physical separation from the page. Click any card to feel the press-in effect. Card header: full-width accent strip with <strong>border-bottom: 2px solid black</strong>.</p>
+    </div>
+    <div class="cards-row">
+      <article class="card-nb">
+        <div class="card-hdr ct-coral"><div class="geo-circle"></div></div>
+        <div class="card-in">
+          <p class="card-eye">Design · Coral</p>
+          <h3 class="card-h">Structural Honesty</h3>
+          <p class="card-body-text">No gradients masking the shape. No shadows pretending to be depth. The border IS the boundary.</p>
+          <div class="card-ft">
+            <span class="card-dt">3 min read</span>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-nb">
+        <div class="card-hdr ct-teal"><div class="geo-square"></div></div>
+        <div class="card-in">
+          <p class="card-eye" style="color:var(--teal)">Engineering · Teal</p>
+          <h3 class="card-h">One Pattern, Everything</h3>
+          <p class="card-body-text">Border + offset shadow. Applied to every element consistently. Consistency IS the design language.</p>
+          <div class="card-ft">
+            <span class="card-dt">5 min read</span>
+            <button class="card-act" style="background:var(--teal)">Read →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-nb">
+        <div class="card-hdr ct-lavender"><div class="geo-tri"></div></div>
+        <div class="card-in">
+          <p class="card-eye" style="color:var(--lavender)">Culture · Lavender</p>
+          <h3 class="card-h">Gen Z Aesthetic</h3>
+          <p class="card-body-text">Reacting to polished minimalism with something raw, proud, and impossible to ignore.</p>
+          <div class="card-ft">
+            <span class="card-dt">7 min read</span>
+            <button class="card-act" style="background:var(--lavender)">Read →</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ───────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">06</span>
+      <h2 class="sec-title u-coral" id="ctrl-h">Controls · Player</h2>
+      <span class="sec-ghost" aria-hidden="true">06</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-ico">◎</span>
+      <p class="spec-text">The player uses the same neubrutalist pattern as everything else — no special treatment. Consistency IS the design language. Slider track: <strong>border: 2px solid black</strong>, square thumb. Coral fill from left via JS background gradient.</p>
+    </div>
+    <div class="player">
+      <div class="player-top">
+        <div class="player-art">🎵</div>
+        <div>
+          <div class="player-title">Weightless · Marconi Union</div>
+          <div class="player-artist">ambient · focus · 3:42</div>
+        </div>
+      </div>
+      <div class="pc-row">
+        <button class="pc-btn pc-sm" aria-label="Shuffle">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 5h3l8 8h3M14 5h2v2M14 13h2v-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13h3l2.5-2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button class="pc-btn pc-sm" aria-label="Previous">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M13.5 4.5L7 9l6.5 4.5V4.5ZM4.5 4.5v9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="pc-btn pc-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+          <svg class="play-ico" width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M7 4.5l11 6.5L7 17.5V4.5Z" fill="currentColor"/></svg>
+          <svg class="pause-ico" width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M7 4h3v14H7V4ZM13 4h3v14h-3V4Z" fill="currentColor"/></svg>
+        </button>
+        <button class="pc-btn pc-sm" aria-label="Next">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 4.5L11 9l-6.5 4.5V4.5ZM13.5 4.5v9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="pc-btn pc-sm" aria-label="Repeat">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 12V7a4 4 0 0 1 4-4h8M14 6l2-3-2-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 6v5a4 4 0 0 1-4 4H4M6 12l-2 3 2 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="progress-outer">
+        <input class="progress-rng" type="range" id="progress" min="0" max="222" value="67" aria-label="Track progress">
+        <div class="progress-times">
+          <span class="ptime" id="curr-time">1:07</span>
+          <span class="ptime">3:42</span>
+        </div>
+      </div>
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">Volume</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="68" aria-label="Volume">
+          <span class="sl-val" id="vol-v">68</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Brightness</span>
+          <input class="rng" type="range" id="bright" min="0" max="100" value="45" aria-label="Brightness">
+          <span class="sl-val" id="bright-v">45%</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Balance</span>
+          <input class="rng" type="range" id="bal" min="-50" max="50" value="0" aria-label="Left-right balance">
+          <span class="sl-val" id="bal-v">C</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ─────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">07</span>
+      <h2 class="sec-title u-teal" id="nav-h">Navigation Bar</h2>
+      <span class="sec-ghost" aria-hidden="true">07</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-ico">◻</span>
+      <p class="spec-text">Active tab gets the accent color fill. <strong>border-top: 2px solid black; box-shadow: 0 -2px 0 black</strong> grounds the nav. Tabs separated by vertical 2px borders. Click to switch active state — each tab follows the same nb pattern as every other element.</p>
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <div class="nd-title">Good morning, Jane</div>
+        <div class="nd-sub">Tuesday, May 12</div>
+        <div class="nd-search">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M9.5 9.5L12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Search anything…
+        </div>
+        <div class="nd-items">
+          <div class="nd-item"><div class="nd-ico nd-ico-c">🎵</div><div><div class="nd-item-title">Weightless</div><div class="nd-item-sub">Now playing · 1:07 / 3:42</div></div></div>
+          <div class="nd-item"><div class="nd-ico nd-ico-t">📋</div><div><div class="nd-item-title">Today's Tasks</div><div class="nd-item-sub">5 remaining · 3 done</div></div></div>
+          <div class="nd-item"><div class="nd-ico nd-ico-l">🌤️</div><div><div class="nd-item-title">San Francisco</div><div class="nd-item-sub">72°F · Partly cloudy</div></div></div>
+        </div>
+      </div>
+      <nav class="nb-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Home" aria-current="page">
+          <span class="ni-ico">🏠</span>
+          <span class="ni-lbl">Home</span>
+        </button>
+        <button class="ni" aria-label="Search">
+          <span class="ni-ico">🔍</span>
+          <span class="ni-lbl">Search</span>
+        </button>
+        <button class="ni" aria-label="Create">
+          <span class="ni-ico">✚</span>
+          <span class="ni-lbl">Create</span>
+        </button>
+        <button class="ni" aria-label="Alerts, 3 unread">
+          <div class="ni-ico-wrap">
+            <span class="ni-ico">🔔</span>
+            <span class="ni-badge"></span>
+          </div>
+          <span class="ni-lbl">Alerts</span>
+        </button>
+        <button class="ni" aria-label="Profile">
+          <span class="ni-ico">👤</span>
+          <span class="ni-lbl">Profile</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Slider fill (coral from left) ─── */
+const CORAL = '#ff6b35';
+
+function setFill(el, val, min, max) {
+  const pct = ((val - min) / (max - min)) * 100;
+  el.style.backgroundImage = `linear-gradient(to right, ${CORAL} ${pct}%, white ${pct}%)`;
+}
+function setBalFill(el) {
+  const v = +el.value, min = +el.min, max = +el.max;
+  const zero = (0 - min) / (max - min) * 100;
+  const cur  = (v  - min) / (max - min) * 100;
+  if (v >= 0) {
+    el.style.backgroundImage = `linear-gradient(to right, white ${zero}%, ${CORAL} ${zero}%, ${CORAL} ${cur}%, white ${cur}%)`;
+  } else {
+    el.style.backgroundImage = `linear-gradient(to right, white ${cur}%, ${CORAL} ${cur}%, ${CORAL} ${zero}%, white ${zero}%)`;
+  }
+}
+
+const progress = document.getElementById('progress');
+const vol      = document.getElementById('vol');
+const bright   = document.getElementById('bright');
+const bal      = document.getElementById('bal');
+
+setFill(progress, +progress.value, +progress.min, +progress.max);
+setFill(vol,      +vol.value,      +vol.min,      +vol.max);
+setFill(bright,   +bright.value,   +bright.min,   +bright.max);
+setBalFill(bal);
+
+progress.addEventListener('input', e => {
+  setFill(e.target, +e.target.value, +e.target.min, +e.target.max);
+  const s = +e.target.value;
+  document.getElementById('curr-time').textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+});
+vol.addEventListener('input', e => {
+  setFill(e.target, +e.target.value, +e.target.min, +e.target.max);
+  document.getElementById('vol-v').textContent = e.target.value;
+});
+bright.addEventListener('input', e => {
+  setFill(e.target, +e.target.value, +e.target.min, +e.target.max);
+  document.getElementById('bright-v').textContent = e.target.value + '%';
+});
+bal.addEventListener('input', e => {
+  setBalFill(e.target);
+  const v = +e.target.value;
+  document.getElementById('bal-v').textContent = v < -5 ? 'L' + Math.abs(v) : v > 5 ? 'R' + v : 'C';
+});
+
+/* ── Play / pause ─────────────────────── */
+const playBtn = document.getElementById('play-btn');
+playBtn.addEventListener('click', () => {
+  const p = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!p));
+  playBtn.querySelector('.play-ico').style.display  = !p ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = !p ? ''     : 'none';
+});
+
+/* ── Bottom nav ──────────────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => {
+      n.classList.remove('ni-on');
+      n.removeAttribute('aria-current');
+    });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ── Scroll reveal + progress dots ───── */
+const DOT_COLORS = {
+  hero:     '#1a1a1a',
+  colors:   '#ff6b35',
+  type:     '#4ecdc4',
+  buttons:  '#a29bfe',
+  inputs:   '#ffe66d',
+  cards:    '#55efc4',
+  controls: '#ff6b35',
+  nav:      '#4ecdc4',
+};
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secKey = sections[entry.target.id];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => {
+          d.classList.remove('active');
+          d.style.background = 'transparent';
+        });
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) {
+          dot.classList.add('active');
+          dot.style.background = DOT_COLORS[secKey] || CORAL;
+        }
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot click navigation ───── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

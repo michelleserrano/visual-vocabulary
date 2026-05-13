@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pop Art · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:    #f7e500;
+    --bg-alt:#f5f5f5;
+    --t1:    #000000;
+    --t2:    #1a1a1a;
+    --t3:    #555555;
+    --red:   #e8261d;
+    --blue:  #003087;
+    --cyan:  #00b4d8;
+    --pink:  #ff69b4;
+    --green: #00a651;
+    --ac:    #e8261d;
+    --r:     0px;
+    --f-disp: 'Bangers', Impact, 'Arial Black', sans-serif;
+    --f:     'Comic Neue', 'Arial', sans-serif;
+    --ease:  cubic-bezier(0.4,0,0.2,1);
+    --border: 3px solid #000;
+    --shadow: 5px 5px 0 #000;
+    --shadow-hover: 8px 8px 0 #000;
+    --shadow-press: 2px 2px 0 #000;
+    --shadow-lg: 7px 7px 0 #000;
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-radius: 0 !important;
+  }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f);
+    background: var(--bg);
+    color: var(--t1);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Halftone backgrounds */
+  .halftone-bg {
+    background-image: radial-gradient(circle, rgba(0,0,0,0.18) 25%, transparent 25%);
+    background-size: 6px 6px;
+  }
+  .halftone-red {
+    background-image: radial-gradient(circle, rgba(232,38,29,0.28) 25%, transparent 25%);
+    background-size: 5px 5px;
+  }
+  .halftone-blue {
+    background-image: radial-gradient(circle, rgba(0,48,135,0.22) 25%, transparent 25%);
+    background-size: 6px 6px;
+  }
+  .halftone-yellow {
+    background-image: radial-gradient(circle, rgba(247,229,0,0.5) 25%, transparent 25%);
+    background-size: 5px 5px;
+  }
+  .halftone-pink {
+    background-image: radial-gradient(circle, rgba(255,105,180,0.35) 25%, transparent 25%);
+    background-size: 5px 5px;
+  }
+  .halftone-cyan {
+    background-image: radial-gradient(circle, rgba(0,180,216,0.3) 25%, transparent 25%);
+    background-size: 6px 6px;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+    border-bottom: 4px solid #000;
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--f-disp);
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    color: var(--t1);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.1s;
+  }
+  .tnav-back:hover { color: var(--red); }
+
+  .tnav-title {
+    font-family: var(--f-disp);
+    font-size: 1.5rem;
+    letter-spacing: 0.08em;
+    color: var(--t1);
+    text-transform: uppercase;
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.45rem 1.1rem;
+    background: var(--red);
+    border: var(--border);
+    box-shadow: 3px 3px 0 #000;
+    font-family: var(--f-disp);
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    transition: box-shadow 0.1s, transform 0.1s;
+  }
+  .tnav-dl:hover  { box-shadow: 5px 5px 0 #000; transform: translate(-1px,-1px); }
+  .tnav-dl:active { box-shadow: 1px 1px 0 #000; transform: translate(2px,2px); }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS INDICATOR
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .prog-dot {
+    width: 10px;
+    height: 10px;
+    background: transparent;
+    border: 2px solid #000;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+    padding: 0;
+  }
+  .prog-dot:nth-child(1)          { border-color: var(--red); }
+  .prog-dot:nth-child(2)          { border-color: var(--blue); }
+  .prog-dot:nth-child(3)          { border-color: var(--red); }
+  .prog-dot:nth-child(4)          { border-color: var(--pink); }
+  .prog-dot:nth-child(5)          { border-color: var(--blue); }
+  .prog-dot:nth-child(6)          { border-color: var(--red); }
+  .prog-dot:nth-child(7)          { border-color: var(--blue); }
+  .prog-dot:nth-child(8)          { border-color: var(--pink); }
+  .prog-dot:hover                 { transform: scale(1.5); }
+  .prog-dot.active                { transform: scale(1.4); }
+  .prog-dot:nth-child(1).active   { background: var(--red); }
+  .prog-dot:nth-child(2).active   { background: var(--blue); }
+  .prog-dot:nth-child(3).active   { background: var(--red); }
+  .prog-dot:nth-child(4).active   { background: var(--pink); }
+  .prog-dot:nth-child(5).active   { background: var(--blue); }
+  .prog-dot:nth-child(6).active   { background: var(--red); }
+  .prog-dot:nth-child(7).active   { background: var(--blue); }
+  .prog-dot:nth-child(8).active   { background: var(--pink); }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.75rem 7rem;
+  }
+
+  /* ── Section ────────────────────────── */
+  .sec {
+    margin-top: 5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  .sec-hd {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 3px solid #000;
+  }
+
+  /* Ghost mega-number */
+  .sec-ghost {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--f-disp);
+    font-size: 7rem;
+    line-height: 1;
+    color: rgba(0,0,0,0.05);
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 0.05em;
+  }
+
+  /* Section number badge */
+  .sec-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    font-family: var(--f-disp);
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    color: #fff;
+    background: var(--red);
+    border: 2px solid #000;
+    flex-shrink: 0;
+  }
+
+  .sec-title {
+    font-family: var(--f-disp);
+    font-size: 2rem;
+    letter-spacing: 0.08em;
+    color: var(--t1);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  /* Action word decoration */
+  .action-word {
+    display: inline-block;
+    font-family: var(--f-disp);
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+    color: #fff;
+    background: var(--blue);
+    border: 2px solid #000;
+    padding: 0.15rem 0.5rem;
+    transform: rotate(-3deg);
+    box-shadow: 2px 2px 0 #000;
+    margin-left: 0.75rem;
+  }
+
+  /* ── Spec callout ───────────────────── */
+  .spec-callout {
+    position: relative;
+    background: var(--bg-alt);
+    border: var(--border);
+    box-shadow: var(--shadow);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .spec-callout::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(247,229,0,0.55) 25%, transparent 25%);
+    background-size: 5px 5px;
+    pointer-events: none;
+  }
+  .spec-callout-inner {
+    position: relative;
+    z-index: 1;
+  }
+  /* Speech bubble inside callout */
+  .speech-bubble {
+    position: relative;
+    background: white;
+    border: var(--border);
+    padding: 0.875rem 1.1rem;
+    display: inline-block;
+  }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -18px;
+    left: 22px;
+    border: 9px solid transparent;
+    border-top-color: #000;
+  }
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 24px;
+    border: 7px solid transparent;
+    border-top-color: #fff;
+    z-index: 1;
+  }
+  .speech-bubble-text {
+    font-family: var(--f);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--t2);
+  }
+  .speech-bubble-text strong {
+    font-weight: 700;
+    color: var(--t1);
+    font-family: 'Courier New', monospace;
+    font-size: 0.8125rem;
+    background: var(--bg);
+    padding: 0 2px;
+  }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 3.5rem 0 4rem;
+  }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-family: var(--f-disp);
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t1);
+    background: #000;
+    color: var(--bg);
+    padding: 0.3rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .hero-kicker-dot {
+    width: 8px; height: 8px;
+    background: var(--red);
+    border: 1px solid var(--bg);
+  }
+
+  .hero-h1 {
+    font-family: var(--f-disp);
+    font-size: clamp(5rem, 16vw, 10rem);
+    letter-spacing: 0.08em;
+    line-height: 0.9;
+    color: var(--red);
+    text-transform: uppercase;
+    -webkit-text-stroke: 3px #000;
+    text-stroke: 3px #000;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-desc {
+    font-family: var(--f);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--t2);
+    max-width: 52ch;
+    margin-bottom: 2rem;
+    border-left: 5px solid #000;
+    padding-left: 1rem;
+    background: rgba(255,255,255,0.6);
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+  .hero-tag {
+    font-family: var(--f-disp);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 0.3rem 0.75rem;
+    border: 2px solid #000;
+    box-shadow: 2px 2px 0 #000;
+  }
+  .hero-tag:nth-child(1) { background: var(--red); }
+  .hero-tag:nth-child(2) { background: var(--blue); }
+  .hero-tag:nth-child(3) { background: var(--pink); }
+  .hero-tag:nth-child(4) { background: #000; }
+
+  /* Hero speech bubble widgets */
+  .hero-widget {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .hw-bubble {
+    position: relative;
+    background: white;
+    border: var(--border);
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow);
+    min-width: 180px;
+    max-width: 240px;
+    flex: 1;
+  }
+  .hw-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -22px;
+    left: 24px;
+    border: 11px solid transparent;
+    border-top-color: #000;
+  }
+  .hw-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -16px;
+    left: 26px;
+    border: 9px solid transparent;
+    border-top-color: #fff;
+    z-index: 1;
+  }
+  .hw-title {
+    font-family: var(--f-disp);
+    font-size: 1.125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--t1);
+    margin-bottom: 0.2rem;
+  }
+  .hw-sub {
+    font-size: 0.8125rem;
+    color: var(--t3);
+  }
+  .hw-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.375rem;
+    display: block;
+  }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+
+  .swatch {
+    border: var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow 0.1s, transform 0.1s;
+  }
+  .swatch:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translate(-2px,-2px);
+  }
+  .swatch-color { height: 72px; }
+  .swatch-body  {
+    padding: 0.625rem 0.75rem;
+    background: white;
+    border-top: var(--border);
+  }
+  .swatch-hex   {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--t1);
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+  .swatch-name  {
+    font-family: var(--f-disp);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: var(--t3);
+    text-transform: uppercase;
+  }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    border: var(--border);
+    box-shadow: var(--shadow-lg);
+    background: white;
+    overflow: hidden;
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.1rem 1.5rem;
+    border-bottom: 2px solid #000;
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { text-align: right; }
+  .tr-lbl  {
+    font-family: var(--f-disp);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red);
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+  .tr-spec {
+    font-family: 'Courier New', monospace;
+    font-size: 0.5625rem;
+    color: var(--t3);
+    line-height: 1.5;
+  }
+
+  .ts-disp  {
+    font-family: var(--f-disp);
+    font-size: 3.5rem;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--red);
+    -webkit-text-stroke: 2px #000;
+  }
+  .ts-h1    {
+    font-family: var(--f-disp);
+    font-size: 2.25rem;
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+  .ts-h2    {
+    font-family: var(--f-disp);
+    font-size: 1.75rem;
+    letter-spacing: 0.07em;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+  .ts-h3    {
+    font-family: var(--f-disp);
+    font-size: 1.375rem;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .ts-h4    { font-family: var(--f-disp); font-size: 1.125rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  .ts-lg    { font-size: 1.0625rem; line-height: 1.6; }
+  .ts-base  { font-size: 1rem; line-height: 1.55; }
+  .ts-sm    { font-size: 0.875rem; line-height: 1.5; }
+  .ts-cap   {
+    font-family: var(--f-disp);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: white;
+    border: var(--border);
+    box-shadow: var(--shadow);
+    padding: 0.7rem 1.6rem;
+    font-family: var(--f-disp);
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t1);
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: box-shadow 0.1s, transform 0.1s;
+    position: relative;
+  }
+  .btn:hover:not(:disabled)  {
+    box-shadow: var(--shadow-hover);
+    transform: translate(-2px,-2px);
+  }
+  .btn:active:not(:disabled) {
+    box-shadow: var(--shadow-press);
+    transform: translate(3px,3px);
+  }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
+
+  .btn-p {
+    background: var(--red);
+    color: #fff;
+  }
+  .btn-blue {
+    background: var(--blue);
+    color: #fff;
+  }
+  .btn-pink {
+    background: var(--pink);
+    color: #fff;
+  }
+  .btn-yellow {
+    background: var(--bg);
+    color: #000;
+  }
+  .btn-sm { padding: 0.5rem 1.125rem; font-size: 0.875rem; }
+  .btn-lg { padding: 0.875rem 2rem; font-size: 1.125rem; }
+
+  /* POW! bubble on press */
+  .pow-bubble {
+    position: absolute;
+    top: -48px;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    background: var(--bg);
+    border: 2px solid #000;
+    font-family: var(--f-disp);
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--red);
+    padding: 0.3rem 0.75rem;
+    box-shadow: 2px 2px 0 #000;
+    pointer-events: none;
+    transition: transform 0.1s var(--ease);
+    white-space: nowrap;
+    z-index: 10;
+  }
+  .pow-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #000;
+  }
+  .pow-bubble.show { transform: translateX(-50%) scale(1); }
+
+  /* Starburst for special buttons */
+  .starburst-btn {
+    position: relative;
+    overflow: visible;
+  }
+  .starburst-btn::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    background: var(--bg);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .starburst-btn:hover::before { opacity: 1; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 2rem; }
+  .state-row-label {
+    font-family: var(--f-disp);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 1rem;
+  }
+  .state-row { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .state-lbl  {
+    font-family: var(--f-disp);
+    font-size: 0.5625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+
+  /* Static state previews */
+  .state-hover  { box-shadow: var(--shadow-hover) !important; transform: translate(-2px,-2px); }
+  .state-press  { box-shadow: var(--shadow-press) !important; transform: translate(3px,3px); }
+
+  .btn-variants {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 2rem;
+    margin-top: 2rem;
+    border-top: 3px solid #000;
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: white;
+    border: var(--border);
+    box-shadow: var(--shadow-lg);
+    padding: 2rem;
+  }
+  .form-title {
+    font-family: var(--f-disp);
+    font-size: 2rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t1);
+    margin-bottom: 0.25rem;
+  }
+  .form-sub {
+    font-size: 0.9375rem;
+    color: var(--t2);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.375rem; }
+  .fg-full   { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .label {
+    font-family: var(--f-disp);
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t1);
+  }
+  .hint  { font-size: 0.75rem; color: var(--t3); margin-top: 0.15rem; }
+
+  .inp {
+    background: white;
+    border: var(--border);
+    padding: 0.75rem 1rem;
+    font-family: var(--f);
+    font-size: 0.9375rem;
+    color: var(--t1);
+    outline: none;
+    width: 100%;
+    box-shadow: 3px 3px 0 #000;
+    transition: box-shadow 0.1s, border-color 0.1s;
+  }
+  .inp::placeholder { color: var(--t3); }
+  .inp:focus {
+    border-color: var(--red);
+    box-shadow: 4px 4px 0 var(--red);
+  }
+
+  .inp-wrap { position: relative; }
+  .inp-ico  { position: absolute; right: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none; }
+  .inp.has-ico { padding-right: 2.5rem; }
+
+  .sel {
+    -webkit-appearance: none;
+    background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23000' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.875rem center;
+    border: var(--border);
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    font-family: var(--f);
+    font-size: 0.9375rem;
+    color: var(--t1);
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #000;
+    transition: box-shadow 0.1s;
+  }
+  .sel:focus { border-color: var(--red); box-shadow: 4px 4px 0 var(--red); }
+
+  .ta { resize: vertical; min-height: 90px; line-height: 1.55; }
+
+  /* Pop Art checkboxes */
+  .chk-group { display: flex; flex-direction: column; gap: 0.875rem; }
+  .chk-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    cursor: pointer; user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 26px; height: 26px; flex-shrink: 0;
+    background: white;
+    border: var(--border);
+    box-shadow: 3px 3px 0 #000;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.1s, box-shadow 0.1s;
+  }
+  .chk-mark  { opacity: 0; color: #fff; font-size: 1rem; font-weight: 900; transition: opacity 0.1s; }
+  .chk-in:checked + .chk-box { background: var(--red); box-shadow: 2px 2px 0 #000; }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-in:focus-visible + .chk-box { outline: 3px solid var(--red); outline-offset: 2px; }
+  .chk-txt {
+    font-family: var(--f);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--t1);
+  }
+
+  /* Pop Art radio */
+  .rad-box {
+    width: 26px; height: 26px; flex-shrink: 0;
+    background: white;
+    border: var(--border);
+    box-shadow: 3px 3px 0 #000;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.1s;
+  }
+  .rad-dot {
+    width: 10px; height: 10px;
+    background: #fff;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+  .chk-in:checked + .rad-box { background: var(--blue); }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; }
+  .chk-in:focus-visible + .rad-box { outline: 3px solid var(--red); outline-offset: 2px; }
+
+  /* Pop Art toggles — rectangular */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 0; gap: 1rem;
+    border-bottom: 2px solid #000;
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title { font-family: var(--f-disp); font-size: 1rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--t1); }
+  .tgl-desc  { font-size: 0.8125rem; color: var(--t3); margin-top: 0.125rem; }
+
+  .tgl { flex-shrink: 0; cursor: pointer; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 56px; height: 26px;
+    background: white;
+    border: var(--border);
+    box-shadow: 3px 3px 0 #000;
+    position: relative;
+    transition: background 0.15s;
+  }
+  .tgl-thumb {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 17px; height: 17px;
+    background: #000;
+    transition: transform 0.2s var(--ease);
+  }
+  .tgl-in:checked ~ .tgl-track { background: var(--red); }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb {
+    transform: translateX(28px);
+    background: #fff;
+  }
+  .tgl-in:focus-visible ~ .tgl-track { outline: 3px solid var(--red); outline-offset: 2px; }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .card-pop {
+    background: white;
+    border: var(--border);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    transition: box-shadow 0.1s, transform 0.1s;
+  }
+  .card-pop:hover {
+    box-shadow: 10px 10px 0 #000;
+    transform: translate(-3px,-3px);
+  }
+
+  .card-thumb {
+    height: 130px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    position: relative;
+    border-bottom: var(--border);
+    overflow: hidden;
+  }
+  .ct1 { background: var(--red); }
+  .ct2 { background: var(--blue); }
+  .ct3 { background: var(--pink); }
+
+  .card-thumb-emoji {
+    position: relative;
+    z-index: 1;
+    font-size: 3rem;
+  }
+
+  .card-in { padding: 1.125rem 1.25rem 1.5rem; }
+  .card-eye {
+    font-family: var(--f-disp);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+  .card-h {
+    font-family: var(--f-disp);
+    font-size: 1.25rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--t1);
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+  .card-body-text {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--t2);
+    margin-bottom: 1.25rem;
+  }
+  .card-ft {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 0.875rem;
+    border-top: 2px solid #000;
+  }
+  .card-av {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--f-disp);
+    font-size: 0.875rem;
+    color: #fff;
+    border: 2px solid #000;
+  }
+  .av1 { background: var(--red); }
+  .av2 { background: var(--blue); }
+  .av3 { background: var(--pink); }
+  .card-dt {
+    font-family: var(--f-disp);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+  .card-act {
+    background: #000;
+    border: none;
+    padding: 0.35rem 0.875rem;
+    font-family: var(--f-disp);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bg);
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+  }
+  .card-act:hover { background: var(--red); }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ */
+  .player {
+    background: white;
+    border: var(--border);
+    box-shadow: var(--shadow-lg);
+    padding: 2rem;
+  }
+
+  .player-top {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+
+  /* Starburst art */
+  .player-art {
+    width: 80px; height: 80px;
+    background: var(--red);
+    border: var(--border);
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.25rem; flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .player-art::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.2) 25%, transparent 25%);
+    background-size: 5px 5px;
+  }
+  .player-art-emoji { position: relative; z-index: 1; }
+
+  .player-title  {
+    font-family: var(--f-disp);
+    font-size: 1.25rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--t1);
+    margin-bottom: 0.2rem;
+  }
+  .player-artist { font-size: 0.875rem; color: var(--t2); }
+
+  /* Player controls row */
+  .pc-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .pc-btn {
+    background: white;
+    border: var(--border);
+    box-shadow: 3px 3px 0 #000;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--t2);
+    transition: box-shadow 0.1s, transform 0.1s;
+  }
+  .pc-btn:hover  {
+    box-shadow: 5px 5px 0 #000;
+    transform: translate(-1px,-1px);
+  }
+  .pc-btn:active {
+    box-shadow: 1px 1px 0 #000;
+    transform: translate(2px,2px);
+  }
+  .pc-sm { width: 42px; height: 42px; }
+  .pc-lg {
+    width: 62px; height: 62px;
+    background: var(--red);
+    color: #fff;
+    border: var(--border);
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  /* Starburst around play button */
+  .pc-lg::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    background: var(--bg);
+    clip-path: polygon(50% 0%, 58% 34%, 93% 25%, 75% 55%, 100% 69%, 68% 73%, 72% 100%, 50% 82%, 28% 100%, 32% 73%, 0% 69%, 25% 55%, 7% 25%, 42% 34%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .pc-lg:hover::before { opacity: 1; }
+  .pc-lg[aria-pressed="true"] .play-ico  { display: none; }
+  .pc-lg[aria-pressed="false"] .pause-ico { display: none; }
+
+  .progress-outer { margin: 1.5rem 0; }
+  .progress-rng {
+    -webkit-appearance: none;
+    width: 100%; height: 12px;
+    background: white;
+    border: var(--border);
+    outline: none; cursor: pointer;
+    position: relative;
+    overflow: visible;
+  }
+  .progress-rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    background: #000;
+    border: 3px solid white;
+    outline: 3px solid #000;
+    cursor: pointer;
+  }
+  .progress-rng::-moz-range-thumb {
+    width: 22px; height: 22px;
+    background: #000;
+    border: 3px solid white;
+    outline: 3px solid #000;
+    cursor: pointer;
+  }
+  .progress-times {
+    display: flex; justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  .ptime {
+    font-family: var(--f-disp);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--t3);
+  }
+
+  .slider-list { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1.75rem; padding-top: 1.75rem; border-top: 3px solid #000; }
+  .slider-item { display: flex; align-items: center; gap: 1rem; }
+  .sl-lbl {
+    font-family: var(--f-disp);
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--t2);
+    min-width: 5.5rem;
+  }
+  .sl-val {
+    font-family: var(--f-disp);
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--red);
+    min-width: 2.75rem;
+    text-align: right;
+  }
+
+  .rng {
+    -webkit-appearance: none;
+    flex: 1; height: 12px;
+    background: white;
+    border: var(--border);
+    outline: none; cursor: pointer;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px; height: 24px;
+    background: var(--red);
+    border: 3px solid white;
+    outline: 3px solid #000;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .rng::-webkit-slider-thumb:hover { background: var(--blue); }
+  .rng::-moz-range-thumb {
+    width: 24px; height: 24px;
+    background: var(--red);
+    border: 3px solid white;
+    outline: 3px solid #000;
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAV BAR
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: white;
+    border: var(--border);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .nd-screen { padding: 1.5rem 1.5rem 0; }
+  .nd-title  {
+    font-family: var(--f-disp);
+    font-size: 1.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t1);
+    margin-bottom: 0.2rem;
+  }
+  .nd-sub    {
+    font-family: var(--f-disp);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 1.25rem;
+  }
+
+  .nd-search {
+    background: white;
+    border: var(--border);
+    box-shadow: 3px 3px 0 #000;
+    padding: 0.625rem 1rem;
+    display: flex; align-items: center; gap: 0.625rem;
+    color: var(--t3);
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .nd-items { display: flex; flex-direction: column; gap: 0.625rem; margin-bottom: 1.5rem; }
+  .nd-item {
+    border: 2px solid #000;
+    padding: 0.75rem 1rem;
+    display: flex; align-items: center; gap: 0.875rem;
+    background: white;
+    box-shadow: 3px 3px 0 #000;
+    transition: box-shadow 0.1s, transform 0.1s;
+  }
+  .nd-item:hover { box-shadow: 5px 5px 0 #000; transform: translate(-1px,-1px); }
+  .nd-ico {
+    width: 36px; height: 36px; flex-shrink: 0;
+    border: 2px solid #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    background: var(--bg);
+  }
+  .nd-item-title {
+    font-family: var(--f-disp);
+    font-size: 0.9375rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--t1);
+  }
+  .nd-item-sub   { font-size: 0.75rem; color: var(--t3); }
+
+  /* Pop Art bottom nav */
+  .pop-navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    border-top: 3px solid #000;
+    background: white;
+  }
+
+  .ni {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    background: none;
+    border: none;
+    border-right: 2px solid #000;
+    cursor: pointer;
+    font-family: var(--f);
+    padding: 0.75rem 0.5rem;
+    flex: 1;
+    transition: background 0.1s;
+    position: relative;
+  }
+  .ni:last-child { border-right: none; }
+  .ni:not(.ni-on):hover { background: var(--bg); }
+  .ni-on {
+    background: var(--red);
+  }
+  .ni-lbl {
+    font-family: var(--f-disp);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t3);
+    transition: color 0.1s;
+  }
+  .ni-on .ni-lbl { color: #fff; }
+  .ni-badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--red); border: 2px solid white; }
+  .ni-ico-wrap { position: relative; }
+
+  /* ═══════════════════════════════════════
+     STARBURST DECORATION
+  ═══════════════════════════════════════ */
+  .starburst {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    font-family: var(--f-disp);
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.75rem;
+    clip-path: polygon(50% 0%, 61% 20%, 79% 9%, 78% 30%, 100% 29%, 87% 46%, 100% 63%, 78% 62%, 79% 83%, 61% 72%, 50% 91%, 39% 72%, 21% 83%, 22% 62%, 0% 63%, 13% 46%, 0% 29%, 22% 30%, 21% 9%, 39% 20%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .tr { grid-template-columns: 72px 1fr; gap: 0.75rem; padding: 0.875rem 1rem; }
+    .ts-disp { font-size: 2.25rem; }
+    .ts-h1   { font-size: 1.75rem; }
+    .palette-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
+    .state-row { gap: 0.75rem; }
+    .hero-h1 { font-size: clamp(3.5rem, 14vw, 6rem); }
+    .hero-widget { gap: 1rem; }
+    .player-top { grid-template-columns: auto 1fr; }
+    .pc-row { flex-wrap: wrap; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 2.5L4.5 7 9 11.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+    </svg>
+    Gallery
+  </a>
+  <span class="tnav-title">Pop Art</span>
+  <a class="tnav-dl" href="style-guide.md" download="pop-art-style-guide.md">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 2v7.5M4.5 7l2.5 2.5 2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+      <path d="M2 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress dots ────────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"     aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"       aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"   aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"      aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Form Inputs"  aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"        aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"     aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"   aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <div class="hero-kicker">
+      <span class="hero-kicker-dot"></span>
+      Comic Book · Mass Culture · 1960s
+    </div>
+    <h1 class="hero-h1">Pop Art</h1>
+    <p class="hero-desc">Mass production meets fine art. Warhol stole from Campbell's. Lichtenstein stole from comics. Pop Art said: the supermarket shelf is a gallery wall. These aren't colors — they're brands made abstract.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Bangers · comic book weight</span>
+      <span class="hero-tag">Hard edges, no radius</span>
+      <span class="hero-tag">Halftone Ben-Day dots</span>
+      <span class="hero-tag">Offset panel shadow</span>
+    </div>
+    <div class="hero-widget">
+      <div class="hw-bubble">
+        <span class="hw-icon">💥</span>
+        <div class="hw-title">Halftone Dots</div>
+        <div class="hw-sub">The printing artifact as aesthetic</div>
+      </div>
+      <div class="hw-bubble">
+        <span class="hw-icon">⚡</span>
+        <div class="hw-title">Offset Shadow</div>
+        <div class="hw-sub">5px 5px 0 #000 — no blur</div>
+      </div>
+      <div class="hw-bubble">
+        <span class="hw-icon">🎨</span>
+        <div class="hw-title">Primary Colors</div>
+        <div class="hw-sub">Red, yellow, blue, pink</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ─────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">01</span>
+      <h2 class="sec-title" id="colors-h">Color Palette</h2>
+      <span class="action-word">POW!</span>
+      <span class="sec-ghost" aria-hidden="true">01</span>
+    </div>
+    <div class="spec-callout">
+      <div class="spec-callout-inner">
+        <div class="speech-bubble">
+          <p class="speech-bubble-text">Pop Art steals from advertising: the red of Coca-Cola, the yellow of Campbell's soup, the blue of Pepsi. These aren't colors — they're brands made abstract. Every hue has <strong>border: 3px solid #000</strong> and <strong>box-shadow: 5px 5px 0 #000</strong>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="palette-grid" style="margin-top: 1.5rem;">
+      <div class="swatch"><div class="swatch-color" style="background:#f7e500"></div><div class="swatch-body"><span class="swatch-hex">#f7e500</span><span class="swatch-name">--bg · Warhol Yellow</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#e8261d"></div><div class="swatch-body"><span class="swatch-hex">#e8261d</span><span class="swatch-name">--red · Pop Red</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#003087"></div><div class="swatch-body"><span class="swatch-hex">#003087</span><span class="swatch-name">--blue · Pop Blue</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#00b4d8"></div><div class="swatch-body"><span class="swatch-hex">#00b4d8</span><span class="swatch-name">--cyan · Comic Highlight</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ff69b4"></div><div class="swatch-body"><span class="swatch-hex">#ff69b4</span><span class="swatch-name">--pink · Warhol Pink</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#00a651"></div><div class="swatch-body"><span class="swatch-hex">#00a651</span><span class="swatch-name">--green · Money Green</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#000000"></div><div class="swatch-body"><span class="swatch-hex">#000000</span><span class="swatch-name">--t1 · Lichtenstein Black</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#1a1a1a"></div><div class="swatch-body"><span class="swatch-hex">#1a1a1a</span><span class="swatch-name">--t2 · Near Black</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#555555"></div><div class="swatch-body"><span class="swatch-hex">#555555</span><span class="swatch-name">--t3 · Muted</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#f5f5f5"></div><div class="swatch-body"><span class="swatch-hex">#f5f5f5</span><span class="swatch-name">--bg-alt · Panel White</span></div></div>
+      <div class="swatch"><div class="swatch-color halftone-red" style="background:#fff"></div><div class="swatch-body"><span class="swatch-hex">halftone-red</span><span class="swatch-name">Red Ben-Day dots</span></div></div>
+      <div class="swatch"><div class="swatch-color halftone-blue" style="background:#fff"></div><div class="swatch-body"><span class="swatch-hex">halftone-blue</span><span class="swatch-name">Blue Ben-Day dots</span></div></div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ─────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-pill" style="background:var(--blue)" aria-hidden="true">02</span>
+      <h2 class="sec-title" id="type-h">Typography Scale</h2>
+      <span class="action-word" style="background:var(--pink);transform:rotate(2deg)">ZAP!</span>
+      <span class="sec-ghost" aria-hidden="true">02</span>
+    </div>
+    <div class="spec-callout">
+      <div class="spec-callout-inner">
+        <div class="speech-bubble">
+          <p class="speech-bubble-text"><strong>Bangers</strong> for display — it's literally a comic book font. Condensed, tall, and LOUD. <strong>Comic Neue</strong> for body — hand-lettered authenticity meets digital practicality. Never use a refined serif here. This is the newsstand, not the library.</p>
+        </div>
+      </div>
+    </div>
+    <div class="typescale">
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Display</span><span class="tr-spec">56px / Bangers<br>+0.1em / UC</span></div><div class="ts-disp">Bangers!</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H1</span><span class="tr-spec">36px / Bangers<br>+0.08em / UC</span></div><div class="ts-h1">Headline One</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H2</span><span class="tr-spec">28px / Bangers<br>+0.07em / UC</span></div><div class="ts-h2">Headline Two</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H3</span><span class="tr-spec">22px / Bangers<br>+0.06em / UC</span></div><div class="ts-h3">Headline Three</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H4</span><span class="tr-spec">18px / Bangers<br>+0.05em / UC</span></div><div class="ts-h4">Headline Four</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Lg</span><span class="tr-spec">17px / Comic Neue<br>400 / lh 1.6</span></div><div class="ts-lg">The quick brown fox jumps over the lazy dog — in Comic Neue</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body</span><span class="tr-spec">16px / Comic Neue<br>400 / lh 1.55</span></div><div class="ts-base">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Sm</span><span class="tr-spec">14px / Comic Neue<br>400 / lh 1.5</span></div><div class="ts-sm">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Caption</span><span class="tr-spec">11px / Bangers<br>+0.12em / UC</span></div><div class="ts-cap">Caption · Metadata · Label · Comic Strip</div></div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-pill" style="background:var(--pink)" aria-hidden="true">03</span>
+      <h2 class="sec-title" id="btn-h">Buttons</h2>
+      <span class="action-word" style="background:var(--red)">BAM!</span>
+      <span class="sec-ghost" aria-hidden="true">03</span>
+    </div>
+    <div class="spec-callout">
+      <div class="spec-callout-inner">
+        <div class="speech-bubble">
+          <p class="speech-bubble-text">Pop Art buttons are LOUD. The offset shadow <strong>5px 5px 0 #000</strong> makes them jump off the page like a panel from a Batman comic. Press: <strong>translate(3px, 3px)</strong> collapses the shadow. Click to hear the POW!</p>
+        </div>
+      </div>
+    </div>
+    <div class="btn-states">
+      <div>
+        <p class="state-row-label">Primary · Red</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-p pop-btn">Default</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-hover" tabindex="-1" aria-hidden="true">Hover</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-press" tabindex="-1" aria-hidden="true">Pressed</button><span class="state-lbl">Pressed ↓</span></div>
+          <div class="state-wrap"><button class="btn btn-p" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Secondary · White</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn pop-btn">Default</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn state-hover" tabindex="-1" aria-hidden="true">Hover</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn state-press" tabindex="-1" aria-hidden="true">Pressed</button><span class="state-lbl">Pressed ↓</span></div>
+          <div class="state-wrap"><button class="btn" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div class="btn-variants">
+        <button class="btn btn-blue pop-btn">Blue</button>
+        <button class="btn btn-pink pop-btn">Pink</button>
+        <button class="btn btn-yellow pop-btn">Yellow</button>
+        <button class="btn btn-sm btn-p pop-btn">Small</button>
+        <button class="btn btn-lg btn-p pop-btn">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2l2.5 5 5.5.8-4 3.9.9 5.5L9 14.7l-4.9 2.5.9-5.5-4-3.9L6.5 7z" fill="currentColor"/></svg>
+          Large Star
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-pill" style="background:var(--blue)" aria-hidden="true">04</span>
+      <h2 class="sec-title" id="inputs-h">Form Inputs</h2>
+      <span class="action-word" style="background:var(--cyan);color:#000">WOW!</span>
+      <span class="sec-ghost" aria-hidden="true">04</span>
+    </div>
+    <div class="spec-callout">
+      <div class="spec-callout-inner">
+        <div class="speech-bubble">
+          <p class="speech-bubble-text">The form is a product survey in a comic strip. Labels in <strong>Bangers</strong>, inputs in <strong>Comic Neue</strong>, borders in <strong>3px solid #000</strong>. Focus state: <strong>border-color: var(--red)</strong>. Everything is PRODUCT.</p>
+        </div>
+      </div>
+    </div>
+    <div class="form-panel">
+      <div class="form-title" style="color:var(--red);">Product Survey</div>
+      <p class="form-sub">All six input types in the Pop Art system. Bold labels, blunt borders, zero ambiguity.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">Your Name</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="text" id="fi-name" placeholder="Andy Warhol" autocomplete="name">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="5" r="2.75" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 13c0-2.76 2.24-4.5 5-4.5s5 1.74 5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">Email</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="email" id="fi-email" placeholder="andy@factory.nyc" autocomplete="email">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="3.5" width="12" height="8" rx="0" stroke="currentColor" stroke-width="1.5"/><path d="M1.5 5.5l6 4 6-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-style">Preferred Style</label>
+          <select class="inp sel" id="fi-style">
+            <option value="">Select…</option>
+            <option>Pop Art (obviously)</option>
+            <option>Neumorphism</option>
+            <option>Brutalism</option>
+            <option>Bauhaus</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-soup">Favorite Soup</label>
+          <div class="inp-wrap">
+            <input class="inp" type="text" id="fi-soup" placeholder="Campbell's Tomato">
+          </div>
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-bio">Artist Statement</label>
+          <textarea class="inp ta" id="fi-bio" placeholder="In the future, everyone will be famous for 15 minutes…" rows="3"></textarea>
+          <span class="hint">Max 280 characters. This is your manifesto.</span>
+        </div>
+        <div class="field">
+          <span class="label" id="chk-lbl">Interests</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><span class="chk-mark">✓</span></span><span class="chk-txt">Mass Media</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox"><span class="chk-box"><span class="chk-mark">✓</span></span><span class="chk-txt">Comic Books</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><span class="chk-mark">✓</span></span><span class="chk-txt">Advertising</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="rad-lbl">Era</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row"><input class="chk-in" type="radio" name="era" value="50s"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">1950s (Pre-Pop)</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="era" value="60s" checked><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">1960s (Golden Age)</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="era" value="70s"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">1970s (Neo-Pop)</span></label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">Settings</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Show Halftone Dots</div><div class="tgl-desc">Overlay Ben-Day pattern on all surfaces</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Show Halftone Dots"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Thick Outlines</div><div class="tgl-desc">Lichtenstein-style 3px black borders</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Thick Outlines"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Speech Bubbles</div><div class="tgl-desc">Comic strip callout annotations</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" aria-label="Speech Bubbles"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ──────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-pill" style="background:var(--pink)" aria-hidden="true">05</span>
+      <h2 class="sec-title" id="cards-h">Cards</h2>
+      <span class="action-word" style="background:var(--blue)">KA-POW!</span>
+      <span class="sec-ghost" aria-hidden="true">05</span>
+    </div>
+    <div class="spec-callout">
+      <div class="spec-callout-inner">
+        <div class="speech-bubble">
+          <p class="speech-bubble-text">Cards are comic book panels. Three-panel strips of content. Each has a halftone header, a <strong>3px black border</strong>, and a Lichtenstein offset shadow <strong>7px 7px 0 #000</strong>. Hover: <strong>translate(-3px, -3px)</strong>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="cards-row" style="margin-top: 1.5rem;">
+      <article class="card-pop">
+        <div class="card-thumb ct1 halftone-bg">
+          <span class="card-thumb-emoji">🎨</span>
+        </div>
+        <div class="card-in">
+          <span class="card-eye">Design</span>
+          <h3 class="card-h">The Supermarket Is The Gallery</h3>
+          <p class="card-body-text">Warhol elevated the Campbell's soup can. Every product is art. Every label is typography. The shelves of a drugstore are a Lichtenstein painting.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem"><div class="card-av av1">A</div><span class="card-dt">3 min read</span></div>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-pop">
+        <div class="card-thumb ct2 halftone-blue">
+          <span class="card-thumb-emoji">💬</span>
+        </div>
+        <div class="card-in">
+          <span class="card-eye">Language</span>
+          <h3 class="card-h">I Can See The Whole Room!</h3>
+          <p class="card-body-text">Lichtenstein's speech bubbles turned pulp fiction into philosophy. The crying woman isn't sad — she's a formal problem to be solved in four colors.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem"><div class="card-av av2">R</div><span class="card-dt">5 min read</span></div>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-pop">
+        <div class="card-thumb ct3 halftone-pink">
+          <span class="card-thumb-emoji">⭐</span>
+        </div>
+        <div class="card-in">
+          <span class="card-eye">Fame</span>
+          <h3 class="card-h">15 Minutes of Fame</h3>
+          <p class="card-body-text">Everyone will be famous. The Marilyns, the Elvis prints, the Mao series — fame as mass production. The original viral media.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem"><div class="card-av av3">M</div><span class="card-dt">7 min read</span></div>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ───────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-pill" style="background:var(--blue)" aria-hidden="true">06</span>
+      <h2 class="sec-title" id="ctrl-h">Controls · Sliders</h2>
+      <span class="action-word" style="background:var(--cyan);color:#000">ZOK!</span>
+      <span class="sec-ghost" aria-hidden="true">06</span>
+    </div>
+    <div class="spec-callout">
+      <div class="spec-callout-inner">
+        <div class="speech-bubble">
+          <p class="speech-bubble-text">The player is a pop culture artifact. Bold colors, bold fonts, bold controls. PLAY button has a starburst halo on hover. Slider thumb: <strong>background: var(--red)</strong> with a sharp <strong>outline: 3px solid #000</strong>. No blur. No softness.</p>
+        </div>
+      </div>
+    </div>
+    <div class="player">
+      <div class="player-top">
+        <div class="player-art">
+          <span class="player-art-emoji">🎵</span>
+        </div>
+        <div>
+          <div class="player-title">Good Vibrations · Beach Boys</div>
+          <div class="player-artist">Pop, Rock · 1966</div>
+        </div>
+      </div>
+
+      <div class="pc-row">
+        <button class="pc-btn pc-sm" aria-label="Shuffle">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 5h3l8 8h3M14 5h2v2M14 13h2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><path d="M2 13h3l2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+        </button>
+        <button class="pc-btn pc-sm" aria-label="Previous">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M13.5 4.5L7 9l6.5 4.5V4.5ZM4.5 4.5v9" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+        </button>
+        <button class="pc-btn pc-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+          <svg class="play-ico" width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M7 4.5l11 6.5L7 17.5V4.5Z" fill="currentColor"/></svg>
+          <svg class="pause-ico" width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M7 4h3v14H7V4ZM13 4h3v14h-3V4Z" fill="currentColor"/></svg>
+        </button>
+        <button class="pc-btn pc-sm" aria-label="Next">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 4.5L11 9l-6.5 4.5V4.5ZM13.5 4.5v9" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+        </button>
+        <button class="pc-btn pc-sm" aria-label="Repeat">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 12V7a4 4 0 0 1 4-4h8M14 6l2-3-2-3" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><path d="M16 6v5a4 4 0 0 1-4 4H4M6 12l-2 3 2 3" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-outer">
+        <input class="progress-rng" type="range" id="progress" min="0" max="215" value="82" aria-label="Track progress">
+        <div class="progress-times">
+          <span class="ptime" id="curr-time">1:22</span>
+          <span class="ptime">3:35</span>
+        </div>
+      </div>
+
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">Volume</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="75" aria-label="Volume">
+          <span class="sl-val" id="vol-v">75</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Bass</span>
+          <input class="rng" type="range" id="bright" min="0" max="100" value="60" aria-label="Bass">
+          <span class="sl-val" id="bright-v">60%</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Balance</span>
+          <input class="rng" type="range" id="bal" min="-50" max="50" value="0" aria-label="Left-right balance">
+          <span class="sl-val" id="bal-v">C</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ─────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-pill" style="background:var(--pink)" aria-hidden="true">07</span>
+      <h2 class="sec-title" id="nav-h">Navigation Bar</h2>
+      <span class="action-word" style="background:var(--red);transform:rotate(-2deg)">WHAM!</span>
+      <span class="sec-ghost" aria-hidden="true">07</span>
+    </div>
+    <div class="spec-callout">
+      <div class="spec-callout-inner">
+        <div class="speech-bubble">
+          <p class="speech-bubble-text">Active tab in <strong>var(--red)</strong>. Bangers font. No subtlety — you ARE HERE and you KNOW IT. Border between tabs: <strong>2px solid #000</strong>. The nav bar is a comic book panel strip. You are navigating between panels.</p>
+        </div>
+      </div>
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <div class="nd-title">Good Day, Artist</div>
+        <div class="nd-sub">Tuesday, May 12 · Factory NYC</div>
+        <div class="nd-search">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 9.5L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+          Search the supermarket…
+        </div>
+        <div class="nd-items">
+          <div class="nd-item"><div class="nd-ico">🎵</div><div><div class="nd-item-title">Good Vibrations</div><div class="nd-item-sub">Now playing · 1:22 / 3:35</div></div></div>
+          <div class="nd-item"><div class="nd-ico">🥫</div><div><div class="nd-item-title">Campbell's Collection</div><div class="nd-item-sub">32 prints · 1962</div></div></div>
+          <div class="nd-item"><div class="nd-ico">💋</div><div><div class="nd-item-title">Marilyn Diptych</div><div class="nd-item-sub">50 silkscreens · 1962</div></div></div>
+        </div>
+      </div>
+      <nav class="pop-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Home" aria-current="page">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 8.5 10 3l7 5.5V18H4V8.5Z" stroke="currentColor" stroke-width="2" fill="rgba(255,255,255,0.3)"/></svg>
+          <span class="ni-lbl">Home</span>
+        </button>
+        <button class="ni" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="5.5" stroke="currentColor" stroke-width="2"/><path d="M13 13l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+          <span class="ni-lbl">Search</span>
+        </button>
+        <button class="ni" aria-label="Create">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/></svg>
+          <span class="ni-lbl">Create</span>
+        </button>
+        <button class="ni" aria-label="Alerts, 2 unread">
+          <div class="ni-ico-wrap">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 0 0-6 6v3.5L2.5 14h15L16 11.5V8a6 6 0 0 0-6-6Z" stroke="currentColor" stroke-width="2"/><path d="M8.5 17.5a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="2"/></svg>
+            <span class="ni-badge"></span>
+          </div>
+          <span class="ni-lbl">Alerts</span>
+        </button>
+        <button class="ni" aria-label="Profile">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="2"/><path d="M4 18c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="ni-lbl">Profile</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Sliders ──────────────────────────── */
+document.getElementById('vol').addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = e.target.value;
+});
+document.getElementById('bright').addEventListener('input', e => {
+  document.getElementById('bright-v').textContent = e.target.value + '%';
+});
+document.getElementById('bal').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  document.getElementById('bal-v').textContent = v < -5 ? 'L' + Math.abs(v) : v > 5 ? 'R' + v : 'C';
+});
+document.getElementById('progress').addEventListener('input', e => {
+  const s = parseInt(e.target.value);
+  document.getElementById('curr-time').textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+});
+
+/* ── Play/pause ───────────────────────── */
+const playBtn = document.getElementById('play-btn');
+playBtn.addEventListener('click', () => {
+  const p = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!p));
+  playBtn.querySelector('.play-ico').style.display  = !p ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = !p ? '' : 'none';
+});
+
+/* ── POW! button interaction ──────────── */
+document.querySelectorAll('.pop-btn').forEach(btn => {
+  // Inject pow bubble
+  const pow = document.createElement('span');
+  pow.className = 'pow-bubble';
+  const words = ['POW!', 'ZAP!', 'BAM!', 'KA-POW!', 'WHAM!', 'ZOK!'];
+  pow.textContent = words[Math.floor(Math.random() * words.length)];
+  btn.style.position = 'relative';
+  btn.appendChild(pow);
+
+  btn.addEventListener('mousedown', () => {
+    pow.classList.add('show');
+  });
+  btn.addEventListener('mouseup', () => {
+    setTimeout(() => pow.classList.remove('show'), 400);
+  });
+  btn.addEventListener('mouseleave', () => {
+    pow.classList.remove('show');
+  });
+});
+
+/* ── Bottom nav ───────────────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => {
+      n.classList.remove('ni-on');
+      n.removeAttribute('aria-current');
+    });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ── Scroll reveal ────────────────────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secKey = sections[entry.target.id];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot navigation ──────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,3018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risograph · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS — Two-color overprint
+  ═══════════════════════════════════════ */
+  :root {
+    --paper:        #f8f3e8;   /* warm cream paper — NEVER white */
+    --paper-shadow: #e8e0c8;   /* slightly toasted paper tone */
+    --paper-deep:   #d8cea8;   /* deepest paper fold */
+    --ink-pink:     #ff6b9d;   /* Riso fluorescent pink — channel 32U */
+    --ink-pink-mix: #ff95b7;   /* pink at 60% coverage */
+    --ink-teal:     #3aafa9;   /* Riso teal — channel 22A */
+    --ink-teal-mix: #7ac8c3;   /* teal at 60% coverage */
+    --ink-black:    #1a1a1a;   /* warm black — never pure */
+    --ink-grey:     #4a4640;   /* secondary type */
+    --ink-faint:    #8a8378;   /* tertiary */
+    --overprint:    #b85a76;   /* discovered third color: pink × teal */
+
+    /* Registration offset — locked diagonal (down-right) */
+    --reg-x: 3px;
+    --reg-y: 3px;
+    --reg-x-sm: 2px;
+    --reg-y-sm: 2px;
+    --reg-x-lg: 4px;
+    --reg-y-lg: 4px;
+
+    /* No shadows. Use offset color blocks. */
+    /* No border-radius. Print can't do smooth curves cleanly. */
+    --r-stamp: 2px;
+    --r-pill: 0px;
+
+    /* Step animations — print mechanics, not digital easings */
+    --press: cubic-bezier(0.4, 0, 0.6, 1);
+    --stamp: steps(2, end);
+    --dur:   120ms;
+
+    --f-display: 'Anton', 'Oswald', 'Impact', sans-serif;
+    --f-body:    'Lora', 'Crimson Pro', Georgia, serif;
+    --f-mono:    'JetBrains Mono', 'Courier New', monospace;
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f-body);
+    background: var(--paper);
+    color: var(--ink-black);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ── Global paper grain (full page) ─────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch' seed='4'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.09  0 0 0 0 0.06  0 0 0 0.85 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.85'/></svg>");
+    opacity: 0.07;
+    mix-blend-mode: multiply;
+  }
+
+  /* ── Paper fiber texture (long fibers) ────── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 998;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='f'><feTurbulence type='turbulence' baseFrequency='0.02 0.5' numOctaves='1' seed='2'/><feColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.26  0 0 0 0 0.18  0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23f)' opacity='0.5'/></svg>");
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--ink-pink);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     UTILITY — Grain, halftone, misregistration
+  ═══════════════════════════════════════ */
+
+  /* Local grain on any element */
+  .grain {
+    position: relative;
+    isolation: isolate;
+  }
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='8'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.18;
+    mix-blend-mode: multiply;
+    z-index: 2;
+  }
+
+  /* Halftone dot patterns — pink / teal / black */
+  .halftone-pink {
+    background-image: radial-gradient(circle, var(--ink-pink) 1.4px, transparent 1.9px);
+    background-size: 6px 6px;
+    background-position: 0 0;
+  }
+  .halftone-teal {
+    background-image: radial-gradient(circle, var(--ink-teal) 1.4px, transparent 1.9px);
+    background-size: 6px 6px;
+  }
+  .halftone-dense {
+    background-image: radial-gradient(circle, var(--ink-pink) 2px, transparent 2.6px);
+    background-size: 5px 5px;
+  }
+
+  /* Misregistration helper — for text */
+  .misreg {
+    position: relative;
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+    display: inline-block;
+  }
+  .misreg::before {
+    content: attr(data-text);
+    position: absolute;
+    top: var(--reg-y);
+    left: var(--reg-x);
+    color: var(--ink-teal);
+    mix-blend-mode: multiply;
+    z-index: -1;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* CMYK cropmarks at viewport corners */
+  .cropmark {
+    position: fixed;
+    width: 22px;
+    height: 22px;
+    z-index: 95;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    opacity: 0.55;
+  }
+  .cropmark::before, .cropmark::after {
+    content: '';
+    position: absolute;
+    background: var(--ink-black);
+  }
+  .cropmark::before { left: 0; right: 0; height: 1px; top: 50%; }
+  .cropmark::after  { top: 0; bottom: 0; width: 1px; left: 50%; }
+  .cm-tl { top: 14px; left: 14px; }
+  .cm-tr { top: 14px; right: 14px; }
+  .cm-bl { bottom: 14px; left: 14px; }
+  .cm-br { bottom: 14px; right: 14px; }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV — Like a printed header
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--paper);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+    border-bottom: 1px solid var(--ink-black);
+    isolation: isolate;
+  }
+  .topnav::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.06;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-black);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color var(--dur) var(--press);
+  }
+  .tnav-back:hover { color: var(--ink-pink); mix-blend-mode: multiply; }
+
+  .tnav-title {
+    font-family: var(--f-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: var(--ink-black);
+    text-transform: uppercase;
+    position: relative;
+  }
+  .tnav-title::before {
+    content: 'RISOGRAPH';
+    position: absolute;
+    left: var(--reg-x-sm);
+    top: var(--reg-y-sm);
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+    z-index: -1;
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1rem;
+    background: var(--ink-pink);
+    color: var(--paper);
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    position: relative;
+    border: 1.5px solid var(--ink-black);
+    transition: transform var(--dur) var(--press);
+    mix-blend-mode: multiply;
+  }
+  .tnav-dl::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y);
+    left: var(--reg-x);
+    width: 100%;
+    height: 100%;
+    background: var(--ink-teal);
+    border: 1.5px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+  }
+  .tnav-dl:hover { transform: translate(1px, 1px); }
+  .tnav-dl:hover::before { top: 2px; left: 2px; }
+  .tnav-dl:active { transform: translate(var(--reg-x), var(--reg-y)); }
+  .tnav-dl:active::before { top: 0; left: 0; }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS INDICATOR — Cropmarks
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .prog-dot {
+    width: 12px;
+    height: 12px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink-black);
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--dur) var(--press), transform var(--dur) var(--press);
+    position: relative;
+    mix-blend-mode: multiply;
+  }
+  .prog-dot:hover { background: var(--ink-teal); transform: scale(1.15); }
+  .prog-dot.active {
+    background: var(--ink-pink);
+  }
+  .prog-dot.active::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    background: var(--ink-teal);
+    border: 1.5px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+  }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 1.75rem 7rem;
+    position: relative;
+  }
+
+  /* ── Section ────────────────────────── */
+  .sec {
+    margin-top: 5.5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s var(--press), transform 0.5s var(--press);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  /* Section header */
+  .sec-hd {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 2px solid var(--ink-black);
+  }
+
+  .sec-ghost {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-58%);
+    font-family: var(--f-display);
+    font-size: 7rem;
+    line-height: 0.9;
+    color: var(--ink-pink);
+    opacity: 0.16;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.02em;
+  }
+
+  .sec-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--ink-black);
+    background: var(--paper);
+    border: 1.5px solid var(--ink-black);
+    padding: 0.2rem 0.55rem;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  .sec-title {
+    font-family: var(--f-display);
+    font-size: 2.25rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--ink-black);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  /* ── Spec callout ───────────────────── */
+  .spec-callout {
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.875rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    position: relative;
+    isolation: isolate;
+  }
+  .spec-callout::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y-lg);
+    left: var(--reg-x-lg);
+    right: calc(-1 * var(--reg-x-lg));
+    bottom: calc(-1 * var(--reg-y-lg));
+    background: var(--ink-pink);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.22;
+  }
+  .spec-callout-ico {
+    font-family: var(--f-mono);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--ink-pink);
+    flex-shrink: 0;
+    mix-blend-mode: multiply;
+    line-height: 1;
+    margin-top: 0.1rem;
+  }
+  .spec-callout-text {
+    font-family: var(--f-body);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--ink-black);
+  }
+  .spec-callout-text strong {
+    font-family: var(--f-mono);
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--ink-black);
+    background: var(--ink-pink);
+    background-image: linear-gradient(var(--ink-pink), var(--ink-pink));
+    padding: 0.05rem 0.3rem;
+    mix-blend-mode: multiply;
+  }
+
+  /* ═══════════════════════════════════════
+     HERO — Print proof page
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 3rem 0 4rem;
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* Edition number at top */
+  .hero-edition {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+    margin-bottom: 2.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dashed var(--ink-black);
+  }
+  .hero-edition-mark {
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+    font-weight: 700;
+  }
+
+  /* Registration marks at hero corners */
+  .reg-marks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .reg-mark {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    color: var(--ink-pink);
+    font-family: var(--f-mono);
+    font-size: 1.4rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    mix-blend-mode: multiply;
+    opacity: 0.85;
+  }
+  .reg-mark::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    color: var(--ink-teal);
+    mix-blend-mode: multiply;
+  }
+  .reg-mark svg { display: block; }
+  .rm-tl { top: 0;           left: 0; }
+  .rm-tr { top: 0;           right: 0; }
+  .rm-bl { bottom: 3rem;     left: 0; }
+  .rm-br { bottom: 3rem;     right: 0; }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+    background: var(--paper);
+    border: 1.5px solid var(--ink-black);
+    padding: 0.3rem 0.75rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .hero-kicker::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y);
+    left: var(--reg-x);
+    width: 100%;
+    height: 100%;
+    background: var(--ink-pink);
+    border: 1.5px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.6;
+  }
+  .hero-kicker-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--ink-pink);
+    mix-blend-mode: multiply;
+  }
+
+  /* THE big headline with misregistration */
+  .hero-h1 {
+    font-family: var(--f-display);
+    font-size: clamp(4rem, 13vw, 8.5rem);
+    font-weight: 400;
+    letter-spacing: 0.005em;
+    line-height: 0.88;
+    color: var(--ink-pink);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    position: relative;
+    mix-blend-mode: multiply;
+    z-index: 2;
+    display: inline-block;
+  }
+  .hero-h1::before {
+    content: 'RISOGRAPH';
+    position: absolute;
+    top: var(--reg-y-lg);
+    left: var(--reg-x-lg);
+    color: var(--ink-teal);
+    mix-blend-mode: multiply;
+    z-index: -1;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .hero-desc {
+    font-family: var(--f-body);
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: var(--ink-black);
+    max-width: 56ch;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-desc em {
+    font-style: italic;
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+    font-weight: 600;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.75rem;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-tag {
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+    background: var(--paper);
+    border: 1.5px solid var(--ink-black);
+    padding: 0.35rem 0.75rem;
+  }
+  .hero-tag.tag-pink { background: var(--ink-pink); color: var(--paper); mix-blend-mode: multiply; }
+  .hero-tag.tag-teal { background: var(--ink-teal); color: var(--paper); mix-blend-mode: multiply; }
+
+  /* Hero specimen widget */
+  .hero-widget {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-widget-card {
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    isolation: isolate;
+  }
+  .hero-widget-card::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y);
+    left: var(--reg-x);
+    right: calc(-1 * var(--reg-x));
+    bottom: calc(-1 * var(--reg-y));
+    background: var(--ink-pink);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.35;
+  }
+  .hero-widget-card:nth-child(2)::before { background: var(--ink-teal); }
+  .hw-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--ink-pink);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid var(--ink-black);
+    mix-blend-mode: multiply;
+    position: relative;
+  }
+  .hero-widget-card:nth-child(2) .hw-icon { background: var(--ink-teal); }
+  .hw-title {
+    font-family: var(--f-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+    margin-bottom: 0.15rem;
+  }
+  .hw-sub {
+    font-family: var(--f-body);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--ink-grey);
+  }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE — Paper swatches
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .swatch {
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    overflow: hidden;
+    position: relative;
+    transition: transform var(--dur) var(--press);
+    isolation: isolate;
+  }
+  .swatch::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y);
+    left: var(--reg-x);
+    right: calc(-1 * var(--reg-x));
+    bottom: calc(-1 * var(--reg-y));
+    background: var(--ink-pink);
+    z-index: -2;
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+  }
+  .swatch:nth-child(even)::before { background: var(--ink-teal); }
+  .swatch:hover { transform: translate(-1px, -1px); }
+
+  .swatch-color {
+    height: 96px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 2px solid var(--ink-black);
+  }
+  .swatch-color::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.18;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+  .swatch-color.sc-paper       { background: var(--paper); }
+  .swatch-color.sc-paper-shadow{ background: var(--paper-shadow); }
+  .swatch-color.sc-pink        { background: var(--ink-pink); mix-blend-mode: multiply; }
+  .swatch-color.sc-teal        { background: var(--ink-teal); mix-blend-mode: multiply; }
+  .swatch-color.sc-black       { background: var(--ink-black); }
+  .swatch-color.sc-overprint {
+    background:
+      radial-gradient(circle at 30% 30%, var(--ink-pink) 35%, transparent 60%),
+      radial-gradient(circle at 60% 65%, var(--ink-teal) 35%, transparent 60%);
+    mix-blend-mode: multiply;
+  }
+
+  .swatch-body {
+    padding: 0.85rem 0.9rem 1rem;
+  }
+  .swatch-name {
+    font-family: var(--f-display);
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--ink-black);
+    text-transform: uppercase;
+    margin-bottom: 0.15rem;
+    line-height: 1.05;
+  }
+  .swatch-channel {
+    font-family: var(--f-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--ink-pink);
+    text-transform: uppercase;
+    mix-blend-mode: multiply;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .swatch-hex {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-grey);
+    display: block;
+  }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    overflow: hidden;
+    position: relative;
+    isolation: isolate;
+  }
+  .typescale::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y-lg);
+    left: var(--reg-x-lg);
+    right: calc(-1 * var(--reg-x-lg));
+    bottom: calc(-1 * var(--reg-y-lg));
+    background: var(--ink-teal);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.18;
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px dashed var(--ink-black);
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta {
+    text-align: right;
+    align-self: center;
+  }
+  .tr-lbl {
+    font-family: var(--f-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-pink);
+    display: block;
+    margin-bottom: 0.2rem;
+    mix-blend-mode: multiply;
+  }
+  .tr-spec {
+    font-family: var(--f-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--ink-grey);
+    line-height: 1.5;
+  }
+
+  .ts-disp {
+    font-family: var(--f-display);
+    font-size: 4rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    color: var(--ink-black);
+    text-transform: uppercase;
+  }
+  /* Specimen with misregistration on key letter */
+  .ts-specimen {
+    font-family: var(--f-display);
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--ink-pink);
+    text-transform: uppercase;
+    mix-blend-mode: multiply;
+    position: relative;
+    display: inline-block;
+  }
+  .ts-specimen::before {
+    content: 'OVERPRINT';
+    position: absolute;
+    top: var(--reg-y-lg);
+    left: var(--reg-x-lg);
+    color: var(--ink-teal);
+    mix-blend-mode: multiply;
+    z-index: -1;
+  }
+  /* Halftone fill demo on one letter */
+  .ts-halftone {
+    font-family: var(--f-display);
+    font-size: 4.5rem;
+    line-height: 1;
+    text-transform: uppercase;
+    background-image: radial-gradient(circle, var(--ink-pink) 2.2px, transparent 2.8px);
+    background-size: 7px 7px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--ink-black);
+    display: inline-block;
+  }
+  .ts-h1    { font-family: var(--f-display); font-size: 2.75rem; font-weight: 400; letter-spacing: 0.01em; line-height: 1.05; text-transform: uppercase; }
+  .ts-h2    { font-family: var(--f-display); font-size: 2rem;    font-weight: 400; letter-spacing: 0.02em; line-height: 1.1;  text-transform: uppercase; }
+  .ts-h3    { font-family: var(--f-display); font-size: 1.5rem;  font-weight: 400; letter-spacing: 0.02em; line-height: 1.15; text-transform: uppercase; }
+  .ts-h4    { font-family: var(--f-body);    font-size: 1.25rem; font-weight: 700; line-height: 1.3; }
+  .ts-lg    { font-family: var(--f-body);    font-size: 1.125rem;font-weight: 400; line-height: 1.65; }
+  .ts-base  { font-family: var(--f-body);    font-size: 1rem;    font-weight: 400; line-height: 1.6; }
+  .ts-sm    { font-family: var(--f-body);    font-size: 0.875rem;font-weight: 400; line-height: 1.55; }
+  .ts-cap   { font-family: var(--f-mono);    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-grey); }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS — Stamped, pressed, offset
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    padding: 0.7rem 1.6rem;
+    font-family: var(--f-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    position: relative;
+    isolation: isolate;
+    transition: transform var(--dur) var(--press);
+  }
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y-lg);
+    left: var(--reg-x-lg);
+    width: 100%;
+    height: 100%;
+    background: var(--ink-teal);
+    border: 2px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    transition: top var(--dur) var(--press), left var(--dur) var(--press);
+  }
+  .btn:hover:not(:disabled) {
+    transform: translate(2px, 2px);
+  }
+  .btn:hover:not(:disabled)::before {
+    top: 2px;
+    left: 2px;
+  }
+  .btn:active:not(:disabled) {
+    transform: translate(var(--reg-x-lg), var(--reg-y-lg));
+  }
+  .btn:active:not(:disabled)::before {
+    top: 0;
+    left: 0;
+  }
+
+  /* Primary — pink with teal misregistered shadow */
+  .btn-p {
+    background: var(--ink-pink);
+    color: var(--paper);
+    mix-blend-mode: multiply;
+  }
+  .btn-p::before {
+    background: var(--ink-teal);
+  }
+
+  /* Secondary — outline teal, no fill */
+  .btn-s {
+    background: var(--paper);
+    color: var(--ink-teal);
+    border-color: var(--ink-teal);
+  }
+  .btn-s::before {
+    background: transparent;
+    border-color: var(--ink-pink);
+  }
+
+  /* Ghost — just underline */
+  .btn-g {
+    background: transparent;
+    border: none;
+    padding: 0.45rem 0.25rem;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+  }
+  .btn-g::before { display: none; }
+  .btn-g:hover:not(:disabled) {
+    transform: none;
+    color: var(--ink-teal);
+    text-decoration-color: var(--ink-teal);
+  }
+  .btn-g:active:not(:disabled) {
+    transform: translate(var(--reg-x-sm), var(--reg-y-sm));
+  }
+
+  .btn:disabled {
+    background: var(--paper-shadow);
+    color: var(--ink-faint);
+    cursor: not-allowed;
+    border-color: var(--ink-faint);
+  }
+  .btn:disabled::before { display: none; }
+
+  /* STAMP button — looks like a rubber stamp */
+  .btn-stamp {
+    font-family: var(--f-display);
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    padding: 0.5rem 1.5rem;
+    background: var(--paper);
+    color: var(--ink-pink);
+    border: 4px solid var(--ink-pink);
+    transform: rotate(-3deg);
+    mix-blend-mode: multiply;
+    text-transform: uppercase;
+    position: relative;
+    isolation: isolate;
+  }
+  .btn-stamp::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 0.91  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.6;
+    mix-blend-mode: lighten;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .btn-stamp:hover { transform: rotate(-2deg) translate(-1px, -1px); }
+  .btn-stamp:active { transform: rotate(-3deg) translate(1px, 2px); }
+
+  /* Static state previews */
+  .state-hover  { transform: translate(2px, 2px); }
+  .state-hover::before { top: 2px !important; left: 2px !important; }
+  .state-active { transform: translate(var(--reg-x-lg), var(--reg-y-lg)); }
+  .state-active::before { top: 0 !important; left: 0 !important; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 2.25rem; }
+  .state-row-label {
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-pink);
+    margin-bottom: 1.1rem;
+    mix-blend-mode: multiply;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .state-row-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink-black);
+    opacity: 0.3;
+  }
+  .state-row { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.55rem; }
+  .state-lbl {
+    font-family: var(--f-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-grey);
+  }
+
+  .btn-variants {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 2.25rem;
+    margin-top: 0.5rem;
+    border-top: 1px dashed var(--ink-black);
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    padding: 2.25rem;
+    position: relative;
+    isolation: isolate;
+  }
+  .form-panel::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y-lg);
+    left: var(--reg-x-lg);
+    right: calc(-1 * var(--reg-x-lg));
+    bottom: calc(-1 * var(--reg-y-lg));
+    background: var(--ink-pink);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.18;
+  }
+
+  .form-title {
+    font-family: var(--f-display);
+    font-size: 1.875rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--ink-black);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+  .form-sub {
+    font-family: var(--f-body);
+    font-size: 0.9375rem;
+    font-style: italic;
+    color: var(--ink-grey);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .fg-full   { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 0.5rem; }
+  .label {
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+  }
+  .hint {
+    font-family: var(--f-body);
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--ink-grey);
+    margin-top: 0.1rem;
+  }
+
+  .inp {
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    padding: 0.7rem 0.9rem;
+    font-family: var(--f-body);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink-black);
+    outline: none;
+    width: 100%;
+    position: relative;
+    transition: border-color var(--dur) var(--press), background-color var(--dur) var(--press);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.0' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/></svg>");
+  }
+  .inp::placeholder { color: var(--ink-faint); font-style: italic; }
+  .inp:focus {
+    border-color: var(--ink-pink);
+    background-color: var(--paper-shadow);
+  }
+
+  .inp-wrap { position: relative; }
+  .inp-ico {
+    position: absolute;
+    right: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-teal);
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+  .inp.has-ico { padding-right: 2.5rem; }
+
+  /* Hand-drawn select chevron */
+  .sel {
+    -webkit-appearance: none;
+    background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M2.3 5.2c1.5 1.4 3.2 3.1 4.8 4.7 0.4 0.3 0.6 0.4 0.9 0 1.7-1.7 3.4-3.4 4.9-4.7' stroke='%231a1a1a' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.85rem center;
+    border: 2px solid var(--ink-black);
+    padding: 0.7rem 2.5rem 0.7rem 0.9rem;
+    font-family: var(--f-body);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink-black);
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+    transition: border-color var(--dur) var(--press);
+  }
+  .sel:focus { border-color: var(--ink-pink); }
+
+  /* Textarea with lined paper rules */
+  .ta {
+    resize: vertical;
+    min-height: 110px;
+    line-height: 28px;
+    padding-top: 0.55rem;
+    background-image:
+      linear-gradient(transparent calc(28px - 1px), var(--ink-teal) 28px),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.0' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/></svg>");
+    background-size: 100% 28px, 100px 100px;
+    background-position: 0 6px, 0 0;
+    background-repeat: repeat-y, repeat;
+    background-color: var(--paper);
+    background-blend-mode: multiply, normal;
+  }
+
+  /* Checkbox — pink ✕ stamp */
+  .chk-group { display: flex; flex-direction: column; gap: 0.875rem; }
+  .chk-row {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: background var(--dur) var(--press);
+  }
+  .chk-mark {
+    opacity: 0;
+    color: var(--ink-pink);
+    transition: opacity var(--dur) var(--stamp);
+    mix-blend-mode: multiply;
+    transform: rotate(-4deg);
+  }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-in:focus-visible + .chk-box { outline: 3px solid var(--ink-pink); outline-offset: 2px; }
+  .chk-txt {
+    font-family: var(--f-body);
+    font-size: 0.9375rem;
+    color: var(--ink-black);
+  }
+
+  /* Radio — filled pink dot stamp */
+  .rad-box {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .rad-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ink-pink);
+    opacity: 0;
+    transform: scale(0.5) rotate(-8deg);
+    transition: opacity var(--dur) var(--stamp), transform 180ms var(--press);
+    mix-blend-mode: multiply;
+  }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1) rotate(-8deg); }
+  .chk-in:focus-visible + .rad-box { outline: 3px solid var(--ink-pink); outline-offset: 2px; }
+
+  /* Toggle — grain-textured slider */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.125rem 0;
+    gap: 1rem;
+    border-bottom: 1px dashed var(--ink-black);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title {
+    font-family: var(--f-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+  }
+  .tgl-desc {
+    font-family: var(--f-body);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--ink-grey);
+    margin-top: 0.2rem;
+  }
+
+  .tgl { flex-shrink: 0; cursor: pointer; position: relative; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 56px;
+    height: 28px;
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    position: relative;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.0' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/></svg>");
+    transition: background-color var(--dur) var(--press);
+  }
+  .tgl-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: var(--ink-pink);
+    border: 2px solid var(--ink-black);
+    transition: transform 180ms var(--press), background var(--dur) var(--press);
+    mix-blend-mode: multiply;
+  }
+  .tgl-in:checked ~ .tgl-track {
+    background-color: var(--ink-teal);
+  }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb {
+    transform: translateX(28px);
+    background: var(--paper);
+  }
+  .tgl-in:focus-visible ~ .tgl-track { outline: 3px solid var(--ink-pink); outline-offset: 3px; }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS — Zine / Photo / Sticker
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.75rem;
+  }
+
+  /* ── Zine page card ── */
+  .card-zine {
+    background: var(--paper);
+    border: 2.5px solid var(--ink-black);
+    padding: 1.5rem 1.5rem 1.75rem;
+    position: relative;
+    isolation: isolate;
+    transition: transform var(--dur) var(--press);
+  }
+  .card-zine::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y-lg);
+    left: var(--reg-x-lg);
+    right: calc(-1 * var(--reg-x-lg));
+    bottom: calc(-1 * var(--reg-y-lg));
+    background: var(--ink-pink);
+    border: 2.5px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.35;
+  }
+  .card-zine:hover { transform: translate(-2px, -2px); }
+  .cz-marks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .cz-mark {
+    position: absolute;
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+    line-height: 1;
+    font-family: var(--f-mono);
+    font-size: 0.85rem;
+  }
+  .cz-mark.t-l { top: 6px; left: 6px; }
+  .cz-mark.t-r { top: 6px; right: 6px; }
+  .cz-mark.b-l { bottom: 6px; left: 6px; }
+  .cz-mark.b-r { bottom: 6px; right: 6px; }
+  .cz-eye {
+    font-family: var(--f-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+    margin: 0.5rem 0 0.6rem;
+  }
+  .cz-h {
+    font-family: var(--f-display);
+    font-size: 1.625rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    color: var(--ink-black);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .cz-body {
+    font-family: var(--f-body);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink-grey);
+    margin-bottom: 1.25rem;
+  }
+  .cz-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.875rem;
+    border-top: 1px dashed var(--ink-black);
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-grey);
+  }
+
+  /* ── Photo print card — duotone halftone ── */
+  .card-photo {
+    background: var(--paper);
+    border: 2.5px solid var(--ink-black);
+    overflow: hidden;
+    position: relative;
+    isolation: isolate;
+    transition: transform var(--dur) var(--press);
+  }
+  .card-photo::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y-lg);
+    left: var(--reg-x-lg);
+    right: calc(-1 * var(--reg-x-lg));
+    bottom: calc(-1 * var(--reg-y-lg));
+    background: var(--ink-teal);
+    border: 2.5px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.35;
+  }
+  .card-photo:hover { transform: translate(-2px, -2px); }
+  .photo-frame {
+    height: 200px;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+    border-bottom: 2.5px solid var(--ink-black);
+    isolation: isolate;
+  }
+  /* Layered "photo": teal base shape + pink top shape, halftone on both */
+  .photo-layer {
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: multiply;
+  }
+  .photo-teal {
+    background:
+      radial-gradient(ellipse at 50% 90%, var(--ink-teal) 0%, var(--ink-teal) 38%, transparent 65%);
+  }
+  .photo-pink {
+    background:
+      radial-gradient(circle at 70% 28%, var(--ink-pink) 0%, var(--ink-pink) 30%, transparent 55%),
+      radial-gradient(circle at 25% 40%, var(--ink-pink) 0%, var(--ink-pink) 18%, transparent 35%);
+  }
+  .photo-halftone {
+    background-image: radial-gradient(circle, var(--ink-black) 0.8px, transparent 1.2px);
+    background-size: 5px 5px;
+    opacity: 0.45;
+    mix-blend-mode: multiply;
+  }
+  .photo-stamp {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    font-family: var(--f-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--paper);
+    background: var(--ink-black);
+    padding: 0.25rem 0.5rem;
+    z-index: 5;
+  }
+  .photo-body { padding: 1.125rem 1.25rem 1.375rem; }
+  .photo-h {
+    font-family: var(--f-display);
+    font-size: 1.375rem;
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    color: var(--ink-black);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .photo-cap {
+    font-family: var(--f-body);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--ink-grey);
+    line-height: 1.5;
+  }
+
+  /* ── Sticker card — rotated, tape corners ── */
+  .card-sticker {
+    background: var(--ink-pink);
+    color: var(--ink-black);
+    border: 2.5px solid var(--ink-black);
+    padding: 1.5rem 1.5rem 1.625rem;
+    transform: rotate(2deg);
+    position: relative;
+    isolation: isolate;
+    mix-blend-mode: multiply;
+    transition: transform var(--dur) var(--press);
+  }
+  .card-sticker::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: -6px;
+    bottom: -6px;
+    background: var(--ink-teal);
+    border: 2.5px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+  }
+  .card-sticker:hover { transform: rotate(1deg) translate(-2px, -2px); }
+  /* Adhesive tape corners */
+  .tape {
+    position: absolute;
+    width: 56px;
+    height: 18px;
+    background: var(--ink-teal);
+    opacity: 0.55;
+    mix-blend-mode: multiply;
+    border-left: 1px dashed rgba(0,0,0,0.18);
+    border-right: 1px dashed rgba(0,0,0,0.18);
+  }
+  .tape::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.7;
+    mix-blend-mode: screen;
+  }
+  .tape-tl { top: -10px; left: -10px; transform: rotate(-32deg); }
+  .tape-br { bottom: -10px; right: -10px; transform: rotate(-32deg); }
+  .cs-eye {
+    font-family: var(--f-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--paper);
+    background: var(--ink-black);
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    margin-bottom: 0.75rem;
+  }
+  .cs-h {
+    font-family: var(--f-display);
+    font-size: 1.625rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    color: var(--paper);
+    text-transform: uppercase;
+    margin-bottom: 0.65rem;
+    mix-blend-mode: difference;
+  }
+  .cs-body {
+    font-family: var(--f-body);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink-black);
+    margin-bottom: 1rem;
+  }
+  .cs-foot {
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+    padding-top: 0.875rem;
+    border-top: 1px dashed var(--ink-black);
+  }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS — Tape player
+  ═══════════════════════════════════════ */
+  .player {
+    background: var(--paper);
+    border: 2.5px solid var(--ink-black);
+    padding: 2rem;
+    position: relative;
+    isolation: isolate;
+  }
+  .player::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y-lg);
+    left: var(--reg-x-lg);
+    right: calc(-1 * var(--reg-x-lg));
+    bottom: calc(-1 * var(--reg-y-lg));
+    background: var(--ink-teal);
+    border: 2.5px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.25;
+  }
+  .player-label {
+    position: absolute;
+    top: -1px;
+    right: 2rem;
+    background: var(--ink-black);
+    color: var(--paper);
+    font-family: var(--f-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+  }
+
+  .player-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  /* Album art with halftone */
+  .player-art {
+    width: 88px;
+    height: 88px;
+    background: var(--ink-pink);
+    border: 2.5px solid var(--ink-black);
+    flex-shrink: 0;
+    position: relative;
+    mix-blend-mode: multiply;
+    overflow: hidden;
+  }
+  .player-art::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, var(--ink-teal) 2.5px, transparent 3px);
+    background-size: 8px 8px;
+    mix-blend-mode: multiply;
+    opacity: 0.85;
+  }
+  .player-art-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper);
+    z-index: 2;
+  }
+  .player-title {
+    font-family: var(--f-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    color: var(--ink-black);
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+  }
+  .player-artist {
+    font-family: var(--f-body);
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--ink-grey);
+  }
+
+  /* VU meter — pink and teal needles */
+  .vu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 86px;
+  }
+  .vu-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .vu-lbl {
+    font-family: var(--f-mono);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+    width: 12px;
+  }
+  .vu-track {
+    flex: 1;
+    height: 8px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink-black);
+    position: relative;
+    overflow: hidden;
+  }
+  .vu-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    mix-blend-mode: multiply;
+    background-image: repeating-linear-gradient(90deg, currentColor 0 3px, transparent 3px 5px);
+    color: var(--ink-pink);
+    animation: vu-l 1.4s steps(8, end) infinite;
+  }
+  .vu-bar.vu-r .vu-fill {
+    color: var(--ink-teal);
+    animation: vu-r 1.7s steps(7, end) infinite;
+  }
+  @keyframes vu-l {
+    0%   { width: 42%; }
+    50%  { width: 78%; }
+    100% { width: 55%; }
+  }
+  @keyframes vu-r {
+    0%   { width: 35%; }
+    50%  { width: 68%; }
+    100% { width: 48%; }
+  }
+
+  /* Transport controls */
+  .pc-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.875rem;
+  }
+  .pc-btn {
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--ink-black);
+    position: relative;
+    isolation: isolate;
+    transition: transform var(--dur) var(--press);
+  }
+  .pc-btn::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y);
+    left: var(--reg-x);
+    width: 100%;
+    height: 100%;
+    background: var(--ink-teal);
+    border: 2px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    transition: top var(--dur) var(--press), left var(--dur) var(--press);
+  }
+  .pc-btn:hover { transform: translate(1px, 1px); }
+  .pc-btn:hover::before { top: 2px; left: 2px; }
+  .pc-btn:active { transform: translate(var(--reg-x), var(--reg-y)); }
+  .pc-btn:active::before { top: 0; left: 0; }
+
+  /* Big play button — triangle stamp */
+  .pc-lg {
+    width: 60px;
+    height: 60px;
+    background: var(--ink-pink);
+    color: var(--paper);
+    border: 2.5px solid var(--ink-black);
+    mix-blend-mode: multiply;
+  }
+  .pc-lg::before { background: var(--ink-teal); border-width: 2.5px; }
+  .pc-lg[aria-pressed="true"] .play-ico  { display: none; }
+  .pc-lg[aria-pressed="false"] .pause-ico { display: none; }
+
+  /* Scrubber with halftone track */
+  .progress-outer {
+    margin: 1.75rem 0 0.5rem;
+    position: relative;
+  }
+  .progress-rng {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 14px;
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    outline: none;
+    cursor: pointer;
+    background-image: radial-gradient(circle, var(--ink-teal) 1.4px, transparent 1.9px);
+    background-size: 6px 6px;
+    background-position: center;
+    background-blend-mode: multiply;
+  }
+  .progress-rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    background: var(--ink-pink);
+    border: 2.5px solid var(--ink-black);
+    cursor: pointer;
+    mix-blend-mode: multiply;
+  }
+  .progress-rng::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border: 2.5px solid var(--ink-black);
+    background: var(--ink-pink);
+    cursor: pointer;
+  }
+  .progress-times {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  .ptime {
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--ink-black);
+  }
+
+  /* Like button — hand-drawn heart */
+  .like-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--ink-black);
+  }
+  .like-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 180ms var(--press);
+  }
+  .like-btn:hover { transform: scale(1.05) rotate(-2deg); }
+  .like-btn:active { transform: scale(0.95) rotate(-4deg); }
+  .like-btn .heart-outlined { display: block; }
+  .like-btn .heart-filled   { display: none; }
+  .like-btn[aria-pressed="true"] .heart-outlined { display: none; }
+  .like-btn[aria-pressed="true"] .heart-filled   { display: block; }
+  .like-count {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--ink-grey);
+  }
+  .like-count strong {
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+    font-weight: 700;
+  }
+
+  /* Sliders */
+  .slider-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px dashed var(--ink-black);
+  }
+  .slider-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .sl-lbl {
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+    min-width: 5.5rem;
+  }
+  .sl-val {
+    font-family: var(--f-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+    min-width: 2.5rem;
+    text-align: right;
+  }
+
+  .rng {
+    -webkit-appearance: none;
+    flex: 1;
+    height: 12px;
+    background: var(--paper);
+    border: 2px solid var(--ink-black);
+    outline: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.0' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.22'/></svg>");
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    background: var(--ink-pink);
+    border: 2.5px solid var(--ink-black);
+    cursor: pointer;
+    mix-blend-mode: multiply;
+    transition: transform 120ms var(--press);
+  }
+  .rng::-webkit-slider-thumb:hover { transform: scale(1.08); }
+  .rng::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border: 2.5px solid var(--ink-black);
+    background: var(--ink-pink);
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAVIGATION — Booklet section dividers
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: var(--paper);
+    border: 2.5px solid var(--ink-black);
+    overflow: hidden;
+    max-width: 440px;
+    margin: 0 auto;
+    position: relative;
+    isolation: isolate;
+  }
+  .navdemo::before {
+    content: '';
+    position: absolute;
+    top: var(--reg-y-lg);
+    left: var(--reg-x-lg);
+    right: calc(-1 * var(--reg-x-lg));
+    bottom: calc(-1 * var(--reg-y-lg));
+    background: var(--ink-pink);
+    border: 2.5px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.3;
+  }
+
+  .nd-screen { padding: 1.75rem 1.5rem 1.25rem; }
+  .nd-eye {
+    font-family: var(--f-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+    margin-bottom: 0.3rem;
+  }
+  .nd-title {
+    font-family: var(--f-display);
+    font-size: 1.75rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--ink-black);
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+  }
+  .nd-sub {
+    font-family: var(--f-body);
+    font-size: 0.875rem;
+    font-style: italic;
+    color: var(--ink-grey);
+    margin-bottom: 1.25rem;
+  }
+  .nd-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin-bottom: 1.5rem;
+  }
+  .nd-item {
+    border: 1.5px solid var(--ink-black);
+    background: var(--paper);
+    padding: 0.7rem 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    position: relative;
+    isolation: isolate;
+    transition: transform var(--dur) var(--press);
+  }
+  .nd-item::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 100%;
+    height: 100%;
+    background: var(--ink-teal);
+    border: 1.5px solid var(--ink-black);
+    z-index: -1;
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+  }
+  .nd-item:hover { transform: translate(-1px, -1px); }
+  .nd-ico {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    background: var(--ink-pink);
+    color: var(--paper);
+    border: 1.5px solid var(--ink-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    mix-blend-mode: multiply;
+  }
+  .nd-item:nth-child(2) .nd-ico { background: var(--ink-teal); }
+  .nd-item:nth-child(3) .nd-ico { background: var(--ink-black); }
+  .nd-item-title {
+    font-family: var(--f-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+  }
+  .nd-item-sub {
+    font-family: var(--f-body);
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--ink-grey);
+    margin-top: 0.1rem;
+  }
+
+  /* Tab bar styled as booklet section dividers */
+  .riso-navbar {
+    display: flex;
+    border-top: 2.5px solid var(--ink-black);
+    background: var(--paper);
+  }
+  .ni {
+    flex: 1;
+    background: none;
+    border: none;
+    border-right: 1.5px dashed var(--ink-black);
+    cursor: pointer;
+    padding: 0.95rem 0.4rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--f-mono);
+    position: relative;
+    transition: background var(--dur) var(--press);
+  }
+  .ni:last-child { border-right: none; }
+  .ni:hover { background: var(--paper-shadow); }
+  .ni-flag {
+    position: absolute;
+    top: -2.5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--ink-black);
+    border-top: none;
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--f-mono);
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--ink-grey);
+    letter-spacing: 0;
+  }
+  .ni-wrap {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-grey);
+    margin-top: 0.4rem;
+  }
+  .ni-lbl {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-grey);
+  }
+  .ni-on .ni-wrap { color: var(--ink-pink); mix-blend-mode: multiply; }
+  .ni-on .ni-lbl  { color: var(--ink-black); }
+  .ni-on .ni-flag {
+    background: var(--ink-pink);
+    color: var(--paper);
+    border-radius: 50%;
+    border-color: var(--ink-black);
+    border-top: 2px solid var(--ink-black);
+    width: 24px;
+    height: 24px;
+    top: -12px;
+    mix-blend-mode: multiply;
+    font-weight: 700;
+  }
+  .ni:focus-visible { outline: 3px solid var(--ink-pink); outline-offset: -3px; }
+
+  /* Colophon */
+  .colophon {
+    margin-top: 5rem;
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px dashed var(--ink-black);
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-black);
+    line-height: 1.8;
+  }
+  .colophon .colo-mark {
+    color: var(--ink-pink);
+    mix-blend-mode: multiply;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .colophon em {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--ink-grey);
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 720px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .tnav-title { font-size: 1.1rem; }
+    .hero-h1 { font-size: clamp(3rem, 14vw, 5.5rem); }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .tr { grid-template-columns: 80px 1fr; gap: 0.9rem; padding: 0.9rem 1.1rem; }
+    .ts-disp { font-size: 2.5rem; }
+    .ts-specimen { font-size: 2.5rem; }
+    .ts-halftone { font-size: 3rem; }
+    .ts-h1 { font-size: 2rem; }
+    .palette-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+    .state-row { gap: 0.75rem; }
+    .player-top { grid-template-columns: auto 1fr; }
+    .player-top > .vu { grid-column: 1 / -1; }
+    .pc-row { grid-column: 1 / -1; }
+    .sec-ghost { font-size: 4.5rem; }
+    .sec-title { font-size: 1.5rem; }
+    .form-panel { padding: 1.5rem 1.25rem; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── CMYK cropmarks at viewport corners ── -->
+<span class="cropmark cm-tl" aria-hidden="true"></span>
+<span class="cropmark cm-tr" aria-hidden="true"></span>
+<span class="cropmark cm-bl" aria-hidden="true"></span>
+<span class="cropmark cm-br" aria-hidden="true"></span>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9.2 2.3C8 3.5 6.4 5.1 4.6 6.9c-0.3 0.2-0.3 0.3 0 0.5 1.7 1.7 3.3 3.3 4.6 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Back to Gallery
+  </a>
+  <span class="tnav-title">RISOGRAPH</span>
+  <a class="tnav-dl" href="./style-guide.md" download="risograph-style-guide.md">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 1.8c0 2.5 0.1 5 0 7.5M4.4 6.8c0.8 0.9 1.7 1.7 2.6 2.5 0.9-0.8 1.8-1.7 2.6-2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 12h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress dots ────────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"   aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"     aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography" aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"    aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Forms"      aria-label="Jump to Forms"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"      aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"   aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation" aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ═══════════════════════════════════════
+       HERO — § 00
+  ═══════════════════════════════════════ -->
+  <header class="hero sec visible" id="sec-hero">
+    <!-- Registration marks at hero corners -->
+    <div class="reg-marks" aria-hidden="true">
+      <span class="rm-tl reg-mark">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M12 1v22M1 12h22" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+      </span>
+      <span class="rm-tr reg-mark">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M12 1v22M1 12h22" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+      </span>
+      <span class="rm-bl reg-mark">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M12 1v22M1 12h22" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+      </span>
+      <span class="rm-br reg-mark">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M12 1v22M1 12h22" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- Edition number bar -->
+    <div class="hero-edition">
+      <span>Riso UI Library · No. 38</span>
+      <span class="hero-edition-mark">✦ EDITION 38 / 50 ✦</span>
+      <span>FILE · DEMO.HTML</span>
+    </div>
+
+    <span class="hero-kicker">
+      <span class="hero-kicker-dot"></span>
+      Two-color overprint · Print revival · 2018→
+    </span>
+
+    <h1 class="hero-h1">RISOGRAPH</h1>
+
+    <p class="hero-desc">A design language that worships the <em>limitations of a stencil duplicator</em> — two colors of ink, layered on warm paper, slightly misaligned on purpose. The mistake becomes the signature. The third color is the one you didn't print: it emerges where pink and teal overlap.</p>
+
+    <div class="hero-tags">
+      <span class="hero-tag tag-pink">FLUO PINK · 32U</span>
+      <span class="hero-tag tag-teal">TEAL · 22A</span>
+      <span class="hero-tag">Anton + Lora + JetBrains Mono</span>
+      <span class="hero-tag">Cream paper #f8f3e8</span>
+      <span class="hero-tag">Multiply blend mode</span>
+    </div>
+
+    <div class="hero-widget">
+      <div class="hero-widget-card">
+        <div class="hw-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <circle cx="15" cy="15" r="6" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          </svg>
+        </div>
+        <div>
+          <div class="hw-title">Two colors only</div>
+          <div class="hw-sub">multiply reveals the third</div>
+        </div>
+      </div>
+      <div class="hero-widget-card">
+        <div class="hw-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="5" y="5" width="13" height="13" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <rect x="8" y="8" width="13" height="13" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          </svg>
+        </div>
+        <div>
+          <div class="hw-title">Misregister 3px</div>
+          <div class="hw-sub">always down + right</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════
+       § 01 · COLORS
+  ═══════════════════════════════════════ -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 01 / 07</span>
+      <h2 class="sec-title" id="colors-h">Ink Palette</h2>
+      <span class="sec-ghost" aria-hidden="true">01</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">✛</span>
+      <p class="spec-callout-text">Two ink drums: <strong>FLUO PINK 32U</strong> and <strong>TEAL 22A</strong>, printed on <strong>warm cream #f8f3e8</strong>. The overprint zone — where both inks land — multiplies into a discovered <strong>#b85a76</strong>. Never use straight pink on white; never reach for a third hue. The third hue is already there.</p>
+    </div>
+    <div class="palette-grid">
+      <div class="swatch">
+        <div class="swatch-color sc-paper"></div>
+        <div class="swatch-body">
+          <span class="swatch-name">Cream Paper</span>
+          <span class="swatch-channel">PAPER · NEVER WHITE</span>
+          <span class="swatch-hex">#F8F3E8</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color sc-pink"></div>
+        <div class="swatch-body">
+          <span class="swatch-name">Fluo Pink</span>
+          <span class="swatch-channel">RISO 32U · INK</span>
+          <span class="swatch-hex">#FF6B9D</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color sc-teal"></div>
+        <div class="swatch-body">
+          <span class="swatch-name">Teal</span>
+          <span class="swatch-channel">RISO 22A · INK</span>
+          <span class="swatch-hex">#3AAFA9</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color sc-overprint"></div>
+        <div class="swatch-body">
+          <span class="swatch-name">Overprint</span>
+          <span class="swatch-channel">PINK × TEAL · MULTIPLY</span>
+          <span class="swatch-hex">#B85A76</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color sc-black"></div>
+        <div class="swatch-body">
+          <span class="swatch-name">Warm Black</span>
+          <span class="swatch-channel">TYPE · NEVER #000</span>
+          <span class="swatch-hex">#1A1A1A</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color sc-paper-shadow"></div>
+        <div class="swatch-body">
+          <span class="swatch-name">Toasted Paper</span>
+          <span class="swatch-channel">DEPTH · SUBTLE</span>
+          <span class="swatch-hex">#E8E0C8</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       § 02 · TYPOGRAPHY
+  ═══════════════════════════════════════ -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 02 / 07</span>
+      <h2 class="sec-title" id="type-h">Typography</h2>
+      <span class="sec-ghost" aria-hidden="true">02</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">Aa</span>
+      <p class="spec-callout-text"><strong>Anton</strong> — a condensed grotesque, set chunky in display sizes — references silkscreen poster typography. Body text is <strong>Lora</strong>, a warm humanist serif that softens the bold display. Labels and metadata are <strong>JetBrains Mono UPPERCASE</strong> — the language of print-shop spec sheets.</p>
+    </div>
+    <div class="typescale">
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Display</span>
+          <span class="tr-spec">Anton · 64px<br>0.01em / 1.0</span>
+        </div>
+        <div class="ts-disp">ANTON</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Misreg specimen</span>
+          <span class="tr-spec">Pink + 3,3px teal<br>multiply blend</span>
+        </div>
+        <div class="ts-specimen" data-text="OVERPRINT">OVERPRINT</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Halftone fill</span>
+          <span class="tr-spec">7px dot pattern<br>1.5px stroke</span>
+        </div>
+        <div class="ts-halftone">RISO</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H1</span>
+          <span class="tr-spec">Anton · 44px<br>0.01em / 1.05</span>
+        </div>
+        <div class="ts-h1">Heading One</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H2</span>
+          <span class="tr-spec">Anton · 32px<br>0.02em / 1.1</span>
+        </div>
+        <div class="ts-h2">Heading Two</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H3</span>
+          <span class="tr-spec">Anton · 24px<br>0.02em / 1.15</span>
+        </div>
+        <div class="ts-h3">Heading Three</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H4</span>
+          <span class="tr-spec">Lora · 20px<br>700 / 1.3</span>
+        </div>
+        <div class="ts-h4">Sub-heading in Lora bold</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Body LG</span>
+          <span class="tr-spec">Lora · 18px<br>400 / 1.65</span>
+        </div>
+        <div class="ts-lg">The quick brown fox jumps over the lazy dog</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Body</span>
+          <span class="tr-spec">Lora · 16px<br>400 / 1.6</span>
+        </div>
+        <div class="ts-base">The quick brown fox jumps over the lazy dog</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Caption</span>
+          <span class="tr-spec">JetBrains · 12px<br>600 / 0.12em UC</span>
+        </div>
+        <div class="ts-cap">METADATA · STAMP · LABEL · NO. 38</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       § 03 · BUTTONS
+  ═══════════════════════════════════════ -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 03 / 07</span>
+      <h2 class="sec-title" id="btn-h">Buttons</h2>
+      <span class="sec-ghost" aria-hidden="true">03</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">↳</span>
+      <p class="spec-callout-text">Every button is two colored blocks misregistered <strong>4px down-right</strong>. On hover the offset tightens to <strong>2px</strong> — like the second pass is getting closer to true. On press the offset goes to <strong>0</strong> and the button "stamps" flat into the paper. Hover the Default below to see the press cycle.</p>
+    </div>
+    <div class="btn-states">
+      <div>
+        <p class="state-row-label">Primary &nbsp;·&nbsp; pink × teal</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-p">Default</button><span class="state-lbl">Rest · 4px</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-hover" tabindex="-1" aria-hidden="true">Hover</button><span class="state-lbl">Hover · 2px</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-active" tabindex="-1" aria-hidden="true">Pressed</button><span class="state-lbl">Pressed · 0</span></div>
+          <div class="state-wrap"><button class="btn btn-p" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Secondary &nbsp;·&nbsp; outline teal</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-s">Default</button><span class="state-lbl">Rest · 4px</span></div>
+          <div class="state-wrap"><button class="btn btn-s state-hover" tabindex="-1" aria-hidden="true">Hover</button><span class="state-lbl">Hover · 2px</span></div>
+          <div class="state-wrap"><button class="btn btn-s state-active" tabindex="-1" aria-hidden="true">Pressed</button><span class="state-lbl">Pressed · 0</span></div>
+          <div class="state-wrap"><button class="btn btn-s" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Ghost &nbsp;·&nbsp; underline only</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn-g">Read More →</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn-g" style="color:var(--ink-teal);text-decoration-color:var(--ink-teal)">Read More →</button><span class="state-lbl">Hover</span></div>
+        </div>
+      </div>
+      <div class="btn-variants">
+        <button class="btn-stamp">Stamp It</button>
+        <button class="btn btn-p" aria-label="Save">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2 12V2.2c0-0.1 0.2-0.2 0.3-0.2h7.5l2.2 2.4V12c0 0.1-0.1 0.2-0.2 0.2H2.2c-0.1 0-0.2-0.1-0.2-0.2z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M4 2v4h5V2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </svg>
+          Save
+        </button>
+        <button class="btn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M7 1.8v10.4M1.8 7h10.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Add
+        </button>
+        <button class="btn btn-s">Cancel</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       § 04 · FORM INPUTS
+  ═══════════════════════════════════════ -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 04 / 07</span>
+      <h2 class="sec-title" id="inputs-h">Forms</h2>
+      <span class="sec-ghost" aria-hidden="true">04</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">▭</span>
+      <p class="spec-callout-text">Every input is a printed box: <strong>2px warm-black border</strong>, faint grain inside, no rounded corners. Labels are <strong>JetBrains Mono UPPERCASE</strong> — they read as caption marks above a print plate. Checkboxes get a hand-tilted pink ✕ stamp; toggles are grain-textured tracks with a multiply-blended thumb.</p>
+    </div>
+    <div class="form-panel">
+      <div class="form-title">Subscriber Card · No. 38</div>
+      <p class="form-sub">Fill in your details. Each field stamps into the paper. We'll mail your edition within 7 print days.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">Full Name</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="text" id="fi-name" placeholder="Jane Smith" autocomplete="name">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <circle cx="7.5" cy="5" r="2.75" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M2.6 13c0.3-2.6 2.4-4.4 4.9-4.4 2.5 0 4.6 1.8 4.9 4.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">Email</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="email" id="fi-email" placeholder="jane@studio.press" autocomplete="email">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <rect x="1.5" y="3.3" width="12" height="8.4" stroke="currentColor" stroke-width="1.4" fill="none"/>
+              <path d="M1.7 4l5.8 4.1L13.4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-edition">Edition</label>
+          <select class="inp sel" id="fi-edition">
+            <option value="">Choose your ink…</option>
+            <option>Pink + Teal · Standard</option>
+            <option>Pink + Black · Bold</option>
+            <option>Teal + Yellow · Test</option>
+            <option>Three-color · Special</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-copies">Copies</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="number" id="fi-copies" placeholder="50" min="1" max="500" value="38">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <rect x="3" y="3" width="6" height="6" stroke="currentColor" stroke-width="1.4" fill="none"/>
+              <rect x="6" y="6" width="6" height="6" stroke="currentColor" stroke-width="1.4" fill="none"/>
+            </svg>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-note">Print Note</label>
+          <textarea class="inp ta" id="fi-note" placeholder="Tell the press what you want…" rows="4">Run pink first, then teal at 3px offset. Don't clean the drum between colors.</textarea>
+          <span class="hint">The press will follow your instructions exactly. Including the misregistration.</span>
+        </div>
+        <div class="field">
+          <span class="label" id="chk-lbl">Add-ons</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox" checked>
+              <span class="chk-box">
+                <svg class="chk-mark" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M2.5 2.3c2.9 3 5.8 6 8.7 9.1M11.2 2.5c-3 2.9-5.9 5.9-8.7 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span class="chk-txt">Hand-numbered edition</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox">
+              <span class="chk-box">
+                <svg class="chk-mark" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M2.5 2.3c2.9 3 5.8 6 8.7 9.1M11.2 2.5c-3 2.9-5.9 5.9-8.7 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span class="chk-txt">Deckle-edge paper</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox" checked>
+              <span class="chk-box">
+                <svg class="chk-mark" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M2.5 2.3c2.9 3 5.8 6 8.7 9.1M11.2 2.5c-3 2.9-5.9 5.9-8.7 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span class="chk-txt">Colophon page</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="rad-lbl">Paper Stock</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="paper" value="120">
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">120 gsm · standard</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="paper" value="160" checked>
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">160 gsm · cover</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="paper" value="200">
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">200 gsm · card stock</span>
+            </label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">Press Options</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Allow misregistration</div>
+                <div class="tgl-desc">Let the second pass land 3px off — the riso signature</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Allow misregistration">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Drum-roller streaks</div>
+                <div class="tgl-desc">Subtle horizontal banding on solid fills</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" aria-label="Drum streaks">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Hand-stamped edition number</div>
+                <div class="tgl-desc">Each copy stamped manually — slight rotation variance</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Hand-stamped">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       § 05 · CARDS
+  ═══════════════════════════════════════ -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 05 / 07</span>
+      <h2 class="sec-title" id="cards-h">Cards</h2>
+      <span class="sec-ghost" aria-hidden="true">05</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">▤</span>
+      <p class="spec-callout-text">Three card archetypes from the print shop: <strong>ZINE PAGE</strong> with registration marks at each corner, <strong>PHOTO PRINT</strong> with duotone halftone imagery, and <strong>STICKER</strong> rotated 2° with adhesive-tape corners. All three use multiplied offset blocks instead of drop shadows — because Risograph can't print true black shadows.</p>
+    </div>
+    <div class="cards-row">
+      <!-- Zine page card -->
+      <article class="card-zine">
+        <div class="cz-marks" aria-hidden="true">
+          <span class="cz-mark t-l">✛</span>
+          <span class="cz-mark t-r">✛</span>
+          <span class="cz-mark b-l">✛</span>
+          <span class="cz-mark b-r">✛</span>
+        </div>
+        <p class="cz-eye">§ Page 12 · Folio</p>
+        <h3 class="cz-h">The Mistake Is The Mark</h3>
+        <p class="cz-body">A Risograph print is judged by the way its second pass lands a fraction off the first. The mistake is the mark. The mark is the signature.</p>
+        <div class="cz-foot">
+          <span>Read · 3 min</span>
+          <span>No. 01 / 50</span>
+        </div>
+      </article>
+      <!-- Photo print card -->
+      <article class="card-photo">
+        <div class="photo-frame">
+          <div class="photo-layer photo-teal"></div>
+          <div class="photo-layer photo-pink"></div>
+          <div class="photo-layer photo-halftone"></div>
+          <span class="photo-stamp">PINK + TEAL</span>
+        </div>
+        <div class="photo-body">
+          <h3 class="photo-h">Duotone Halftone</h3>
+          <p class="photo-cap">An image converted to two ink channels — each channel a halftone dot pattern, multiplied together. The result is a printed feel that no JPEG can fake.</p>
+        </div>
+      </article>
+      <!-- Sticker card -->
+      <article class="card-sticker">
+        <span class="tape tape-tl"></span>
+        <span class="tape tape-br"></span>
+        <p class="cs-eye">★ STICKER · LIMITED</p>
+        <h3 class="cs-h">Edition 38 / 50</h3>
+        <p class="cs-body">Peel & stick. Hand-numbered. The corner tape is part of the design — not a mistake to crop out.</p>
+        <div class="cs-foot">May 2026 · 1/1</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       § 06 · CONTROLS · Tape Player
+  ═══════════════════════════════════════ -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 06 / 07</span>
+      <h2 class="sec-title" id="ctrl-h">Controls</h2>
+      <span class="sec-ghost" aria-hidden="true">06</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">▶</span>
+      <p class="spec-callout-text">A tape player as printed ephemera. The <strong>VU meter</strong> needles are pink (L) and teal (R), animated with <strong>steps(8)</strong> — no smooth easing, just stepped mechanical ticks. The <strong>scrubber track</strong> is a halftone dot pattern. The <strong>like button</strong> flips from outlined teal heart to filled pink heart on press — like a stamp being inked.</p>
+    </div>
+    <div class="player">
+      <span class="player-label">A-SIDE · 1</span>
+
+      <div class="player-top">
+        <div class="player-art">
+          <span class="player-art-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="2" fill="none"/>
+              <circle cx="16" cy="16" r="3" stroke="currentColor" stroke-width="2" fill="none"/>
+              <path d="M16 6c5.5 0 10 4.5 10 10" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            </svg>
+          </span>
+        </div>
+        <div>
+          <div class="player-title">Press Pause</div>
+          <div class="player-artist">Side B · 3 min 42 sec</div>
+        </div>
+        <div class="vu" aria-hidden="true">
+          <div class="vu-bar"><span class="vu-lbl">L</span><div class="vu-track"><div class="vu-fill"></div></div></div>
+          <div class="vu-bar vu-r"><span class="vu-lbl">R</span><div class="vu-track"><div class="vu-fill"></div></div></div>
+        </div>
+      </div>
+
+      <div class="pc-row">
+        <button class="pc-btn" aria-label="Shuffle">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M2.2 5h2.7l8.1 8h2.8M2.2 13h2.7l3-3M14 5l2 0v2M14 13l2 0v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="pc-btn" aria-label="Previous track">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M13.5 4.4L7 9l6.5 4.6V4.4Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" stroke-linejoin="round"/>
+            <path d="M4.5 4.4v9.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="pc-btn pc-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+          <svg class="play-ico" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7.5 4.8l12.8 7.2L7.5 19.2V4.8Z" fill="currentColor"/>
+          </svg>
+          <svg class="pause-ico" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M6.5 4H10V18H6.5V4ZM12 4H15.5V18H12V4Z" fill="currentColor"/>
+          </svg>
+        </button>
+        <button class="pc-btn" aria-label="Next track">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M4.5 4.4L11 9l-6.5 4.6V4.4Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" stroke-linejoin="round"/>
+            <path d="M13.5 4.4v9.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="pc-btn" aria-label="Repeat">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M2.5 11.5V7a3.6 3.6 0 0 1 3.6-3.6h8.4M14.4 6L16.5 3l-2.1-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15.5 6.5V11a3.6 3.6 0 0 1-3.6 3.6h-8.4M3.6 12l-2.1 3 2.1 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="progress-outer">
+        <input class="progress-rng" type="range" id="progress" min="0" max="222" value="67" aria-label="Track progress">
+        <div class="progress-times">
+          <span class="ptime" id="curr-time">1:07</span>
+          <span class="ptime">3:42</span>
+        </div>
+      </div>
+
+      <div class="like-row">
+        <button class="like-btn" id="like-btn" aria-label="Like" aria-pressed="false">
+          <svg class="heart-outlined" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M14 23.5C12.7 22.4 4 17.5 4 10.4 4 7.2 6.4 4.7 9.5 4.7c2 0 3.6 1.1 4.5 2.8 0.9-1.7 2.5-2.8 4.5-2.8 3.1 0 5.5 2.5 5.5 5.7 0 7-8.7 12-10 13.1Z" stroke="#3aafa9" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg class="heart-filled" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M14 23.5C12.7 22.4 4 17.5 4 10.4 4 7.2 6.4 4.7 9.5 4.7c2 0 3.6 1.1 4.5 2.8 0.9-1.7 2.5-2.8 4.5-2.8 3.1 0 5.5 2.5 5.5 5.7 0 7-8.7 12-10 13.1Z" fill="#ff6b9d" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="mix-blend-mode:multiply"/>
+          </svg>
+        </button>
+        <span class="like-count"><strong id="like-count">1,247</strong> &nbsp;listeners stamped this track</span>
+      </div>
+
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">Volume</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="68" aria-label="Volume">
+          <span class="sl-val" id="vol-v">68</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Ink Density</span>
+          <input class="rng" type="range" id="bright" min="0" max="100" value="72" aria-label="Ink density">
+          <span class="sl-val" id="bright-v">72%</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Misreg</span>
+          <input class="rng" type="range" id="bal" min="0" max="6" value="3" aria-label="Misregistration offset">
+          <span class="sl-val" id="bal-v">3px</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       § 07 · NAVIGATION
+  ═══════════════════════════════════════ -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 07 / 07</span>
+      <h2 class="sec-title" id="nav-h">Navigation</h2>
+      <span class="sec-ghost" aria-hidden="true">07</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">⎘</span>
+      <p class="spec-callout-text">Tab bar styled as a <strong>printed booklet's section dividers</strong>. Each tab carries a small page-number flag at the top. The <strong>active tab</strong> has its number circled in pink ink — the editor's mark on a galley proof. Tap any tab to flip the proof.</p>
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <p class="nd-eye">★ Today · Tuesday</p>
+        <div class="nd-title">Good Morning, Jane</div>
+        <div class="nd-sub">A proof of your day. May 12 · 1 / 1.</div>
+        <div class="nd-items">
+          <div class="nd-item">
+            <div class="nd-ico">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.8" fill="none"/>
+                <path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="nd-item-title">Press call · 10 am</div>
+              <div class="nd-item-sub">Test print #4 needs review</div>
+            </div>
+          </div>
+          <div class="nd-item">
+            <div class="nd-ico">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <rect x="2" y="3" width="12" height="10" stroke="currentColor" stroke-width="1.8" fill="none"/>
+                <path d="M2 6h12M5 3v3M11 3v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="nd-item-title">Edition deadline</div>
+              <div class="nd-item-sub">50 copies · ship Friday</div>
+            </div>
+          </div>
+          <div class="nd-item">
+            <div class="nd-ico">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M2 13L8 3l6 10H2Z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+                <circle cx="8" cy="10" r="1" fill="currentColor"/>
+              </svg>
+            </div>
+            <div>
+              <div class="nd-item-title">Drum needs cleaning</div>
+              <div class="nd-item-sub">Teal is bleeding · maintenance</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <nav class="riso-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Folio" aria-current="page">
+          <span class="ni-flag">01</span>
+          <div class="ni-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+              <path d="M3.5 9.5L11 3.5l7.5 6V19a1 1 0 0 1-1 1H4.5a1 1 0 0 1-1-1V9.5Z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+              <path d="M8.5 19v-6h5v6" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </div>
+          <span class="ni-lbl">Folio</span>
+        </button>
+        <button class="ni" aria-label="Search">
+          <span class="ni-flag">02</span>
+          <div class="ni-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+              <circle cx="10" cy="10" r="6.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+              <path d="M14.5 14.5l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="ni-lbl">Find</span>
+        </button>
+        <button class="ni" aria-label="Stamp">
+          <span class="ni-flag">03</span>
+          <div class="ni-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+              <path d="M11 3v10M3 13h16M3 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 13c0-3 6-3 6 0" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </div>
+          <span class="ni-lbl">Stamp</span>
+        </button>
+        <button class="ni" aria-label="Mail">
+          <span class="ni-flag">04</span>
+          <div class="ni-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+              <rect x="3" y="5" width="16" height="12" stroke="currentColor" stroke-width="1.8" fill="none"/>
+              <path d="M3 6l8 5.5L19 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="ni-lbl">Mail</span>
+        </button>
+        <button class="ni" aria-label="Press">
+          <span class="ni-flag">05</span>
+          <div class="ni-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+              <rect x="4" y="6" width="14" height="9" stroke="currentColor" stroke-width="1.8" fill="none"/>
+              <path d="M4 9.5h14M11 6V3M11 18v-3" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </div>
+          <span class="ni-lbl">Press</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       COLOPHON
+  ═══════════════════════════════════════ -->
+  <footer class="colophon">
+    <span class="colo-mark">✛ ✛ ✛</span>
+    PRINTED ON RISOGRAPH MZ 1090 · MAY 2026 · 1 / 1<br>
+    Anton · Lora · JetBrains Mono · Fluo Pink 32U + Teal 22A on cream
+    <em>End of proof. The mistake is the mark.</em>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+/* ─── Sliders ──────────────────────────── */
+document.getElementById('vol').addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = e.target.value;
+});
+document.getElementById('bright').addEventListener('input', e => {
+  document.getElementById('bright-v').textContent = e.target.value + '%';
+});
+document.getElementById('bal').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  document.getElementById('bal-v').textContent = v + 'px';
+  document.documentElement.style.setProperty('--reg-x', v + 'px');
+  document.documentElement.style.setProperty('--reg-y', v + 'px');
+});
+document.getElementById('progress').addEventListener('input', e => {
+  const s = parseInt(e.target.value);
+  document.getElementById('curr-time').textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+});
+
+/* ─── Play / pause ─────────────────────── */
+const playBtn = document.getElementById('play-btn');
+playBtn.addEventListener('click', () => {
+  const p = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!p));
+  playBtn.setAttribute('aria-label', !p ? 'Pause' : 'Play');
+});
+
+/* ─── Like button ──────────────────────── */
+const likeBtn = document.getElementById('like-btn');
+const likeCount = document.getElementById('like-count');
+let liked = false;
+let baseCount = 1247;
+likeBtn.addEventListener('click', () => {
+  liked = !liked;
+  likeBtn.setAttribute('aria-pressed', String(liked));
+  baseCount = liked ? baseCount + 1 : baseCount - 1;
+  likeCount.textContent = baseCount.toLocaleString();
+});
+
+/* ─── Bottom nav tab swap ──────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => {
+      n.classList.remove('ni-on');
+      n.removeAttribute('aria-current');
+    });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ─── Scroll reveal + progress sync ────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secKey = sections[entry.target.id];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ─── Progress dot navigation ──────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

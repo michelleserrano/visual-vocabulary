@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRON Legacy · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:       #060a0f;
+    --s1:       #0a1628;
+    --s2:       #0d1f2d;
+    --s3:       #112235;
+    --ac:       #00e5ff;
+    --ac-dim:   rgba(0,229,255,0.12);
+    --ac-mid:   rgba(0,229,255,0.35);
+    --ac-glo:   rgba(0,229,255,0.55);
+    --t1:       rgba(0,229,255,0.95);
+    --t1-solid: #00e5ff;
+    --t2:       rgba(0,229,255,0.55);
+    --t3:       rgba(0,229,255,0.28);
+    --ok:       #39ff14;
+    --err:      #ff2d55;
+    --warn:     #ffcc00;
+    --r:        2px;
+    --r-sm:     1px;
+    --r-md:     4px;
+    --r-full:   9999px;
+    --f:        'Share Tech Mono', 'JetBrains Mono', 'Courier New', monospace;
+    --ease:     cubic-bezier(0.4,0,0.2,1);
+    --ease-out: cubic-bezier(0,0,0.2,1);
+    --glow-xs:  0 0 6px rgba(0,229,255,0.4);
+    --glow-sm:  0 0 10px rgba(0,229,255,0.5), 0 0 4px rgba(0,229,255,0.8);
+    --glow-md:  0 0 16px rgba(0,229,255,0.55), 0 0 6px rgba(0,229,255,0.9);
+    --glow-lg:  0 0 28px rgba(0,229,255,0.6), 0 0 10px rgba(0,229,255,1), 0 0 2px rgba(0,229,255,1);
+    --border:   1px solid rgba(0,229,255,0.35);
+    --border-glo: 1px solid var(--ac);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f);
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(rgba(0,229,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: var(--t1);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--ac);
+    outline-offset: 3px;
+    box-shadow: var(--glow-xs);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6,10,15,0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,229,255,0.2);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t2);
+    text-decoration: none;
+    transition: color 0.15s, text-shadow 0.15s;
+  }
+  .tnav-back:hover { color: var(--t1); text-shadow: var(--glow-xs); }
+
+  .tnav-title {
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t1);
+    text-shadow: var(--glow-xs);
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.45rem 1rem;
+    background: transparent;
+    border: 1px solid var(--ac);
+    border-radius: var(--r);
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ac);
+    text-decoration: none;
+    box-shadow: var(--glow-sm);
+    transition: box-shadow 0.2s var(--ease), text-shadow 0.2s var(--ease);
+  }
+  .tnav-dl:hover { box-shadow: var(--glow-md); text-shadow: var(--glow-xs); }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS INDICATOR
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .prog-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 0;
+    background: transparent;
+    border: 1px solid rgba(0,229,255,0.3);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    padding: 0;
+  }
+  .prog-dot:hover    { background: rgba(0,229,255,0.3); transform: scale(1.4); border-color: var(--ac); }
+  .prog-dot.active   { background: var(--ac); box-shadow: var(--glow-sm); transform: scale(1.4); border-color: var(--ac); }
+  .prog-dot:focus-visible { outline: 1px solid var(--ac); outline-offset: 2px; }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.75rem 7rem;
+  }
+
+  /* ── Section ────────────────────────── */
+  .sec {
+    margin-top: 5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  .sec-hd {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(0,229,255,0.15);
+  }
+
+  .sec-ghost {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(0,229,255,0.04);
+    font-family: var(--f);
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+
+  .sec-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ac);
+    border: 1px solid rgba(0,229,255,0.3);
+    padding: 0.2rem 0.5rem;
+    flex-shrink: 0;
+    box-shadow: var(--glow-xs);
+  }
+
+  .sec-title {
+    font-size: 1.0625rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--t1);
+    text-shadow: var(--glow-sm);
+  }
+
+  /* ── Spec callout ───────────────────── */
+  .spec-callout {
+    background: rgba(0,229,255,0.05);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-left: 3px solid var(--ac);
+    border-radius: var(--r);
+    padding: 0.875rem 1.25rem;
+    margin-bottom: 1.875rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+  .spec-callout-ico {
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    color: var(--ac);
+    text-shadow: var(--glow-xs);
+  }
+  .spec-callout-text {
+    font-size: 0.75rem;
+    line-height: 1.65;
+    color: var(--t2);
+    letter-spacing: 0.02em;
+  }
+  .spec-callout-text strong {
+    color: var(--t1);
+    text-shadow: var(--glow-xs);
+  }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 4rem 0 4.5rem;
+  }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--t2);
+    border: 1px solid rgba(0,229,255,0.2);
+    padding: 0.3rem 0.875rem;
+    margin-bottom: 1.75rem;
+  }
+  .hero-kicker-dot {
+    width: 5px; height: 5px;
+    background: var(--ac);
+    box-shadow: var(--glow-sm);
+    flex-shrink: 0;
+  }
+
+  .hero-h1 {
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    letter-spacing: 0.08em;
+    line-height: 1;
+    color: var(--t1);
+    text-shadow: var(--glow-md);
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-desc {
+    font-size: 0.875rem;
+    line-height: 1.8;
+    color: var(--t2);
+    max-width: 55ch;
+    margin-bottom: 2rem;
+    letter-spacing: 0.03em;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.75rem;
+  }
+  .hero-tag {
+    border: 1px solid rgba(0,229,255,0.2);
+    padding: 0.35rem 0.875rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t3);
+    transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .hero-tag:hover { border-color: rgba(0,229,255,0.5); color: var(--t2); box-shadow: var(--glow-xs); }
+
+  /* Hero HUD panels */
+  .hero-widget {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .hero-widget-card {
+    background: rgba(0,229,255,0.04);
+    border: 1px solid rgba(0,229,255,0.2);
+    box-shadow: var(--glow-xs);
+    padding: 1.125rem 1.375rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex: 1;
+    min-width: 210px;
+    max-width: 290px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-widget-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--ac);
+    box-shadow: var(--glow-sm);
+  }
+  .hw-icon {
+    width: 40px; height: 40px;
+    border: 1px solid rgba(0,229,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.875rem;
+    color: var(--ac);
+    flex-shrink: 0;
+    text-shadow: var(--glow-xs);
+    letter-spacing: 0;
+  }
+  .hw-title { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--t1); margin-bottom: 0.2rem; text-shadow: var(--glow-xs); }
+  .hw-sub   { font-size: 0.625rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t3); }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(126px, 1fr));
+    gap: 1rem;
+  }
+
+  .swatch {
+    border: 1px solid rgba(0,229,255,0.2);
+    overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .swatch:hover { border-color: var(--ac); box-shadow: var(--glow-xs); }
+  .swatch-color { height: 68px; }
+  .swatch-body  { padding: 0.625rem 0.75rem; background: rgba(0,229,255,0.03); }
+  .swatch-hex   { font-size: 0.6875rem; color: var(--t1); display: block; margin-bottom: 0.15rem; letter-spacing: 0.06em; }
+  .swatch-name  { font-size: 0.5rem; color: var(--t3); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    border: 1px solid rgba(0,229,255,0.2);
+    overflow: hidden;
+    background: rgba(0,229,255,0.02);
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.125rem 1.75rem;
+    border-bottom: 1px solid rgba(0,229,255,0.1);
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { text-align: right; }
+  .tr-lbl  { font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ac); display: block; margin-bottom: 0.15rem; text-shadow: var(--glow-xs); }
+  .tr-spec { font-size: 0.5rem; color: var(--t3); line-height: 1.6; letter-spacing: 0.04em; }
+
+  .ts-disp  { font-size: 3rem;     letter-spacing: 0.08em; line-height: 1.1; text-shadow: var(--glow-md); }
+  .ts-h1    { font-size: 2.25rem;  letter-spacing: 0.06em; line-height: 1.15; text-shadow: var(--glow-sm); }
+  .ts-h2    { font-size: 1.75rem;  letter-spacing: 0.05em; line-height: 1.2; }
+  .ts-h3    { font-size: 1.375rem; letter-spacing: 0.04em; line-height: 1.25; }
+  .ts-h4    { font-size: 1.125rem; letter-spacing: 0.04em; line-height: 1.3; }
+  .ts-lg    { font-size: 0.9375rem; letter-spacing: 0.03em; line-height: 1.7; color: var(--t2); }
+  .ts-base  { font-size: 0.875rem;  letter-spacing: 0.02em; line-height: 1.65; color: var(--t2); }
+  .ts-sm    { font-size: 0.75rem;   letter-spacing: 0.02em; line-height: 1.6; color: var(--t2); }
+  .ts-cap   { font-size: 0.625rem;  letter-spacing: 0.12em; text-transform: uppercase; color: var(--t3); }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    background: transparent;
+    border: 1px solid rgba(0,229,255,0.25);
+    border-radius: var(--r);
+    padding: 0.75rem 1.75rem;
+    font-family: var(--f); font-size: 0.8125rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--t2);
+    cursor: pointer; white-space: nowrap; text-decoration: none;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease), box-shadow 0.2s var(--ease), text-shadow 0.2s var(--ease);
+  }
+  .btn:hover:not(:disabled)  { border-color: var(--ac); color: var(--ac); box-shadow: var(--glow-xs); }
+  .btn:active:not(:disabled) { background: rgba(0,229,255,0.06); }
+
+  .btn-p {
+    background: transparent;
+    border: 1px solid var(--ac);
+    color: var(--ac);
+    text-shadow: var(--glow-xs);
+    box-shadow: var(--glow-sm), inset 0 0 20px rgba(0,229,255,0.05);
+  }
+  .btn-p:hover:not(:disabled)  {
+    box-shadow: var(--glow-lg), inset 0 0 30px rgba(0,229,255,0.1);
+    text-shadow: var(--glow-md);
+    border-color: var(--ac);
+    color: var(--ac);
+  }
+  .btn-p:active:not(:disabled) {
+    background: rgba(0,229,255,0.15);
+    box-shadow: var(--glow-sm);
+  }
+
+  .btn:disabled { opacity: 0.25; cursor: not-allowed; box-shadow: none; }
+
+  .btn-sm { padding: 0.5rem 1.25rem; font-size: 0.6875rem; }
+  .btn-icon {
+    width: 46px; height: 46px; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .btn-icon-p {
+    border-color: var(--ac); color: var(--ac);
+    box-shadow: var(--glow-sm);
+  }
+  .btn-icon-p:hover:not(:disabled) { box-shadow: var(--glow-md); }
+
+  /* Static state previews */
+  .state-hover   { border-color: var(--ac) !important; color: var(--ac) !important; box-shadow: var(--glow-xs) !important; }
+  .state-active  { background: rgba(0,229,255,0.06) !important; border-color: var(--ac) !important; color: var(--ac) !important; }
+  .state-p-hover { box-shadow: var(--glow-lg), inset 0 0 30px rgba(0,229,255,0.1) !important; text-shadow: var(--glow-md) !important; }
+  .state-p-active{ background: rgba(0,229,255,0.15) !important; box-shadow: var(--glow-sm) !important; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 2rem; }
+  .state-row-label { font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--t3); margin-bottom: 1rem; }
+  .state-row { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .state-lbl  { font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t3); }
+
+  .btn-variants {
+    display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+    padding-top: 2rem; margin-top: 2rem;
+    border-top: 1px solid rgba(0,229,255,0.1);
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: rgba(0,229,255,0.02);
+    border: 1px solid rgba(0,229,255,0.2);
+    padding: 2.25rem;
+  }
+  .form-panel::before {
+    display: block;
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: var(--ac);
+    box-shadow: var(--glow-sm);
+    margin-bottom: 1.75rem;
+    margin-left: -2.25rem;
+    width: calc(100% + 4.5rem);
+    margin-top: -2.25rem;
+  }
+  .form-title { font-size: 0.875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--t1); text-shadow: var(--glow-xs); margin-bottom: 0.25rem; }
+  .form-sub   { font-size: 0.6875rem; letter-spacing: 0.03em; color: var(--t3); margin-bottom: 2rem; line-height: 1.7; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.375rem; }
+  .fg-full   { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .label { font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--t2); }
+  .hint  { font-size: 0.625rem; letter-spacing: 0.04em; color: var(--t3); margin-top: 0.15rem; }
+
+  .inp {
+    background: rgba(0,229,255,0.03);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: var(--r);
+    padding: 0.75rem 1rem;
+    font-family: var(--f); font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    color: var(--t1);
+    outline: none; width: 100%;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .inp::placeholder { color: var(--t3); }
+  .inp:focus {
+    border-color: var(--ac);
+    box-shadow: var(--glow-sm), inset 0 0 20px rgba(0,229,255,0.03);
+  }
+
+  .inp-wrap { position: relative; }
+  .inp-ico  { position: absolute; right: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none; }
+  .inp.has-ico { padding-right: 2.5rem; }
+
+  .sel {
+    -webkit-appearance: none;
+    background: rgba(0,229,255,0.03) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='rgba(0,229,255,0.4)' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.875rem center;
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: var(--r);
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    font-family: var(--f); font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    color: var(--t1);
+    outline: none; width: 100%; cursor: pointer;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .sel option { background: #0a1628; color: var(--t1-solid); }
+  .sel:focus { border-color: var(--ac); box-shadow: var(--glow-sm); }
+
+  .ta { resize: vertical; min-height: 96px; line-height: 1.65; }
+
+  .chk-group { display: flex; flex-direction: column; gap: 0.875rem; }
+  .chk-row {
+    display: flex; align-items: center; gap: 0.875rem;
+    cursor: pointer; user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 20px; height: 20px; flex-shrink: 0;
+    background: rgba(0,229,255,0.04);
+    border: 1px solid rgba(0,229,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .chk-mark  { opacity: 0; color: var(--ac); transition: opacity 0.12s; }
+  .chk-in:checked + .chk-box {
+    border-color: var(--ac);
+    background: rgba(0,229,255,0.15);
+    box-shadow: var(--glow-xs);
+  }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-in:focus-visible + .chk-box { box-shadow: var(--glow-sm); border-color: var(--ac); }
+  .chk-txt { font-size: 0.8125rem; letter-spacing: 0.04em; color: var(--t2); }
+
+  .rad-box {
+    width: 20px; height: 20px; flex-shrink: 0;
+    background: rgba(0,229,255,0.04);
+    border: 1px solid rgba(0,229,255,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .rad-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ac);
+    box-shadow: var(--glow-xs);
+    opacity: 0; transform: scale(0.4);
+    transition: opacity 0.15s, transform 0.2s var(--ease);
+  }
+  .chk-in:checked + .rad-box {
+    border-color: var(--ac);
+    background: rgba(0,229,255,0.08);
+    box-shadow: var(--glow-xs);
+  }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1); }
+  .chk-in:focus-visible + .rad-box { box-shadow: var(--glow-sm); border-color: var(--ac); }
+
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 0; gap: 1rem;
+    border-bottom: 1px solid rgba(0,229,255,0.1);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title { font-size: 0.8125rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--t1); }
+  .tgl-desc  { font-size: 0.625rem; letter-spacing: 0.04em; color: var(--t3); margin-top: 0.125rem; }
+
+  .tgl { flex-shrink: 0; cursor: pointer; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 48px; height: 24px;
+    background: rgba(0,229,255,0.05);
+    border: 1px solid rgba(0,229,255,0.25);
+    border-radius: var(--r-full);
+    position: relative;
+    transition: border-color 0.28s, box-shadow 0.28s;
+  }
+  .tgl-thumb {
+    position: absolute; top: 3px; left: 3px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: rgba(0,229,255,0.3);
+    border: 1px solid rgba(0,229,255,0.5);
+    transition: transform 0.28s var(--ease), background 0.28s, border-color 0.28s, box-shadow 0.28s;
+  }
+  .tgl-in:checked ~ .tgl-track {
+    border-color: var(--ac);
+    box-shadow: var(--glow-xs);
+  }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb {
+    transform: translateX(24px);
+    background: var(--ac);
+    border-color: var(--ac);
+    box-shadow: var(--glow-sm);
+  }
+  .tgl-in:focus-visible ~ .tgl-track { box-shadow: var(--glow-sm); border-color: var(--ac); }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .card-tron {
+    background: var(--s1);
+    border: 1px solid rgba(0,229,255,0.2);
+    box-shadow: var(--glow-xs);
+    overflow: hidden;
+    transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    position: relative;
+  }
+  .card-tron::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--ac);
+    box-shadow: var(--glow-sm);
+  }
+  .card-tron:hover { border-color: var(--ac); box-shadow: var(--glow-md); }
+
+  .card-thumb {
+    height: 120px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.75rem;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .ct1 { background-color: #081220; }
+  .ct2 { background-color: #060e1a; }
+  .ct3 { background-color: #091522; }
+
+  .card-thumb-ico {
+    width: 52px; height: 52px;
+    border: 1px solid rgba(0,229,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.875rem;
+    color: var(--ac);
+    text-shadow: var(--glow-sm);
+    letter-spacing: 0;
+    box-shadow: var(--glow-xs);
+  }
+
+  .card-in { padding: 1.25rem 1.5rem 1.5rem; }
+  .card-eye  { font-size: 0.5625rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ac); text-shadow: var(--glow-xs); margin-bottom: 0.375rem; }
+  .card-h    { font-size: 0.9375rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--t1); margin-bottom: 0.5rem; }
+  .card-body-text { font-size: 0.75rem; line-height: 1.7; letter-spacing: 0.02em; color: var(--t2); margin-bottom: 1.25rem; }
+  .card-ft {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 0.875rem;
+    border-top: 1px solid rgba(0,229,255,0.12);
+  }
+  .card-av {
+    width: 26px; height: 26px;
+    border: 1px solid rgba(0,229,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.625rem;
+    color: var(--ac);
+    text-shadow: var(--glow-xs);
+  }
+  .card-dt { font-size: 0.5625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t3); }
+  .card-act {
+    background: transparent;
+    border: 1px solid rgba(0,229,255,0.25);
+    padding: 0.3rem 0.75rem;
+    font-family: var(--f); font-size: 0.5625rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--t2);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .card-act:hover { border-color: var(--ac); color: var(--ac); box-shadow: var(--glow-xs); }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ */
+  .player {
+    background: var(--s1);
+    border: 1px solid rgba(0,229,255,0.2);
+    box-shadow: var(--glow-xs);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .player::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--ac);
+    box-shadow: var(--glow-sm);
+  }
+
+  .player-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .player-art {
+    width: 68px; height: 68px;
+    border: 1px solid rgba(0,229,255,0.25);
+    background: rgba(0,229,255,0.05);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ac);
+    text-shadow: var(--glow-sm);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .player-art::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(0,229,255,0.15);
+  }
+  .player-title  { font-size: 0.875rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t1); text-shadow: var(--glow-xs); margin-bottom: 0.2rem; }
+  .player-artist { font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t3); }
+
+  .pc-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .pc-btn {
+    background: transparent;
+    border: 1px solid rgba(0,229,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--t2);
+    transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .pc-btn:hover  { border-color: var(--ac); color: var(--ac); box-shadow: var(--glow-xs); }
+  .pc-btn:active { background: rgba(0,229,255,0.08); }
+  .pc-sm { width: 38px; height: 38px; }
+  .pc-lg {
+    width: 54px; height: 54px;
+    border-color: var(--ac);
+    color: var(--ac);
+    box-shadow: var(--glow-sm);
+  }
+  .pc-lg:hover  { box-shadow: var(--glow-md); color: var(--ac); }
+  .pc-lg:active { background: rgba(0,229,255,0.12); box-shadow: var(--glow-sm); }
+  .pc-lg[aria-pressed="true"] .play-ico  { display: none; }
+  .pc-lg[aria-pressed="false"] .pause-ico { display: none; }
+
+  .progress-outer { margin: 1.75rem 0; }
+  .progress-rng {
+    -webkit-appearance: none;
+    width: 100%; height: 4px;
+    border-radius: var(--r-full);
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.15);
+    outline: none; cursor: pointer;
+  }
+  .progress-rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--ac);
+    box-shadow: var(--glow-sm);
+    cursor: pointer;
+    border: none;
+  }
+  .progress-rng::-moz-range-thumb {
+    width: 16px; height: 16px; border: none; border-radius: 50%;
+    background: var(--ac);
+    box-shadow: var(--glow-sm);
+  }
+  .progress-times {
+    display: flex; justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  .ptime { font-size: 0.5625rem; letter-spacing: 0.1em; color: var(--t3); }
+
+  .slider-list { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(0,229,255,0.1); }
+  .slider-item { display: flex; align-items: center; gap: 1rem; }
+  .sl-lbl { font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t2); min-width: 5rem; }
+  .sl-val { font-size: 0.6875rem; letter-spacing: 0.08em; color: var(--ac); min-width: 2.5rem; text-align: right; text-shadow: var(--glow-xs); }
+
+  .rng {
+    -webkit-appearance: none;
+    flex: 1; height: 6px;
+    border-radius: var(--r-full);
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.15);
+    outline: none; cursor: pointer;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--ac);
+    box-shadow: var(--glow-sm);
+    cursor: pointer;
+    border: none;
+    transition: box-shadow 0.12s;
+  }
+  .rng::-webkit-slider-thumb:hover { box-shadow: var(--glow-md); }
+  .rng::-moz-range-thumb {
+    width: 20px; height: 20px; border: none; border-radius: 50%;
+    background: var(--ac);
+    box-shadow: var(--glow-sm);
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAV BAR
+  ═══════════════════════════════════════ */
+  .navdemo {
+    border: 1px solid rgba(0,229,255,0.2);
+    overflow: hidden;
+    max-width: 420px;
+    margin: 0 auto;
+    background: var(--s1);
+  }
+
+  .nd-screen {
+    padding: 1.75rem 1.5rem 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .nd-title  { font-size: 1.125rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t1); text-shadow: var(--glow-sm); margin-bottom: 0.2rem; }
+  .nd-sub    { font-size: 0.5625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t3); margin-bottom: 1.25rem; }
+
+  .nd-search {
+    background: rgba(0,229,255,0.03);
+    border: 1px solid rgba(0,229,255,0.15);
+    padding: 0.625rem 1rem;
+    display: flex; align-items: center; gap: 0.625rem;
+    color: var(--t3); font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.25rem;
+  }
+
+  .nd-items { display: flex; flex-direction: column; gap: 0.625rem; margin-bottom: 1.75rem; }
+  .nd-item {
+    background: rgba(0,229,255,0.03);
+    border: 1px solid rgba(0,229,255,0.12);
+    padding: 0.75rem 1rem;
+    display: flex; align-items: center; gap: 0.875rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .nd-item:hover { border-color: rgba(0,229,255,0.3); box-shadow: var(--glow-xs); }
+  .nd-ico {
+    width: 36px; height: 36px; flex-shrink: 0;
+    background: rgba(0,229,255,0.06);
+    border: 1px solid rgba(0,229,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    color: var(--ac);
+    letter-spacing: 0;
+    text-shadow: var(--glow-xs);
+  }
+  .nd-item-title { font-size: 0.8125rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--t1); }
+  .nd-item-sub   { font-size: 0.5625rem; letter-spacing: 0.06em; color: var(--t3); }
+
+  .tron-navbar {
+    background: rgba(6,10,15,0.95);
+    border-top: 1px solid rgba(0,229,255,0.2);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .ni {
+    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--f); padding: 0.5rem; flex: 1;
+    transition: color 0.2s;
+  }
+  .ni-wrap {
+    width: 42px; height: 42px;
+    border: 1px solid rgba(0,229,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .ni:not(.ni-on) .ni-wrap:hover { border-color: rgba(0,229,255,0.4); box-shadow: var(--glow-xs); }
+  .ni-on .ni-wrap {
+    border-color: var(--ac);
+    background: rgba(0,229,255,0.08);
+    box-shadow: var(--glow-sm);
+  }
+  .ni-lbl { font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t3); transition: color 0.15s, text-shadow 0.15s; }
+  .ni-on .ni-lbl { color: var(--ac); text-shadow: var(--glow-xs); }
+  .ni-badge {
+    position: absolute; top: -2px; right: -2px;
+    width: 7px; height: 7px;
+    background: var(--err);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(255,45,85,0.7);
+  }
+  .ni-ico-wrap { position: relative; }
+
+  /* ═══════════════════════════════════════
+     SCANLINE OVERLAY (subtle atmosphere)
+  ═══════════════════════════════════════ */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+  }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .tr { grid-template-columns: 72px 1fr; gap: 0.75rem; padding: 0.875rem 1.25rem; }
+    .ts-disp { font-size: 2rem; }
+    .ts-h1   { font-size: 1.75rem; }
+    .palette-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+    .state-row { gap: 0.75rem; }
+    .player-top { grid-template-columns: auto 1fr; }
+    .pc-row { grid-column: 1 / -1; }
+    .hero-h1 { font-size: 2.5rem; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 2.5L4.5 7 9 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Gallery
+  </a>
+  <span class="tnav-title">TRON Legacy</span>
+  <a class="tnav-dl" href="style-guide.md" download="tron-legacy-style-guide.md">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 2v7.5M4.5 7l2.5 2.5 2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress dots ────────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"     aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"       aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"   aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"      aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Form Inputs"  aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"        aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"     aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"   aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <div class="hero-kicker"><span class="hero-kicker-dot"></span>SCI-FI · DIGITAL GRID</div>
+    <h1 class="hero-h1">TRON LEGACY</h1>
+    <p class="hero-desc">A design language built entirely from light. Luminous geometry traces the circuit grid. Every surface is dark. Every edge glows. The interface is not painted — it is illuminated from within, rendered at the boundary where code becomes physical form.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Share Tech Mono</span>
+      <span class="hero-tag">Circuit grid texture</span>
+      <span class="hero-tag">Cyan-only palette</span>
+      <span class="hero-tag">Glow as depth</span>
+    </div>
+    <div class="hero-widget">
+      <div class="hero-widget-card">
+        <div class="hw-icon">SYS</div>
+        <div>
+          <div class="hw-title">Grid Status</div>
+          <div class="hw-sub">All nodes active</div>
+        </div>
+      </div>
+      <div class="hero-widget-card">
+        <div class="hw-icon">◈</div>
+        <div>
+          <div class="hw-title">Single wavelength</div>
+          <div class="hw-sub">#00e5ff · 500nm</div>
+        </div>
+      </div>
+      <div class="hero-widget-card">
+        <div class="hw-icon">⟐</div>
+        <div>
+          <div class="hw-title">Opacity cascade</div>
+          <div class="hw-sub">1 color · 10 densities</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ─────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">01</span>
+      <h2 class="sec-title" id="colors-h">Color Palette</h2>
+      <span class="sec-ghost" aria-hidden="true">01</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">◈</span>
+      <p class="spec-callout-text">One color: <strong>#00e5ff</strong>. Everything else is opacity. The interface is built from a single ray of light through different densities of dark. Never introduce a second hue — the monochromatic restriction is load-bearing.</p>
+    </div>
+    <div class="palette-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#060a0f"></div><div class="swatch-body"><span class="swatch-hex">#060a0f</span><span class="swatch-name">--bg · void</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#0a1628"></div><div class="swatch-body"><span class="swatch-hex">#0a1628</span><span class="swatch-name">--s1 · surface</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#0d1f2d"></div><div class="swatch-body"><span class="swatch-hex">#0d1f2d</span><span class="swatch-name">--s2 · elevated</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#00e5ff"></div><div class="swatch-body"><span class="swatch-hex">#00e5ff</span><span class="swatch-name">--ac · the light</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:rgba(0,229,255,0.55)"></div><div class="swatch-body"><span class="swatch-hex">ac / 55%</span><span class="swatch-name">--t2 · text mid</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:rgba(0,229,255,0.28)"></div><div class="swatch-body"><span class="swatch-hex">ac / 28%</span><span class="swatch-name">--t3 · text dim</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:rgba(0,229,255,0.12)"></div><div class="swatch-body"><span class="swatch-hex">ac / 12%</span><span class="swatch-name">--ac-dim · fill</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#39ff14"></div><div class="swatch-body"><span class="swatch-hex">#39ff14</span><span class="swatch-name">--ok · success</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ff2d55"></div><div class="swatch-body"><span class="swatch-hex">#ff2d55</span><span class="swatch-name">--err · alert</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ffcc00"></div><div class="swatch-body"><span class="swatch-hex">#ffcc00</span><span class="swatch-name">--warn · caution</span></div></div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ─────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">02</span>
+      <h2 class="sec-title" id="type-h">Typography Scale</h2>
+      <span class="sec-ghost" aria-hidden="true">02</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">▶</span>
+      <p class="spec-callout-text">Monospaced type implies data, not decoration. Every character is a byte. <strong>Share Tech Mono</strong> was designed for digital displays — this is its natural habitat. Tight letter-spacing at display size; loose at caption size. All labels uppercase.</p>
+    </div>
+    <div class="typescale">
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Display</span><span class="tr-spec">48px<br>ls +0.08em</span></div><div class="ts-disp">TRON</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H1</span><span class="tr-spec">36px<br>ls +0.06em</span></div><div class="ts-h1">GRID ACTIVE</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H2</span><span class="tr-spec">28px<br>ls +0.05em</span></div><div class="ts-h2">System Ready</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H3</span><span class="tr-spec">22px<br>ls +0.04em</span></div><div class="ts-h3">Node Connected</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H4</span><span class="tr-spec">18px<br>ls +0.04em</span></div><div class="ts-h4">Data Stream</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Lg</span><span class="tr-spec">15px / lh 1.7<br>ls +0.03em</span></div><div class="ts-lg">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body</span><span class="tr-spec">14px / lh 1.65<br>ls +0.02em</span></div><div class="ts-base">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Sm</span><span class="tr-spec">12px / lh 1.6<br>ls +0.02em</span></div><div class="ts-sm">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Caption</span><span class="tr-spec">10px / UC<br>ls +0.12em</span></div><div class="ts-cap">Caption · metadata · label · status</div></div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">03</span>
+      <h2 class="sec-title" id="btn-h">Buttons</h2>
+      <span class="sec-ghost" aria-hidden="true">03</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">◻</span>
+      <p class="spec-callout-text">TRON buttons are outlines of light. They contain no fill — only boundary. Hover intensifies the glow. Press adds a faint inner fill — the button charges. The primary button is <strong>a border, a text-shadow, and a box-shadow</strong>. Nothing else.</p>
+    </div>
+    <div class="btn-states">
+      <div>
+        <p class="state-row-label">Primary</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-p">Execute</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-p-hover" tabindex="-1" aria-hidden="true">Execute</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-p-active" tabindex="-1" aria-hidden="true">Execute</button><span class="state-lbl">Pressed ↓</span></div>
+          <div class="state-wrap"><button class="btn btn-p" disabled>Execute</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Secondary</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn">Cancel</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn state-hover" tabindex="-1" aria-hidden="true">Cancel</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn state-active" tabindex="-1" aria-hidden="true">Cancel</button><span class="state-lbl">Pressed ↓</span></div>
+          <div class="state-wrap"><button class="btn" disabled>Cancel</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div class="btn-variants">
+        <button class="btn btn-sm">Small</button>
+        <button class="btn btn-sm btn-p">Small Primary</button>
+        <button class="btn btn-icon btn-icon-p" aria-label="Add">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <button class="btn btn-icon" aria-label="Alert" style="color:var(--err);border-color:rgba(255,45,85,0.35);">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3L2 15h14L9 3Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 8v4M9 13.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <button class="btn btn-icon" aria-label="Confirm" style="color:var(--ok);border-color:rgba(57,255,20,0.3);">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9l4.5 4.5 7.5-7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">04</span>
+      <h2 class="sec-title" id="inputs-h">Form Inputs</h2>
+      <span class="sec-ghost" aria-hidden="true">04</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">⊞</span>
+      <p class="spec-callout-text">Input fields are recessed panels in the grid. <strong>Focus illuminates the border.</strong> Monospace ensures each character takes equal space — data is data. The placeholder fades to near-invisible; the cursor is the only light source at rest.</p>
+    </div>
+    <div class="form-panel">
+      <div class="form-title">Identity Configuration</div>
+      <p class="form-sub">All input types rendered in TRON grid style: text, select, textarea, checkbox, radio, toggle.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">User Identifier</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="text" id="fi-name" placeholder="user.001" autocomplete="name">
+            <svg class="inp-ico" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="4.5" r="2.5" stroke="rgba(0,229,255,0.4)" stroke-width="1.2"/><path d="M2 13c0-2.5 2-4 5-4s5 1.5 5 4" stroke="rgba(0,229,255,0.4)" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">Comm Channel</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="email" id="fi-email" placeholder="user@grid.sys" autocomplete="email">
+            <svg class="inp-ico" width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="8" rx="1.5" stroke="rgba(0,229,255,0.4)" stroke-width="1.2"/><path d="M1.5 5.5l5.5 3.5 5.5-3.5" stroke="rgba(0,229,255,0.4)" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-role">Clearance Level</label>
+          <select class="inp sel" id="fi-role">
+            <option value="">Select protocol…</option>
+            <option>System Architect</option>
+            <option>Grid Engineer</option>
+            <option>Program Officer</option>
+            <option>Data Analyst</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-pass">Access Key</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="password" id="fi-pass" placeholder="••••••••">
+            <svg class="inp-ico" width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="6" width="8" height="6.5" rx="1.5" stroke="rgba(0,229,255,0.4)" stroke-width="1.2"/><path d="M5 6V4.5a2 2 0 0 1 4 0V6" stroke="rgba(0,229,255,0.4)" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-bio">Program Description</label>
+          <textarea class="inp ta" id="fi-bio" placeholder="Describe your function in the grid…" rows="3"></textarea>
+          <span class="hint">Max 280 chars. Indexed by the Grid at next cycle.</span>
+        </div>
+        <div class="field">
+          <span class="label" id="chk-lbl">Protocols Active</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Grid Sync</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox"><span class="chk-box"><svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Encrypt Streams</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Trace Active</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="rad-lbl">Access Tier</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row"><input class="chk-in" type="radio" name="tier" value="1"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">Tier 1 · Standard</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="tier" value="2" checked><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">Tier 2 · Elevated</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="tier" value="3"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">Tier 3 · System</span></label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">System Channels</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Transmission Log</div><div class="tgl-desc">Broadcast activity to grid nodes</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Transmission Log"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Signal Alerts</div><div class="tgl-desc">Real-time status notifications</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" aria-label="Signal Alerts"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Auto-persist State</div><div class="tgl-desc">Checkpoint every 30 cycles</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Auto-persist State"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ──────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">05</span>
+      <h2 class="sec-title" id="cards-h">Cards</h2>
+      <span class="sec-ghost" aria-hidden="true">05</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">▣</span>
+      <p class="spec-callout-text">Cards are data panels in the grid. The <strong>cyan top border marks them as active surfaces</strong>. Shadow is replaced by glow. On hover, the border brightens and the glow intensifies — the panel becomes more present, more alive.</p>
+    </div>
+    <div class="cards-row">
+      <article class="card-tron">
+        <div class="card-thumb ct1">
+          <div class="card-thumb-ico">◈</div>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">Design Systems</p>
+          <h3 class="card-h">One Color, All States</h3>
+          <p class="card-body-text">The entire visual language derives from a single wavelength at varying opacity. Darkness is not absence of color — it is color at near-zero density.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem"><div class="card-av">J</div><span class="card-dt">3 min read</span></div>
+            <button class="card-act">Access →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-tron">
+        <div class="card-thumb ct2">
+          <div class="card-thumb-ico">⟐</div>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">Engineering</p>
+          <h3 class="card-h">Glow as Architecture</h3>
+          <p class="card-body-text">Box-shadow with three layers creates depth: outer ambient, mid-field glow, and a tight inner flash. Three values — infinite perceived distance.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem"><div class="card-av">M</div><span class="card-dt">5 min read</span></div>
+            <button class="card-act">Access →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-tron">
+        <div class="card-thumb ct3">
+          <div class="card-thumb-ico">▶</div>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">Accessibility</p>
+          <h3 class="card-h">Contrast on Dark Ground</h3>
+          <p class="card-body-text">Cyan on near-black exceeds WCAG AA at full opacity. Maintain minimum 0.55 opacity for all interactive text. Never render critical labels at --t3.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem"><div class="card-av">A</div><span class="card-dt">7 min read</span></div>
+            <button class="card-act">Access →</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ───────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">06</span>
+      <h2 class="sec-title" id="ctrl-h">Controls · Player</h2>
+      <span class="sec-ghost" aria-hidden="true">06</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">◎</span>
+      <p class="spec-callout-text">The player's interface looks like a cockpit control. Labels are <strong>uppercase monospace</strong>. Progress is a glowing fiber of light drawn across the dark. The thumb is a small sun — a point of maximum intensity in the system.</p>
+    </div>
+    <div class="player">
+      <div class="player-top">
+        <div class="player-art">SND</div>
+        <div>
+          <div class="player-title">End of Line · Daft Punk</div>
+          <div class="player-artist">TRON: Legacy OST · 2010</div>
+        </div>
+        <div class="pc-row">
+          <button class="pc-btn pc-sm" aria-label="Shuffle">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M2 5h3l8 8h3M14 5h2v2M14 13h2v-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13h3l2.5-2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Previous">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M13.5 4.5L7 9l6.5 4.5V4.5ZM4.5 4.5v9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="pc-btn pc-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+            <svg class="play-ico" width="20" height="20" viewBox="0 0 22 22" fill="none"><path d="M7 4.5l11 6.5L7 17.5V4.5Z" fill="currentColor"/></svg>
+            <svg class="pause-ico" width="20" height="20" viewBox="0 0 22 22" fill="none" style="display:none"><path d="M7 4h3v14H7V4ZM13 4h3v14h-3V4Z" fill="currentColor"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Next">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M4.5 4.5L11 9l-6.5 4.5V4.5ZM13.5 4.5v9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Repeat">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M2 12V7a4 4 0 0 1 4-4h8M14 6l2-3-2-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 6v5a4 4 0 0 1-4 4H4M6 12l-2 3 2 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-outer">
+        <input class="progress-rng" type="range" id="progress" min="0" max="222" value="84" aria-label="Track progress">
+        <div class="progress-times">
+          <span class="ptime" id="curr-time">1:24</span>
+          <span class="ptime">3:42</span>
+        </div>
+      </div>
+
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">Volume</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="72" aria-label="Volume">
+          <span class="sl-val" id="vol-v">72</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Brightness</span>
+          <input class="rng" type="range" id="bright" min="0" max="100" value="60" aria-label="Brightness">
+          <span class="sl-val" id="bright-v">60%</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Balance</span>
+          <input class="rng" type="range" id="bal" min="-50" max="50" value="0" aria-label="Left-right balance">
+          <span class="sl-val" id="bal-v">C</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ─────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">07</span>
+      <h2 class="sec-title" id="nav-h">Navigation Bar</h2>
+      <span class="sec-ghost" aria-hidden="true">07</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">◻</span>
+      <p class="spec-callout-text">Navigation tabs glow on active. The digital grid: you are either <strong>on or off, identified or dark</strong>. Active icon container takes a cyan border and inner fill. Inactive items are near-invisible until hovered — they exist in potential, not in state.</p>
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <div class="nd-title">User_0042</div>
+        <div class="nd-sub">Tuesday, cycle 12</div>
+        <div class="nd-search">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="rgba(0,229,255,0.3)" stroke-width="1.3"/><path d="M9.5 9.5L12 12" stroke="rgba(0,229,255,0.3)" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Search grid…
+        </div>
+        <div class="nd-items">
+          <div class="nd-item"><div class="nd-ico">▶</div><div><div class="nd-item-title">End of Line</div><div class="nd-item-sub">Stream active · 1:24 / 3:42</div></div></div>
+          <div class="nd-item"><div class="nd-ico">⊞</div><div><div class="nd-item-title">Task Queue</div><div class="nd-item-sub">5 pending · 3 resolved</div></div></div>
+          <div class="nd-item"><div class="nd-ico">◈</div><div><div class="nd-item-title">Grid Node 7</div><div class="nd-item-sub">Status: online · 72°C</div></div></div>
+        </div>
+      </div>
+      <nav class="tron-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Home" aria-current="page">
+          <div class="ni-wrap">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 8.5 10 3l7 5.5V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5Z" stroke="rgba(0,229,255,0.9)" stroke-width="1.5" fill="rgba(0,229,255,0.12)"/></svg>
+          </div>
+          <span class="ni-lbl">Home</span>
+        </button>
+        <button class="ni" aria-label="Search">
+          <div class="ni-wrap">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="5.5" stroke="rgba(0,229,255,0.3)" stroke-width="1.5"/><path d="M13 13l3.5 3.5" stroke="rgba(0,229,255,0.3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="ni-lbl">Search</span>
+        </button>
+        <button class="ni" aria-label="Create">
+          <div class="ni-wrap" style="border-color:var(--ac);background:rgba(0,229,255,0.1);box-shadow:var(--glow-sm)">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="rgba(0,229,255,0.9)" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <span class="ni-lbl" style="color:var(--ac);text-shadow:var(--glow-xs)">Create</span>
+        </button>
+        <button class="ni" aria-label="Alerts, 3 unread">
+          <div class="ni-wrap">
+            <div class="ni-ico-wrap">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 0 0-6 6v3.5L2.5 14h15L16 11.5V8a6 6 0 0 0-6-6Z" stroke="rgba(0,229,255,0.3)" stroke-width="1.5"/><path d="M8.5 17.5a1.5 1.5 0 0 0 3 0" stroke="rgba(0,229,255,0.3)" stroke-width="1.5"/></svg>
+              <span class="ni-badge"></span>
+            </div>
+          </div>
+          <span class="ni-lbl">Alerts</span>
+        </button>
+        <button class="ni" aria-label="Profile">
+          <div class="ni-wrap">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3.5" stroke="rgba(0,229,255,0.3)" stroke-width="1.5"/><path d="M4 18c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" stroke="rgba(0,229,255,0.3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="ni-lbl">Profile</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Sliders ──────────────────────────── */
+document.getElementById('vol').addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = e.target.value;
+});
+document.getElementById('bright').addEventListener('input', e => {
+  document.getElementById('bright-v').textContent = e.target.value + '%';
+});
+document.getElementById('bal').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  document.getElementById('bal-v').textContent = v < -5 ? 'L' + Math.abs(v) : v > 5 ? 'R' + v : 'C';
+});
+document.getElementById('progress').addEventListener('input', e => {
+  const s = parseInt(e.target.value);
+  document.getElementById('curr-time').textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+});
+
+/* ── Play/pause ───────────────────────── */
+const playBtn = document.getElementById('play-btn');
+playBtn.addEventListener('click', () => {
+  const p = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!p));
+  playBtn.querySelector('.play-ico').style.display  = !p ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = !p ? '' : 'none';
+});
+
+/* ── Bottom nav ───────────────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => { n.classList.remove('ni-on'); n.removeAttribute('aria-current'); });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ── Scroll reveal ────────────────────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secId  = entry.target.id;
+      const secKey = sections[secId];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot navigation ──────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

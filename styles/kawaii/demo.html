@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kawaii Pastel · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:      #fff0f7;
+    --s1:      #ffe8f3;
+    --s2:      #ffd8ed;
+    --t1:      #5a3a5a;
+    --t2:      #8a5a8a;
+    --t3:      rgba(90,58,90,0.5);
+    --t4:      rgba(90,58,90,0.25);
+    --sakura:  #ffb3d1;
+    --lavender:#c8b3ff;
+    --mint:    #b3ffd9;
+    --peach:   #ffc8a0;
+    --sky:     #b3d9ff;
+    --lemon:   #fff3b3;
+    --ac:      var(--sakura);
+    --ac-lo:   rgba(255,179,209,0.25);
+    --r-sm:    16px;
+    --r:       24px;
+    --r-md:    32px;
+    --r-lg:    48px;
+    --r-full:  9999px;
+    --f:       'Nunito', system-ui, sans-serif;
+    --f-disp:  'Nunito', sans-serif;
+    --ease:    cubic-bezier(0.4,0,0.2,1);
+    --spring:  cubic-bezier(0.34,1.56,0.64,1);
+    --sh-soft: 0 4px 16px rgba(255,179,209,0.2);
+    --sh-glow: 0 0 20px rgba(255,179,209,0.35);
+    --sh-card: 0 4px 20px rgba(255,179,209,0.15), 0 1px 4px rgba(255,179,209,0.1);
+    --sh-card-h: 0 8px 32px rgba(255,179,209,0.25), 0 2px 8px rgba(255,179,209,0.15);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f);
+    background: var(--bg);
+    color: var(--t1);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--sakura);
+    outline-offset: 3px;
+    border-radius: var(--r-sm);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     KAWAII ANIMATIONS
+  ═══════════════════════════════════════ */
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.4; transform: scale(0.8) rotate(0deg); }
+    50%       { opacity: 1;   transform: scale(1.1) rotate(15deg); }
+  }
+
+  @keyframes wobble {
+    0%   { transform: rotate(0deg); }
+    15%  { transform: rotate(-3deg); }
+    30%  { transform: rotate(3deg); }
+    45%  { transform: rotate(-2deg); }
+    60%  { transform: rotate(2deg); }
+    75%  { transform: rotate(-1deg); }
+    90%  { transform: rotate(1deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+  @keyframes floatHeart {
+    0%, 100% { transform: translateY(0) rotate(-10deg);  opacity: 0.4; }
+    50%       { transform: translateY(-8px) rotate(10deg); opacity: 0.7; }
+  }
+
+  @keyframes softPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,179,209,0.4); }
+    50%       { box-shadow: 0 0 0 5px rgba(255,179,209,0); }
+  }
+
+  @keyframes bounceIn {
+    0%   { transform: scale(0.6); opacity: 0; }
+    60%  { transform: scale(1.1); }
+    80%  { transform: scale(0.95); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes sparkleAppear {
+    0%   { opacity: 0; transform: scale(0) rotate(-30deg); }
+    60%  { opacity: 1; transform: scale(1.2) rotate(10deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ═══════════════════════════════════════
+     FLOATING HEARTS (decorators)
+  ═══════════════════════════════════════ */
+  .heart-float {
+    position: absolute;
+    font-size: 0.75rem;
+    color: var(--sakura);
+    opacity: 0.5;
+    animation: floatHeart 4s ease-in-out infinite;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(90deg, #fff0f7 0%, #ffe8f3 100%);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+    box-shadow: 0 2px 12px rgba(255,179,209,0.2);
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--t2);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .tnav-back:hover { color: var(--t1); }
+
+  .tnav-title {
+    font-size: 0.9375rem;
+    font-weight: 800;
+    color: var(--t1);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1.125rem;
+    background: var(--sakura);
+    border: none;
+    border-radius: var(--r-full);
+    font-family: var(--f);
+    font-size: 0.8125rem;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+    transition: transform 0.2s var(--spring), box-shadow 0.2s;
+    box-shadow: var(--sh-soft);
+  }
+  .tnav-dl:hover {
+    transform: scale(1.04);
+    box-shadow: var(--sh-glow);
+  }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS DOTS
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .prog-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--s2);
+    border: 2px solid rgba(255,179,209,0.3);
+    cursor: pointer;
+    transition: background 0.25s var(--spring), transform 0.25s var(--spring), box-shadow 0.25s;
+    padding: 0;
+  }
+  .prog-dot:hover { transform: scale(1.3); border-color: var(--sakura); }
+  .prog-dot.active {
+    background: var(--sakura);
+    border-color: var(--sakura);
+    transform: scale(1.25);
+    animation: softPulse 1.5s ease infinite;
+  }
+  .prog-dot:nth-child(2).active { background: var(--lavender); border-color: var(--lavender); animation: none; box-shadow: 0 0 8px rgba(200,179,255,0.5); }
+  .prog-dot:nth-child(3).active { background: var(--mint);     border-color: var(--mint);     animation: none; box-shadow: 0 0 8px rgba(179,255,217,0.5); }
+  .prog-dot:nth-child(4).active { background: var(--peach);    border-color: var(--peach);    animation: none; box-shadow: 0 0 8px rgba(255,200,160,0.5); }
+  .prog-dot:nth-child(5).active { background: var(--sky);      border-color: var(--sky);      animation: none; box-shadow: 0 0 8px rgba(179,217,255,0.5); }
+  .prog-dot:nth-child(6).active { background: var(--lemon);    border-color: var(--lemon);    animation: none; box-shadow: 0 0 8px rgba(255,243,179,0.5); }
+  .prog-dot:nth-child(7).active { background: var(--sakura);   border-color: var(--sakura);   animation: none; box-shadow: 0 0 8px rgba(255,179,209,0.5); }
+  .prog-dot:nth-child(8).active { background: var(--lavender); border-color: var(--lavender); animation: none; box-shadow: 0 0 8px rgba(200,179,255,0.5); }
+  .prog-dot:focus-visible { outline: 2px solid var(--sakura); outline-offset: 2px; }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.75rem 7rem;
+  }
+
+  /* ── Section ──────────────────────────── */
+  .sec {
+    margin-top: 5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  /* Section header */
+  .sec-hd {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 2px dashed rgba(255,179,209,0.3);
+  }
+
+  /* Ghost mega-number */
+  .sec-ghost {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(255,179,209,0.1);
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+
+  .sec-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.5625rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--sakura);
+    border-radius: var(--r-full);
+    padding: 0.25rem 0.7rem;
+    flex-shrink: 0;
+  }
+
+  .sec-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--t1);
+  }
+
+  /* ── Spec callout ─────────────────────── */
+  .spec-callout {
+    background: linear-gradient(135deg, rgba(200,179,255,0.15) 0%, rgba(179,255,217,0.1) 100%);
+    border-radius: var(--r-lg);
+    padding: 1.125rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    position: relative;
+    box-shadow: var(--sh-soft);
+  }
+  .spec-callout-ico {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+  .spec-callout-text {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--t2);
+  }
+  .spec-callout-text strong {
+    font-weight: 800;
+    color: var(--t1);
+    font-family: 'Courier New', monospace;
+    font-size: 0.8125rem;
+    background: rgba(255,179,209,0.15);
+    padding: 0 0.25rem;
+    border-radius: 6px;
+  }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 3.5rem 0 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--t2);
+    background: rgba(255,179,209,0.2);
+    border-radius: var(--r-full);
+    padding: 0.375rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-h1 {
+    font-size: clamp(3rem, 8vw, 5.25rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--t1);
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-h1 .h1-accent {
+    background: linear-gradient(135deg, var(--sakura), var(--lavender));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--t2);
+    max-width: 55ch;
+    margin-bottom: 2rem;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-tag {
+    background: #fff;
+    border-radius: var(--r-full);
+    padding: 0.375rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--t2);
+    box-shadow: var(--sh-soft);
+  }
+
+  /* Hero widget — cute card trio */
+  .hero-widget {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-widget-card {
+    background: #fff;
+    box-shadow: var(--sh-card);
+    border-radius: var(--r-lg);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 190px;
+    max-width: 270px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s var(--spring), box-shadow 0.3s;
+  }
+  .hero-widget-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: var(--sh-card-h);
+  }
+  .hero-widget-card::before {
+    content: '✦';
+    position: absolute;
+    top: 10px; right: 12px;
+    color: var(--lavender);
+    font-size: 0.75rem;
+    animation: twinkle 2s ease-in-out infinite;
+  }
+
+  .hw-icon {
+    width: 48px; height: 48px;
+    border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  .hw-sakura  { background: rgba(255,179,209,0.2); }
+  .hw-lavender{ background: rgba(200,179,255,0.2); }
+  .hw-mint    { background: rgba(179,255,217,0.2); }
+
+  .hw-title { font-size: 0.9375rem; font-weight: 800; color: var(--t1); margin-bottom: 0.15rem; }
+  .hw-sub   { font-size: 0.75rem;   font-weight: 600; color: var(--t3); }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+
+  .swatch {
+    background: #fff;
+    box-shadow: var(--sh-card);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    transition: transform 0.25s var(--spring), box-shadow 0.25s;
+    cursor: pointer;
+  }
+  .swatch:hover { transform: translateY(-4px) scale(1.02); box-shadow: var(--sh-card-h); }
+  .swatch-color { height: 72px; position: relative; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+  .swatch-body  { padding: 0.75rem 0.875rem; }
+  .swatch-hex   { font-size: 0.8125rem; font-weight: 700; color: var(--t1); display: block; margin-bottom: 0.15rem; font-variant-numeric: tabular-nums; }
+  .swatch-name  { font-size: 0.5625rem; font-weight: 700; color: var(--t3); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    background: #fff;
+    box-shadow: var(--sh-card);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.125rem 1.75rem;
+    border-bottom: 1px dashed rgba(255,179,209,0.2);
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { text-align: right; }
+  .tr-lbl  { font-size: 0.5625rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sakura); display: block; margin-bottom: 0.15rem; }
+  .tr-spec { font-size: 0.5625rem; color: var(--t3); line-height: 1.5; }
+
+  .ts-disp  { font-size: 3rem;     font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; color: var(--t1); }
+  .ts-h1    { font-size: 2.25rem;  font-weight: 800; line-height: 1.15; color: var(--t1); }
+  .ts-h2    { font-size: 1.75rem;  font-weight: 700; line-height: 1.2;  color: var(--t1); }
+  .ts-h3    { font-size: 1.375rem; font-weight: 700; line-height: 1.25; color: var(--t1); }
+  .ts-h4    { font-size: 1.125rem; font-weight: 600; line-height: 1.3;  color: var(--t1); }
+  .ts-lg    { font-size: 1.0625rem;font-weight: 400; line-height: 1.6;  color: var(--t2); }
+  .ts-base  { font-size: 1rem;     font-weight: 400; line-height: 1.55; color: var(--t2); }
+  .ts-sm    { font-size: 0.875rem; font-weight: 400; line-height: 1.5;  color: var(--t2); }
+  .ts-cap   { font-size: 0.75rem;  font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t3); }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    border: none; border-radius: var(--r-full);
+    padding: 0.75rem 1.875rem;
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 700;
+    cursor: pointer; white-space: nowrap; text-decoration: none;
+    transition: transform 0.2s var(--spring), box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn:active:not(:disabled) { transform: scale(0.96); }
+
+  /* Sparkle burst on click (::after) */
+  .btn::after {
+    content: '✦';
+    position: absolute;
+    right: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    font-size: 0.6rem;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s var(--spring);
+    pointer-events: none;
+  }
+  .btn:hover::after { opacity: 1; transform: translateY(-50%) scale(1); }
+
+  /* Primary — Sakura */
+  .btn-sakura {
+    background: var(--sakura); color: #fff;
+    box-shadow: 0 4px 16px rgba(255,179,209,0.35);
+  }
+  .btn-sakura:hover:not(:disabled) {
+    animation: wobble 0.5s ease;
+    transform: scale(1.04);
+    box-shadow: 0 6px 24px rgba(255,179,209,0.45);
+  }
+
+  /* Lavender */
+  .btn-lavender {
+    background: var(--lavender); color: #fff;
+    box-shadow: 0 4px 16px rgba(200,179,255,0.35);
+  }
+  .btn-lavender:hover:not(:disabled) {
+    animation: wobble 0.5s ease;
+    transform: scale(1.04);
+    box-shadow: 0 6px 24px rgba(200,179,255,0.45);
+  }
+  .btn-lavender::after { color: rgba(255,255,255,0.8); }
+
+  /* Mint */
+  .btn-mint {
+    background: var(--mint); color: var(--t1);
+    box-shadow: 0 4px 16px rgba(179,255,217,0.4);
+  }
+  .btn-mint:hover:not(:disabled) {
+    animation: wobble 0.5s ease;
+    transform: scale(1.04);
+  }
+  .btn-mint::after { color: var(--t2); }
+
+  /* Peach */
+  .btn-peach {
+    background: var(--peach); color: var(--t1);
+    box-shadow: 0 4px 16px rgba(255,200,160,0.4);
+  }
+  .btn-peach:hover:not(:disabled) {
+    animation: wobble 0.5s ease;
+    transform: scale(1.04);
+  }
+  .btn-peach::after { color: var(--t2); }
+
+  /* Sky */
+  .btn-sky {
+    background: var(--sky); color: var(--t1);
+    box-shadow: 0 4px 16px rgba(179,217,255,0.4);
+  }
+  .btn-sky:hover:not(:disabled) {
+    animation: wobble 0.5s ease;
+    transform: scale(1.04);
+  }
+  .btn-sky::after { color: var(--t2); }
+
+  /* Ghost */
+  .btn-ghost {
+    background: #fff;
+    border: 2px solid var(--sakura);
+    color: var(--sakura);
+    box-shadow: var(--sh-soft);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: rgba(255,179,209,0.08);
+    animation: wobble 0.5s ease;
+    transform: scale(1.04);
+  }
+  .btn-ghost::after { color: var(--sakura); }
+
+  /* Small */
+  .btn-sm { padding: 0.5625rem 1.25rem; font-size: 0.875rem; }
+
+  /* Icon circle */
+  .btn-icon {
+    width: 46px; height: 46px; padding: 0;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .btn-icon::after { display: none; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 2.5rem; }
+  .state-row-label { font-size: 0.625rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t3); margin-bottom: 1rem; }
+  .state-row { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .state-lbl  { font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--t3); }
+
+  .btn-variants {
+    display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+    padding-top: 2rem; margin-top: 2rem;
+    border-top: 2px dashed rgba(255,179,209,0.2);
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: #fff;
+    box-shadow: var(--sh-card);
+    border-radius: var(--r-lg);
+    padding: 2.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-panel::before {
+    content: '✦';
+    position: absolute;
+    top: 1.25rem; right: 1.5rem;
+    color: var(--lavender);
+    font-size: 1rem;
+    animation: twinkle 2.5s ease-in-out infinite;
+  }
+
+  .form-title { font-size: 1.125rem; font-weight: 800; color: var(--t1); margin-bottom: 0.25rem; }
+  .form-sub   { font-size: 0.875rem; color: var(--t2); margin-bottom: 2rem; line-height: 1.55; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.375rem; }
+  .fg-full   { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--t2);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .label::before { content: '✦'; color: var(--sakura); font-size: 0.6rem; }
+
+  .hint { font-size: 0.75rem; color: var(--t3); margin-top: 0.15rem; }
+
+  .inp {
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(255,179,209,0.15), inset 0 1px 4px rgba(255,179,209,0.1);
+    border: none; border-radius: var(--r);
+    padding: 0.875rem 1.25rem;
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 500; color: var(--t1);
+    outline: none; width: 100%;
+    transition: box-shadow 0.2s var(--ease);
+  }
+  .inp::placeholder { color: var(--t4); font-weight: 500; }
+  .inp:focus { box-shadow: 0 0 0 3px rgba(255,179,209,0.3), 0 2px 12px rgba(255,179,209,0.15); }
+
+  .inp-wrap { position: relative; }
+  .inp-ico  { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--t3); font-size: 1rem; pointer-events: none; }
+  .inp.has-ico { padding-right: 2.75rem; }
+
+  .sel {
+    -webkit-appearance: none;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%238a5a8a' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 1rem center;
+    box-shadow: 0 2px 12px rgba(255,179,209,0.15), inset 0 1px 4px rgba(255,179,209,0.1);
+    border: none; border-radius: var(--r);
+    padding: 0.875rem 2.75rem 0.875rem 1.25rem;
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 500; color: var(--t1);
+    outline: none; width: 100%; cursor: pointer;
+    transition: box-shadow 0.2s var(--ease);
+  }
+  .sel:focus { box-shadow: 0 0 0 3px rgba(255,179,209,0.3), 0 2px 12px rgba(255,179,209,0.15); }
+
+  .ta { resize: vertical; min-height: 96px; line-height: 1.6; }
+
+  /* Checkboxes */
+  .chk-group { display: flex; flex-direction: column; gap: 0.875rem; }
+  .chk-row { display: flex; align-items: center; gap: 0.875rem; cursor: pointer; user-select: none; }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+
+  .chk-box {
+    width: 24px; height: 24px; flex-shrink: 0;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--sakura);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s var(--spring), transform 0.2s var(--spring);
+    font-size: 0.75rem;
+    color: transparent;
+  }
+  .chk-in:checked + .chk-box {
+    background: var(--sakura);
+    color: #fff;
+    transform: scale(1.1);
+    animation: bounceIn 0.35s var(--spring);
+  }
+  .chk-in:focus-visible + .chk-box { outline: 2px solid var(--sakura); outline-offset: 3px; }
+  .chk-txt { font-size: 0.9375rem; font-weight: 600; color: var(--t1); }
+
+  /* Radios */
+  .rad-box {
+    width: 24px; height: 24px; flex-shrink: 0;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--lavender);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s;
+  }
+  .rad-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--lavender);
+    opacity: 0; transform: scale(0.3);
+    transition: opacity 0.15s, transform 0.25s var(--spring);
+  }
+  .chk-in:checked + .rad-box { border-color: var(--lavender); }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1); }
+  .chk-in:focus-visible + .rad-box { outline: 2px solid var(--lavender); outline-offset: 3px; }
+
+  /* Toggles */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.0625rem 0; gap: 1rem;
+    border-bottom: 1px dashed rgba(255,179,209,0.2);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info  { flex: 1; }
+  .tgl-title { font-size: 0.9375rem; font-weight: 700; color: var(--t1); }
+  .tgl-desc  { font-size: 0.8125rem; color: var(--t3); margin-top: 0.125rem; }
+
+  .tgl       { flex-shrink: 0; cursor: pointer; }
+  .tgl-in    { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 52px; height: 30px;
+    background: var(--s2);
+    border-radius: var(--r-full);
+    position: relative;
+    transition: background 0.3s var(--ease);
+  }
+  .tgl-thumb {
+    position: absolute; top: 4px; left: 4px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(255,179,209,0.3);
+    transition: transform 0.3s var(--spring);
+  }
+  .tgl-in:checked ~ .tgl-track { background: var(--sakura); }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb { transform: translateX(22px); }
+  .tgl-in:focus-visible ~ .tgl-track { outline: 2px solid var(--sakura); outline-offset: 3px; border-radius: var(--r-full); }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .kawaii-card {
+    background: #fff;
+    box-shadow: var(--sh-card);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    transition: transform 0.3s var(--spring), box-shadow 0.3s;
+    position: relative;
+  }
+  .kawaii-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: var(--sh-card-h);
+  }
+  .kawaii-card::before {
+    content: '✦';
+    position: absolute;
+    top: 10px; right: 14px;
+    font-size: 0.8rem;
+    animation: twinkle 2s ease-in-out infinite;
+    z-index: 2;
+  }
+  .kawaii-card:nth-child(1)::before { color: var(--lavender); animation-delay: 0s; }
+  .kawaii-card:nth-child(2)::before { color: var(--mint);     animation-delay: 0.7s; }
+  .kawaii-card:nth-child(3)::before { color: var(--peach);    animation-delay: 1.4s; }
+
+  .card-thumb {
+    height: 128px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+  }
+  .ct-sakura   { background: linear-gradient(135deg, rgba(255,179,209,0.35) 0%, rgba(255,216,237,0.5) 100%); }
+  .ct-lavender { background: linear-gradient(135deg, rgba(200,179,255,0.35) 0%, rgba(224,214,255,0.5) 100%); }
+  .ct-mint     { background: linear-gradient(135deg, rgba(179,255,217,0.35) 0%, rgba(214,255,235,0.5) 100%); }
+
+  .card-in { padding: 1.25rem 1.5rem 1.625rem; }
+  .card-eye  { font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sakura); margin-bottom: 0.375rem; }
+  .card-h    { font-size: 1.0625rem; font-weight: 800; color: var(--t1); margin-bottom: 0.5rem; }
+  .card-body-text { font-size: 0.875rem; line-height: 1.6; color: var(--t2); margin-bottom: 1.25rem; }
+
+  .card-ft {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px dashed rgba(255,179,209,0.2);
+  }
+
+  .card-av {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.875rem;
+  }
+
+  .card-dt { font-size: 0.75rem; font-weight: 600; color: var(--t3); }
+
+  .card-act {
+    background: rgba(255,179,209,0.12);
+    border: none; border-radius: var(--r-full);
+    padding: 0.35rem 0.875rem;
+    font-family: var(--f); font-size: 0.75rem; font-weight: 800; color: var(--sakura);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s var(--spring);
+  }
+  .card-act:hover { background: rgba(255,179,209,0.22); transform: scale(1.05); }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ */
+  .player {
+    background: #fff;
+    box-shadow: var(--sh-card);
+    border-radius: var(--r-lg);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .player::before {
+    content: '♪';
+    position: absolute;
+    top: 1rem; right: 1.5rem;
+    color: var(--lavender);
+    font-size: 1.25rem;
+    animation: floatHeart 3s ease-in-out infinite;
+  }
+
+  .player-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .player-art {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, rgba(255,179,209,0.25), rgba(200,179,255,0.25));
+    border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; flex-shrink: 0;
+    box-shadow: var(--sh-soft);
+  }
+  .player-title  { font-size: 1.0625rem; font-weight: 800; color: var(--t1); margin-bottom: 0.2rem; }
+  .player-artist { font-size: 0.875rem; color: var(--t2); font-weight: 600; }
+
+  .pc-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.875rem;
+  }
+
+  .pc-btn {
+    background: var(--s1);
+    border: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--t2); font-size: 1rem;
+    transition: transform 0.2s var(--spring), box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(255,179,209,0.2);
+  }
+  .pc-btn:hover  { transform: scale(1.12); box-shadow: 0 4px 14px rgba(255,179,209,0.3); }
+  .pc-btn:active { transform: scale(0.94); }
+
+  .pc-sm { width: 40px; height: 40px; }
+  .pc-lg {
+    width: 58px; height: 58px;
+    background: var(--sakura); color: #fff;
+    box-shadow: 0 4px 18px rgba(255,179,209,0.45);
+    font-size: 1.2rem;
+  }
+  .pc-lg:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(255,179,209,0.55); animation: wobble 0.4s ease; }
+  .pc-lg[aria-pressed="true"] .play-ico  { display: none; }
+  .pc-lg[aria-pressed="false"] .pause-ico { display: none; }
+
+  /* Progress bar */
+  .progress-outer { margin: 1.5rem 0; }
+  .progress-rng {
+    -webkit-appearance: none;
+    width: 100%; height: 8px; border-radius: var(--r-full);
+    background: var(--s2);
+    outline: none; cursor: pointer;
+  }
+  .progress-rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--sakura);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(255,179,209,0.5);
+    cursor: pointer;
+    transition: transform 0.15s var(--spring);
+  }
+  .progress-rng::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .progress-rng::-moz-range-thumb {
+    width: 22px; height: 22px; border: 3px solid #fff; border-radius: 50%;
+    background: var(--sakura);
+    box-shadow: 0 2px 8px rgba(255,179,209,0.5);
+    cursor: pointer;
+  }
+
+  /* Styled fill effect via gradient */
+  .progress-fill-wrap { position: relative; height: 8px; margin-bottom: 0.75rem; }
+  .progress-track-bg {
+    position: absolute; inset: 0;
+    border-radius: var(--r-full);
+    background: var(--s2);
+    pointer-events: none;
+  }
+  .progress-fill {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--sakura), var(--lavender));
+    border-radius: var(--r-full);
+    transition: width 0.1s;
+    pointer-events: none;
+  }
+
+  .progress-times {
+    display: flex; justify-content: space-between;
+    margin-top: 0.4rem;
+  }
+  .ptime { font-size: 0.6875rem; font-weight: 700; color: var(--t3); }
+
+  .slider-list { display: flex; flex-direction: column; gap: 1.375rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed rgba(255,179,209,0.2); }
+  .slider-item { display: flex; align-items: center; gap: 1rem; }
+  .sl-lbl { font-size: 0.8125rem; font-weight: 700; color: var(--t2); min-width: 5rem; }
+  .sl-val {
+    font-size: 0.8125rem; font-weight: 800; color: #fff;
+    background: var(--sakura);
+    border-radius: var(--r-full);
+    min-width: 2.5rem; text-align: center;
+    padding: 0.125rem 0.625rem;
+    box-shadow: 0 2px 8px rgba(255,179,209,0.3);
+  }
+
+  .rng {
+    -webkit-appearance: none;
+    flex: 1; height: 8px; border-radius: var(--r-full);
+    background: var(--s2);
+    outline: none; cursor: pointer;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #fff;
+    border: 3px solid var(--sakura);
+    box-shadow: 0 2px 8px rgba(255,179,209,0.35);
+    cursor: pointer;
+    transition: transform 0.15s var(--spring);
+  }
+  .rng::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  .rng::-moz-range-thumb {
+    width: 26px; height: 26px; border: 3px solid var(--sakura); border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(255,179,209,0.35);
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAVIGATION
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: #fff;
+    box-shadow: var(--sh-card);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .nd-screen { padding: 1.75rem 1.5rem 0; }
+  .nd-title  { font-size: 1.375rem; font-weight: 900; color: var(--t1); margin-bottom: 0.2rem; }
+  .nd-sub    { font-size: 0.875rem; color: var(--t3); font-weight: 600; margin-bottom: 1.25rem; }
+
+  .nd-search {
+    background: var(--s1);
+    border-radius: var(--r-full);
+    padding: 0.625rem 1.125rem;
+    display: flex; align-items: center; gap: 0.625rem;
+    color: var(--t3); font-size: 0.875rem; font-weight: 600;
+    margin-bottom: 1.25rem;
+  }
+
+  .nd-items { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.75rem; }
+  .nd-item {
+    background: var(--s1);
+    border-radius: var(--r-md);
+    padding: 0.875rem 1rem;
+    display: flex; align-items: center; gap: 0.875rem;
+  }
+  .nd-ico {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: #fff;
+    border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: var(--sh-soft);
+  }
+  .nd-item-title { font-size: 0.9375rem; font-weight: 700; color: var(--t1); }
+  .nd-item-sub   { font-size: 0.75rem;   font-weight: 600; color: var(--t3); }
+
+  /* Bottom nav bar */
+  .kawaii-navbar {
+    background: #fff;
+    box-shadow: 0 -2px 12px rgba(255,179,209,0.2);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 0.75rem 0.5rem;
+    position: relative;
+  }
+
+  .ni {
+    display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--f); padding: 0.25rem 0.5rem; flex: 1;
+    border-radius: var(--r-md);
+    transition: transform 0.2s var(--spring);
+  }
+  .ni:hover { transform: scale(1.08); }
+
+  .ni-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .ni-pill {
+    border-radius: var(--r-full);
+    padding: 0.375rem 1rem;
+    display: flex; align-items: center; gap: 0.375rem;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .ni-on .ni-pill {
+    background: var(--sakura);
+    box-shadow: 0 2px 10px rgba(255,179,209,0.4);
+  }
+  .ni-on .ni-icon { filter: none; }
+
+  .ni-lbl {
+    font-size: 0.625rem; font-weight: 800; color: var(--t3);
+    letter-spacing: 0.03em;
+    transition: color 0.15s;
+  }
+  .ni-on .ni-lbl { color: #fff; }
+
+  .ni-badge {
+    position: absolute; top: -2px; right: -2px;
+    width: 8px; height: 8px;
+    background: var(--sakura);
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
+  .ni-ico-wrap { position: relative; }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .tr { grid-template-columns: 68px 1fr; gap: 0.75rem; padding: 0.875rem 1.25rem; }
+    .ts-disp { font-size: 2rem; }
+    .ts-h1   { font-size: 1.75rem; }
+    .palette-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+    .state-row { gap: 0.75rem; }
+    .player-top { grid-template-columns: auto 1fr; }
+    .pc-row { grid-column: 1 / -1; }
+    .hero-h1 { font-size: clamp(2.5rem, 10vw, 4rem); }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 2.5L4.5 7 9 11.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Gallery
+  </a>
+  <span class="tnav-title">🌸 Kawaii Pastel</span>
+  <a class="tnav-dl" href="style-guide.md" download="kawaii-pastel-style-guide.md">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 2v7.5M4.5 7l2.5 2.5 2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress dots ────────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"   aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"     aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography" aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"    aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Forms"      aria-label="Jump to Forms"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"      aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"   aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation" aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ──────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <!-- Floating decorators -->
+    <span class="heart-float" style="top:10%;left:2%;animation-delay:0s">♡</span>
+    <span class="heart-float" style="top:25%;right:5%;animation-delay:1s;color:var(--lavender)">✦</span>
+    <span class="heart-float" style="bottom:20%;left:8%;animation-delay:2s;color:var(--mint)">★</span>
+    <span class="heart-float" style="bottom:35%;right:2%;animation-delay:0.5s;color:var(--peach)">✿</span>
+
+    <div class="hero-kicker">かわいい · JAPANESE CUTE · ♡ ✦ ✿</div>
+    <h1 class="hero-h1"><span class="h1-accent">Kawaii</span> Pastel</h1>
+    <p class="hero-desc">Cuteness is a design philosophy. In Japanese cute culture, every interface is an act of care — soft colors say "I won't overwhelm you", round corners say "nothing will hurt here", and sparkles say "I'm happy to be with you."</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Nunito · rounded terminals</span>
+      <span class="hero-tag">Max border-radius everywhere</span>
+      <span class="hero-tag">Six-pastel system</span>
+      <span class="hero-tag">Sparkle + heart decoration</span>
+      <span class="hero-tag">Wobble hover animations</span>
+    </div>
+    <div class="hero-widget">
+      <div class="hero-widget-card">
+        <div class="hw-icon hw-sakura">🌸</div>
+        <div><div class="hw-title">Sakura Pink</div><div class="hw-sub">Primary authority</div></div>
+      </div>
+      <div class="hero-widget-card">
+        <div class="hw-icon hw-lavender">💜</div>
+        <div><div class="hw-title">Soft Lavender</div><div class="hw-sub">Gentle secondary</div></div>
+      </div>
+      <div class="hero-widget-card">
+        <div class="hw-icon hw-mint">🌿</div>
+        <div><div class="hw-title">Fresh Mint</div><div class="hw-sub">Supportive tertiary</div></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ──────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">01</span>
+      <h2 class="sec-title" id="colors-h">✦ Color Palette</h2>
+      <span class="sec-ghost" aria-hidden="true">01</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">🌸</span>
+      <p class="spec-callout-text">Cherry blossom pink, soft lavender, fresh mint, warm peach, baby blue. Every color is a mood — soft, gentle, unconditionally friendly. <strong>Never use a saturated or dark color.</strong> If it could appear on a Sanrio character's outfit, it's kawaii. If it looks like a traffic sign, it's not.</p>
+    </div>
+    <div class="palette-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#fff0f7">🌸</div><div class="swatch-body"><span class="swatch-hex">#fff0f7</span><span class="swatch-name">--bg · sakura white</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ffe8f3">🌷</div><div class="swatch-body"><span class="swatch-hex">#ffe8f3</span><span class="swatch-name">--s1 · petal soft</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ffd8ed">💗</div><div class="swatch-body"><span class="swatch-hex">#ffd8ed</span><span class="swatch-name">--s2 · petal deep</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ffb3d1">♡</div><div class="swatch-body"><span class="swatch-hex">#ffb3d1</span><span class="swatch-name">--sakura · primary</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#c8b3ff">✦</div><div class="swatch-body"><span class="swatch-hex">#c8b3ff</span><span class="swatch-name">--lavender</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#b3ffd9">✿</div><div class="swatch-body"><span class="swatch-hex">#b3ffd9</span><span class="swatch-name">--mint</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ffc8a0">🍑</div><div class="swatch-body"><span class="swatch-hex">#ffc8a0</span><span class="swatch-name">--peach</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#b3d9ff">☁️</div><div class="swatch-body"><span class="swatch-hex">#b3d9ff</span><span class="swatch-name">--sky</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#fff3b3">⭐</div><div class="swatch-body"><span class="swatch-hex">#fff3b3</span><span class="swatch-name">--lemon</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#5a3a5a"><span style="color:#fff">T₁</span></div><div class="swatch-body"><span class="swatch-hex">#5a3a5a</span><span class="swatch-name">--t1 · plum ink</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#8a5a8a"><span style="color:#fff">T₂</span></div><div class="swatch-body"><span class="swatch-hex">#8a5a8a</span><span class="swatch-name">--t2 · muted plum</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:rgba(90,58,90,0.25)">T₄</div><div class="swatch-body"><span class="swatch-hex">rgba…25%</span><span class="swatch-name">--t4 · placeholder</span></div></div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ──────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">02</span>
+      <h2 class="sec-title" id="type-h">♡ Typography Scale</h2>
+      <span class="sec-ghost" aria-hidden="true">02</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">✦</span>
+      <p class="spec-callout-text"><strong>Nunito only.</strong> Its rounded terminals echo every rounded corner in the design. There is no hard edge in kawaii typography. Weight 400–900 available; lean toward 700–800 for UI text — friendliness lives in the bold weights.</p>
+    </div>
+    <div class="typescale">
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Display</span><span class="tr-spec">48px / 900<br>−0.03em lh 1.1</span></div><div class="ts-disp">Nunito ♡</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H1</span><span class="tr-spec">36px / 800<br>lh 1.15</span></div><div class="ts-h1">Heading one ✦</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H2</span><span class="tr-spec">28px / 700<br>lh 1.2</span></div><div class="ts-h2">Heading two ✿</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H3</span><span class="tr-spec">22px / 700<br>lh 1.25</span></div><div class="ts-h3">Heading three 🌸</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H4</span><span class="tr-spec">18px / 600</span></div><div class="ts-h4">Heading four ★</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Lg</span><span class="tr-spec">17px / 400<br>lh 1.7</span></div><div class="ts-lg">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body</span><span class="tr-spec">16px / 400<br>lh 1.55</span></div><div class="ts-base">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Sm</span><span class="tr-spec">14px / 400<br>lh 1.5</span></div><div class="ts-sm">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Caption</span><span class="tr-spec">12px / 700<br>+0.06em UC</span></div><div class="ts-cap">Caption · metadata · label ♡</div></div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ─────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">03</span>
+      <h2 class="sec-title" id="btn-h">🌟 Buttons</h2>
+      <span class="sec-ghost" aria-hidden="true">03</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">♡</span>
+      <p class="spec-callout-text">Pastel pill buttons that wobble when you hover. The wobble says: <em>I'm friendly, I'm soft, this will feel good.</em> <strong>Sakura pink is the authority color</strong> — use it for primary actions. A ✦ sparkle appears in the corner on hover. Every button is a promise of delight.</p>
+    </div>
+    <div class="btn-states">
+      <div>
+        <p class="state-row-label">🌸 Sakura — Primary</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-sakura">Sakura ♡</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-sakura" style="transform:scale(1.04);box-shadow:0 6px 24px rgba(255,179,209,0.45)">Hover ✦</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-sakura" style="transform:scale(0.96)">Pressed</button><span class="state-lbl">Pressed ↓</span></div>
+          <div class="state-wrap"><button class="btn btn-sakura" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">💜 Lavender — Secondary</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-lavender">Lavender ✦</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-lavender" style="transform:scale(1.04)">Hover</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-lavender" style="transform:scale(0.96)">Pressed</button><span class="state-lbl">Pressed ↓</span></div>
+          <div class="state-wrap"><button class="btn btn-lavender" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div class="btn-variants">
+        <button class="btn btn-sakura btn-sm">Small 🌸</button>
+        <button class="btn btn-mint">Mint ✿</button>
+        <button class="btn btn-peach">Peach 🍑</button>
+        <button class="btn btn-sky">Sky ☁️</button>
+        <button class="btn btn-ghost">Ghost ♡</button>
+        <button class="btn btn-icon btn-sakura" aria-label="Favorite">♡</button>
+        <button class="btn btn-icon btn-lavender" aria-label="Star">★</button>
+        <button class="btn btn-icon" style="background:var(--mint);color:var(--t1)" aria-label="Sparkle">✦</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ─────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">04</span>
+      <h2 class="sec-title" id="inputs-h">✿ Form Inputs</h2>
+      <span class="sec-ghost" aria-hidden="true">04</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">✦</span>
+      <p class="spec-callout-text">Shadow-only inputs — no hard border. The focus state is a sakura glow: <strong>0 0 0 3px rgba(255,179,209,0.3)</strong>. The <strong>✦ before labels</strong> signals: this is a friendly request. Checkboxes are circles (50% radius) with a ♡ check mark. Toggles bounce with a spring animation.</p>
+    </div>
+    <div class="form-panel">
+      <div class="form-title">🌸 Your Little Profile</div>
+      <p class="form-sub">Six input types — each with a kawaii finish. Hover, focus, and interact with them all.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">Your name</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="text" id="fi-name" placeholder="Hana Sakura" autocomplete="name">
+            <span class="inp-ico">🌸</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">Email</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="email" id="fi-email" placeholder="hana@kawaii.io" autocomplete="email">
+            <span class="inp-ico">💌</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-mood">Current mood</label>
+          <select class="inp sel" id="fi-mood">
+            <option value="">Choose a mood…</option>
+            <option>🌸 Sakura season</option>
+            <option>💜 Dreamy lavender</option>
+            <option>✨ Sparkly today</option>
+            <option>🍑 Peachy keen</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-fave">Favorite emoji</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="text" id="fi-fave" placeholder="♡ ✦ ✿ ★">
+            <span class="inp-ico">⭐</span>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-bio">About you</label>
+          <textarea class="inp ta" id="fi-bio" placeholder="I love cherry blossoms, soft things, and little sparkles everywhere ✦" rows="3"></textarea>
+          <span class="hint">Tip: emoji are encouraged ♡</span>
+        </div>
+        <div class="field">
+          <span class="label" id="chk-lbl">Loves</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox" checked>
+              <span class="chk-box">♡</span>
+              <span class="chk-txt">Cherry blossoms 🌸</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox">
+              <span class="chk-box">♡</span>
+              <span class="chk-txt">Sparkly things ✦</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox" checked>
+              <span class="chk-box">♡</span>
+              <span class="chk-txt">Pastel everything ✿</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="rad-lbl">Pastel season</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="season" value="spring">
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Spring 🌸</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="season" value="summer" checked>
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Summer ☁️</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="season" value="winter">
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Winter ❄️</span>
+            </label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">Kawaii settings</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Sparkle mode ✦</div>
+                <div class="tgl-desc">Add sparkles to every interaction</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Sparkle mode">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Heart notifications ♡</div>
+                <div class="tgl-desc">Replace all alerts with hearts</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" aria-label="Heart notifications">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Extra roundness 🌸</div>
+                <div class="tgl-desc">Maximum border-radius everywhere</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Extra roundness">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ───────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">05</span>
+      <h2 class="sec-title" id="cards-h">🌟 Cards</h2>
+      <span class="sec-ghost" aria-hidden="true">05</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">♡</span>
+      <p class="spec-callout-text">White cards with pastel headers and sparkle decorations. Each card is a gift. <strong>Hover: translateY(−4px) + scale(1.01)</strong> — the card floats toward you, happy to help. The ✦ in the corner twinkles at its own rhythm. Card headers use gradient pastel fills, never flat or dark.</p>
+    </div>
+    <div class="cards-row">
+      <article class="kawaii-card">
+        <div class="card-thumb ct-sakura">🌸</div>
+        <div class="card-in">
+          <p class="card-eye">Design</p>
+          <h3 class="card-h">Softness is a Choice</h3>
+          <p class="card-body-text">Every sharp edge is a design decision. Kawaii says: choose roundness. Choose softness. Make every surface feel safe to touch.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <div class="card-av" style="background:rgba(255,179,209,0.2);font-size:0.875rem">🌸</div>
+              <span class="card-dt">3 min read</span>
+            </div>
+            <button class="card-act">Read ♡</button>
+          </div>
+        </div>
+      </article>
+      <article class="kawaii-card">
+        <div class="card-thumb ct-lavender">💜</div>
+        <div class="card-in">
+          <p class="card-eye" style="color:var(--lavender)">Color</p>
+          <h3 class="card-h">The Pastel Promise</h3>
+          <p class="card-body-text">Saturated colors demand attention. Pastels invite it. The difference is whether your interface is shouting or whispering: "hello."</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <div class="card-av" style="background:rgba(200,179,255,0.2);font-size:0.875rem">✦</div>
+              <span class="card-dt">4 min read</span>
+            </div>
+            <button class="card-act" style="color:var(--lavender);background:rgba(200,179,255,0.12)">Read ✦</button>
+          </div>
+        </div>
+      </article>
+      <article class="kawaii-card">
+        <div class="card-thumb ct-mint">🌿</div>
+        <div class="card-in">
+          <p class="card-eye" style="color:#52c97a">Motion</p>
+          <h3 class="card-h">The Wobble Says Everything</h3>
+          <p class="card-body-text">A button that wobbles when hovered communicates personality in 500ms. Rigid interfaces feel cold. Bouncy interfaces feel alive.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <div class="card-av" style="background:rgba(179,255,217,0.2);font-size:0.875rem">✿</div>
+              <span class="card-dt">5 min read</span>
+            </div>
+            <button class="card-act" style="color:#52c97a;background:rgba(179,255,217,0.2)">Read ✿</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ────────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">06</span>
+      <h2 class="sec-title" id="ctrl-h">🎵 Controls · Player</h2>
+      <span class="sec-ghost" aria-hidden="true">06</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">🎶</span>
+      <p class="spec-callout-text">The player is a music box. <strong>Sakura gradient progress bar</strong>, round controls, emoji track art. Playing music is delightful — the interface should say so. Slider thumb: white circle with sakura border, bounces on drag. Value display is a bubble, not a number.</p>
+    </div>
+    <div class="player">
+      <div class="player-top">
+        <div class="player-art">🎵</div>
+        <div>
+          <div class="player-title">Yume no Tobira · きらきら</div>
+          <div class="player-artist">Ambient Kawaii · Relax ✦</div>
+        </div>
+        <div class="pc-row" style="grid-column:1/-1;justify-content:center;margin-top:0.5rem">
+          <button class="pc-btn pc-sm" aria-label="Shuffle">🔀</button>
+          <button class="pc-btn pc-sm" aria-label="Previous">⏮</button>
+          <button class="pc-btn pc-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+            <span class="play-ico">▶</span>
+            <span class="pause-ico" style="display:none">⏸</span>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Next">⏭</button>
+          <button class="pc-btn pc-sm" aria-label="Repeat">🔁</button>
+        </div>
+      </div>
+
+      <div class="progress-outer">
+        <!-- Stylized fill bar -->
+        <div class="progress-fill-wrap" aria-hidden="true">
+          <div class="progress-track-bg"></div>
+          <div class="progress-fill" id="prog-fill" style="width:30%"></div>
+        </div>
+        <input class="progress-rng" type="range" id="progress" min="0" max="222" value="67" aria-label="Track progress" style="position:absolute;opacity:0;width:100%;height:8px;cursor:pointer;margin-top:-8px">
+        <div class="progress-times">
+          <span class="ptime" id="curr-time">1:07</span>
+          <span class="ptime">3:42</span>
+        </div>
+      </div>
+
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">🔊 Volume</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="68" aria-label="Volume">
+          <span class="sl-val" id="vol-v">68</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">☀️ Brightness</span>
+          <input class="rng" type="range" id="bright" min="0" max="100" value="75" aria-label="Brightness">
+          <span class="sl-val" id="bright-v">75%</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">💫 Sparkle</span>
+          <input class="rng" type="range" id="sparkle" min="0" max="100" value="90" aria-label="Sparkle intensity">
+          <span class="sl-val" id="sparkle-v">90</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ──────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">07</span>
+      <h2 class="sec-title" id="nav-h">✦ Navigation</h2>
+      <span class="sec-ghost" aria-hidden="true">07</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">🌸</span>
+      <p class="spec-callout-text"><strong>Sakura pill active indicator</strong> — the selected tab gets a sakura background and white label inside a pill shape. Inactive tabs: plum-muted text, no fill. Transition uses the spring curve: <strong>cubic-bezier(0.34,1.56,0.64,1)</strong> — it slightly overshoots, then settles. The navigation is your friend.</p>
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <div class="nd-title">Ohayou, Hana ✦</div>
+        <div class="nd-sub">Tuesday · May · 🌸</div>
+        <div class="nd-search">
+          <span>🔍</span>
+          Search everything cute…
+        </div>
+        <div class="nd-items">
+          <div class="nd-item">
+            <div class="nd-ico">🌸</div>
+            <div>
+              <div class="nd-item-title">Daily Blossom</div>
+              <div class="nd-item-sub">3 new sparkles · 1:07 ago</div>
+            </div>
+          </div>
+          <div class="nd-item">
+            <div class="nd-ico">💌</div>
+            <div>
+              <div class="nd-item-title">Heart Mail</div>
+              <div class="nd-item-sub">5 messages · all from friends</div>
+            </div>
+          </div>
+          <div class="nd-item">
+            <div class="nd-ico">⭐</div>
+            <div>
+              <div class="nd-item-title">Wish List</div>
+              <div class="nd-item-sub">12 wishes · 3 granted ✦</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <nav class="kawaii-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Home" aria-current="page">
+          <div class="ni-pill">
+            <span class="ni-icon">🏠</span>
+            <span class="ni-lbl">Home</span>
+          </div>
+        </button>
+        <button class="ni" aria-label="Hearts">
+          <div class="ni-pill">
+            <span class="ni-icon">♡</span>
+            <span class="ni-lbl">Hearts</span>
+          </div>
+        </button>
+        <button class="ni" aria-label="Create">
+          <div class="ni-pill">
+            <span class="ni-icon">✦</span>
+            <span class="ni-lbl">Sparkle</span>
+          </div>
+        </button>
+        <button class="ni" aria-label="Alerts">
+          <div class="ni-pill">
+            <div class="ni-ico-wrap">
+              <span class="ni-icon">🔔</span>
+              <span class="ni-badge"></span>
+            </div>
+            <span class="ni-lbl">Alerts</span>
+          </div>
+        </button>
+        <button class="ni" aria-label="Profile">
+          <div class="ni-pill">
+            <span class="ni-icon">🌸</span>
+            <span class="ni-lbl">Profile</span>
+          </div>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Sliders ─────────────────────────── */
+document.getElementById('vol').addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = e.target.value;
+});
+document.getElementById('bright').addEventListener('input', e => {
+  document.getElementById('bright-v').textContent = e.target.value + '%';
+});
+document.getElementById('sparkle').addEventListener('input', e => {
+  document.getElementById('sparkle-v').textContent = e.target.value;
+});
+
+/* ── Music progress ──────────────────── */
+const progRng  = document.getElementById('progress');
+const progFill = document.getElementById('prog-fill');
+const currTime = document.getElementById('curr-time');
+
+function updateProgress(val) {
+  const max = parseInt(progRng.max);
+  const pct  = (val / max) * 100;
+  progFill.style.width = pct + '%';
+  const s = parseInt(val);
+  currTime.textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+}
+
+progRng.addEventListener('input', e => updateProgress(e.target.value));
+updateProgress(progRng.value);
+
+/* ── Play/pause ──────────────────────── */
+const playBtn = document.getElementById('play-btn');
+playBtn.addEventListener('click', () => {
+  const p = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!p));
+  playBtn.querySelector('.play-ico').style.display  = !p ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = !p ? '' : 'none';
+  // wobble on play
+  playBtn.style.animation = 'none';
+  requestAnimationFrame(() => {
+    playBtn.style.animation = '';
+  });
+});
+
+/* ── Bottom nav ──────────────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => {
+      n.classList.remove('ni-on');
+      n.removeAttribute('aria-current');
+    });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ── Scroll reveal ───────────────────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secKey = sections[entry.target.id];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot navigation ─────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+/* ── Sparkle burst on button click ────── */
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // tiny sparkle pop
+    const spark = document.createElement('span');
+    spark.textContent = '✦';
+    spark.style.cssText = `
+      position:fixed;
+      pointer-events:none;
+      font-size:1.25rem;
+      color:var(--sakura);
+      z-index:9999;
+      animation:sparkleAppear 0.5s ease forwards;
+      left:${event.clientX - 10}px;
+      top:${event.clientY - 10}px;
+    `;
+    document.body.appendChild(spark);
+    setTimeout(() => spark.remove(), 600);
+  });
+});
+</script>
+</body>
+</html>

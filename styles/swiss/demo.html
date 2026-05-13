@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss International · UI Styles</title>
+  <!-- Helvetica — system font, no import needed -->
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:    #f5f5f5;
+    --white: #ffffff;
+    --t1:    #1a1a1a;
+    --t2:    #4a4a4a;
+    --t3:    #888888;
+    --ac:    #e8261d;
+    --r:     0px;
+    --f:     Helvetica, 'Helvetica Neue', Arial, sans-serif;
+    --f-mono: 'Courier New', monospace;
+    --sp4:  4px;  --sp8: 8px;   --sp12: 12px; --sp16: 16px;
+    --sp24: 24px; --sp32: 32px; --sp48: 48px; --sp64: 64px;
+    --ease: cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+    border-radius: 0 !important;
+  }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f);
+    background: var(--bg);
+    color: var(--t1);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ac);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--white);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--sp32);
+    border-bottom: 1px solid var(--t1);
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: var(--sp8);
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: var(--f);
+    color: var(--t2);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: color 0.15s var(--ease);
+  }
+  .tnav-back:hover { color: var(--t1); }
+
+  .tnav-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    font-family: var(--f);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--t1);
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp8);
+    padding: 0.5rem 1.125rem;
+    border: 1px solid var(--t1);
+    background: var(--ac);
+    color: var(--white);
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: background 0.15s var(--ease), color 0.15s var(--ease);
+  }
+  .tnav-dl:hover { background: #c01810; }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS INDICATOR — SQUARES
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp12);
+  }
+
+  .prog-dot {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+    border: 1px solid var(--t3);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+    padding: 0;
+  }
+  .prog-dot:hover    { border-color: var(--t1); background: var(--t3); }
+  .prog-dot.active   { background: var(--ac); border-color: var(--ac); }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 var(--sp32) var(--sp64);
+  }
+
+  /* ── Section ────────────────────────── */
+  .sec {
+    margin-top: var(--sp64);
+    position: relative;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  /* Section heading with red left border */
+  .sec-hd {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp16);
+    margin-bottom: var(--sp32);
+    padding-bottom: var(--sp16);
+    border-bottom: 1px solid var(--t1);
+    padding-left: var(--sp16);
+    border-left: 4px solid var(--ac);
+  }
+
+  /* Ghost mega-number */
+  .sec-ghost {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 8rem;
+    font-weight: 700;
+    font-family: var(--f);
+    line-height: 1;
+    color: rgba(0,0,0,0.04);
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.04em;
+  }
+
+  .sec-num {
+    font-size: 0.625rem;
+    font-weight: 700;
+    font-family: var(--f);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ac);
+    flex-shrink: 0;
+  }
+
+  .sec-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-family: var(--f);
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--t1);
+  }
+
+  /* ── Spec callout ───────────────────── */
+  .spec-callout {
+    background: var(--white);
+    border-left: 3px solid var(--ac);
+    padding: 1rem 1.25rem;
+    margin-bottom: var(--sp32);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--t2);
+    font-family: var(--f);
+    font-style: italic;
+  }
+  .spec-callout strong {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--t1);
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+  }
+
+  /* HR divider */
+  .rule { border: none; border-top: 1px solid var(--t1); margin: var(--sp32) 0; }
+  .rule-light { border: none; border-top: 1px solid #d8d8d8; margin: var(--sp24) 0; }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: var(--sp48) 0 var(--sp64);
+  }
+
+  .hero-kicker {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    font-family: var(--f);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: var(--sp16);
+  }
+
+  .hero-h1 {
+    font-size: clamp(3.5rem, 10vw, 6.5rem);
+    font-weight: 700;
+    font-family: var(--f);
+    letter-spacing: -0.03em;
+    line-height: 0.93;
+    color: var(--t1);
+    margin-bottom: var(--sp24);
+  }
+  .hero-h1 span {
+    color: var(--ac);
+  }
+
+  .hero-rule { border: none; border-top: 1px solid var(--t1); margin: var(--sp24) 0; }
+
+  .hero-desc {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--t2);
+    max-width: 52ch;
+    margin-bottom: var(--sp32);
+    font-family: var(--f);
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: var(--sp8);
+    flex-wrap: wrap;
+    margin-bottom: var(--sp48);
+  }
+  .hero-tag {
+    border: 1px solid #ccc;
+    padding: var(--sp4) var(--sp12);
+    font-size: 0.75rem;
+    font-weight: 400;
+    font-family: var(--f);
+    color: var(--t2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* Hero typographic specimen widgets */
+  .hero-widget {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp24);
+  }
+  .hero-specimen {
+    background: var(--white);
+    padding: var(--sp24);
+    border-top: 4px solid var(--t1);
+  }
+  .hero-specimen:first-child {
+    border-top-color: var(--ac);
+  }
+  .hw-label {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    font-family: var(--f);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--t3);
+    display: block;
+    margin-bottom: var(--sp8);
+  }
+  .hw-big {
+    font-size: 4rem;
+    font-weight: 700;
+    font-family: var(--f);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--t1);
+  }
+  .hw-big-red { color: var(--ac); }
+  .hw-body {
+    font-size: 0.8125rem;
+    font-family: var(--f);
+    line-height: 1.6;
+    color: var(--t2);
+    margin-top: var(--sp12);
+  }
+  .hw-grid-lines {
+    position: relative;
+    padding: var(--sp16);
+    background: var(--white);
+  }
+  .hw-baseline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .hw-baseline-line {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--f);
+    letter-spacing: -0.02em;
+    line-height: 1.33;
+    color: var(--t1);
+    border-bottom: 1px solid rgba(232,38,29,0.15);
+  }
+  .hw-baseline-line:last-child { border-bottom: none; }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0;
+    border: 1px solid var(--t1);
+    border-right: none;
+  }
+
+  .swatch {
+    border-right: 1px solid var(--t1);
+    overflow: hidden;
+    transition: transform 0.15s var(--ease);
+  }
+  .swatch:hover { transform: scaleY(1.02); z-index: 1; }
+  .swatch-color { height: 80px; }
+  .swatch-body  {
+    padding: var(--sp8) var(--sp12);
+    border-top: 1px solid var(--t1);
+    background: var(--white);
+  }
+  .swatch-hex   {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    font-family: var(--f-mono);
+    color: var(--t1);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .swatch-name  {
+    font-size: 0.5625rem;
+    font-weight: 400;
+    font-family: var(--f);
+    color: var(--t3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    background: var(--white);
+    border: 1px solid var(--t1);
+    overflow: hidden;
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: var(--sp16);
+    align-items: center;
+    padding: var(--sp16) var(--sp24);
+    border-bottom: 1px solid #d8d8d8;
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { text-align: left; }
+  .tr-lbl  {
+    font-size: 0.5rem;
+    font-weight: 700;
+    font-family: var(--f);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ac);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .tr-spec {
+    font-size: 0.5rem;
+    font-family: var(--f-mono);
+    color: var(--t3);
+    line-height: 1.5;
+  }
+
+  .ts-disp  { font-size: 3rem;     font-weight: 700; letter-spacing: -0.04em;  line-height: 1.0; font-family: var(--f); }
+  .ts-h1    { font-size: 2.25rem;  font-weight: 700; letter-spacing: -0.03em;  line-height: 1.1; font-family: var(--f); }
+  .ts-h2    { font-size: 1.75rem;  font-weight: 700; letter-spacing: -0.025em; line-height: 1.15; font-family: var(--f); }
+  .ts-h3    { font-size: 1.375rem; font-weight: 700; letter-spacing: -0.02em;  line-height: 1.2; font-family: var(--f); }
+  .ts-h4    { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.01em;  line-height: 1.3; font-family: var(--f); }
+  .ts-lg    { font-size: 1rem;     font-weight: 400;                            line-height: 1.65; font-family: var(--f); }
+  .ts-base  { font-size: 0.875rem; font-weight: 400;                            line-height: 1.6;  font-family: var(--f); }
+  .ts-sm    { font-size: 0.8125rem;font-weight: 400;                            line-height: 1.55; font-family: var(--f); }
+  .ts-cap   { font-size: 0.625rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--t2); font-family: var(--f); }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--sp8);
+    border: none;
+    padding: 0.75rem 2rem;
+    font-family: var(--f); font-size: 0.8125rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    cursor: pointer; white-space: nowrap; text-decoration: none;
+    transition: background 0.15s var(--ease), color 0.15s var(--ease),
+                transform 0.1s var(--ease), opacity 0.15s var(--ease);
+  }
+
+  .btn-p {
+    background: var(--ac); color: var(--white);
+  }
+  .btn-p:hover:not(:disabled)  { background: #c01810; }
+  .btn-p:active:not(:disabled) { transform: translateY(1px); opacity: 0.9; }
+
+  .btn-s {
+    background: transparent; color: var(--t1);
+    border: 1px solid var(--t1);
+  }
+  .btn-s:hover:not(:disabled)  { background: var(--t1); color: var(--white); }
+  .btn-s:active:not(:disabled) { transform: translateY(1px); }
+
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .btn-sm { padding: 0.5rem 1.25rem; font-size: 0.6875rem; }
+
+  /* Static state previews */
+  .state-p-hover  { background: #c01810 !important; }
+  .state-p-active { transform: translateY(1px); opacity: 0.9; }
+  .state-s-hover  { background: var(--t1) !important; color: var(--white) !important; }
+
+  .btn-states { display: flex; flex-direction: column; gap: var(--sp32); }
+  .state-row-label {
+    font-size: 0.5625rem; font-weight: 700; font-family: var(--f);
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--t3);
+    margin-bottom: var(--sp16);
+  }
+  .state-row { display: flex; gap: var(--sp24); flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp8); }
+  .state-lbl  {
+    font-size: 0.5rem; font-weight: 700; font-family: var(--f);
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--t3);
+  }
+
+  .btn-variants {
+    display: flex; gap: var(--sp16); flex-wrap: wrap; align-items: center;
+    padding-top: var(--sp32); margin-top: var(--sp32);
+    border-top: 1px solid var(--t1);
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: var(--white);
+    padding: var(--sp48);
+    border: 1px solid #d8d8d8;
+  }
+  .form-title {
+    font-size: 1rem; font-weight: 700; font-family: var(--f);
+    letter-spacing: -0.01em; text-transform: uppercase;
+    color: var(--t1); margin-bottom: var(--sp8);
+  }
+  .form-sub   {
+    font-size: 0.875rem; color: var(--t2); margin-bottom: var(--sp32);
+    line-height: 1.6; font-family: var(--f);
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp32); }
+  .fg-full   { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: var(--sp8); }
+  .label {
+    font-size: 0.5625rem; font-weight: 700; font-family: var(--f);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--t2);
+  }
+  .hint { font-size: 0.75rem; color: var(--t3); margin-top: 2px; font-family: var(--f); }
+
+  /* Underline-only inputs */
+  .inp {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--t3);
+    padding: 0.75rem 0;
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 400; color: var(--t1);
+    outline: none; width: 100%;
+    transition: border-bottom-color 0.15s var(--ease), border-bottom-width 0.15s var(--ease);
+  }
+  .inp::placeholder { color: var(--t3); }
+  .inp:focus { border-bottom: 2px solid var(--ac); }
+
+  /* Select */
+  .sel-wrap { position: relative; }
+  .sel {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.4' fill='none' stroke-linecap='square'/%3E%3C/svg%3E") no-repeat right 0 center;
+    border: none;
+    border-bottom: 1px solid var(--t3);
+    padding: 0.75rem 1.5rem 0.75rem 0;
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 400; color: var(--t1);
+    outline: none; width: 100%; cursor: pointer;
+    transition: border-bottom-color 0.15s var(--ease);
+  }
+  .sel:focus { border-bottom: 2px solid var(--ac); }
+
+  .ta {
+    border: 1px solid var(--t3) !important;
+    background: var(--white) !important;
+    padding: var(--sp12) !important;
+    resize: vertical; min-height: 96px; line-height: 1.6;
+    transition: border-color 0.15s var(--ease) !important;
+  }
+  .ta:focus { border-color: var(--ac) !important; border-bottom-width: 1px !important; }
+
+  /* Checkboxes — square */
+  .chk-group { display: flex; flex-direction: column; gap: var(--sp12); }
+  .chk-row {
+    display: flex; align-items: center; gap: var(--sp12);
+    cursor: pointer; user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 20px; height: 20px; flex-shrink: 0;
+    border: 1px solid var(--t3);
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
+  }
+  .chk-mark  { opacity: 0; color: var(--white); transition: opacity 0.1s; }
+  .chk-in:checked + .chk-box { background: var(--t1); border-color: var(--t1); }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-in:focus-visible + .chk-box { outline: 2px solid var(--ac); outline-offset: 2px; }
+  .chk-txt { font-size: 0.9375rem; font-weight: 400; font-family: var(--f); color: var(--t1); }
+
+  /* Radio — also square */
+  .rad-box {
+    width: 20px; height: 20px; flex-shrink: 0;
+    border: 1px solid var(--t3); background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s var(--ease);
+  }
+  .rad-dot {
+    width: 8px; height: 8px;
+    background: var(--t1);
+    opacity: 0; transform: scale(0.5);
+    transition: opacity 0.15s var(--ease), transform 0.15s var(--ease);
+  }
+  .chk-in:checked + .rad-box { border-color: var(--t1); }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1); }
+  .chk-in:focus-visible + .rad-box { outline: 2px solid var(--ac); outline-offset: 2px; }
+
+  /* Toggles — horizontal bar */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--sp16) 0; gap: var(--sp16);
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title {
+    font-size: 0.875rem; font-weight: 700;
+    font-family: var(--f); color: var(--t1);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .tgl-desc  { font-size: 0.75rem; color: var(--t3); margin-top: 2px; font-family: var(--f); }
+
+  .tgl { flex-shrink: 0; cursor: pointer; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 48px; height: 20px;
+    background: #ddd;
+    border: 1px solid #bbb;
+    position: relative;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .tgl-thumb {
+    position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px;
+    background: var(--t3);
+    transition: transform 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .tgl-in:checked ~ .tgl-track {
+    background: var(--ac);
+    border-color: var(--ac);
+  }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb {
+    transform: translateX(28px);
+    background: var(--white);
+  }
+  .tgl-in:focus-visible ~ .tgl-track { outline: 2px solid var(--ac); outline-offset: 2px; }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
+    gap: var(--sp24);
+  }
+
+  .card-swiss {
+    background: var(--white);
+    border-top: 4px solid var(--t1);
+    overflow: hidden;
+    transition: border-top-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .card-swiss:first-child { border-top-color: var(--ac); }
+  .card-swiss:hover {
+    border-top-color: var(--ac);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+
+  .card-in { padding: var(--sp24) var(--sp24) var(--sp32); }
+  .card-rule { border: none; border-top: 1px solid #e8e8e8; margin: var(--sp16) 0; }
+
+  .card-cat {
+    font-size: 0.5rem; font-weight: 700; font-family: var(--f);
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ac);
+    display: block; margin-bottom: var(--sp8);
+  }
+  .card-h {
+    font-size: 1.0625rem; font-weight: 700;
+    font-family: var(--f); letter-spacing: -0.02em;
+    color: var(--t1); margin-bottom: var(--sp12); line-height: 1.2;
+  }
+  .card-body-text {
+    font-size: 0.8125rem; line-height: 1.65; color: var(--t2);
+    font-family: var(--f); margin-bottom: var(--sp24);
+  }
+  .card-ft {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-meta {
+    font-size: 0.625rem; font-weight: 700; font-family: var(--f);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--t3);
+  }
+  .card-act {
+    background: transparent; border: 1px solid var(--t1);
+    padding: var(--sp4) var(--sp12);
+    font-family: var(--f); font-size: 0.5625rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--t1);
+    cursor: pointer; transition: background 0.15s var(--ease), color 0.15s var(--ease);
+  }
+  .card-act:hover { background: var(--t1); color: var(--white); }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ */
+  .player {
+    background: var(--white);
+    border: 1px solid #d8d8d8;
+    padding: var(--sp32);
+  }
+
+  .player-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: var(--sp24);
+    margin-bottom: var(--sp32);
+    padding-bottom: var(--sp24);
+    border-bottom: 1px solid var(--t1);
+  }
+
+  .player-track-label {
+    font-size: 0.5rem; font-weight: 700; font-family: var(--f);
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--t3);
+    display: block; margin-bottom: var(--sp8);
+  }
+  .player-title  {
+    font-size: 1.375rem; font-weight: 700;
+    font-family: var(--f); letter-spacing: -0.025em;
+    color: var(--t1); margin-bottom: 4px; line-height: 1.1;
+  }
+  .player-artist {
+    font-size: 0.8125rem; color: var(--t2); font-family: var(--f);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  .pc-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp8);
+  }
+  .pc-btn {
+    background: transparent;
+    border: 1px solid var(--t1);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--t1);
+    transition: background 0.15s var(--ease), color 0.15s var(--ease);
+    padding: 0;
+    font-family: var(--f);
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .pc-btn:hover { background: var(--t1); color: var(--white); }
+  .pc-sm { width: 36px; height: 36px; }
+  .pc-lg {
+    width: 36px; height: 36px;
+    background: var(--ac);
+    border-color: var(--ac);
+    color: var(--white);
+  }
+  .pc-lg:hover { background: #c01810; border-color: #c01810; }
+  .pc-lg[aria-pressed="true"] .play-ico  { display: none; }
+  .pc-lg[aria-pressed="false"] .pause-ico { display: none; }
+
+  /* Progress — minimal 1px line */
+  .progress-outer { margin: var(--sp24) 0; }
+  .progress-track {
+    position: relative;
+    height: 1px;
+    background: #d8d8d8;
+    margin-bottom: var(--sp8);
+    cursor: pointer;
+  }
+  .progress-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 1px;
+    background: var(--ac);
+    pointer-events: none;
+    width: 30%;
+  }
+  .progress-rng {
+    position: absolute;
+    top: -8px; left: 0;
+    width: 100%; height: 16px;
+    opacity: 0;
+    cursor: pointer;
+    margin: 0;
+  }
+  .progress-handle {
+    position: absolute;
+    top: -5px;
+    width: 11px; height: 11px;
+    background: var(--white);
+    border: 1px solid var(--t1);
+    margin-left: -5px;
+    pointer-events: none;
+    transition: border-color 0.15s var(--ease);
+    left: 30%;
+  }
+  .progress-outer:hover .progress-handle { border-color: var(--ac); }
+
+  .progress-times {
+    display: flex; justify-content: space-between; margin-top: var(--sp8);
+  }
+  .ptime {
+    font-size: 0.5625rem; font-weight: 700; font-family: var(--f-mono); color: var(--t3);
+    letter-spacing: 0.06em;
+  }
+
+  .slider-list {
+    display: flex; flex-direction: column; gap: var(--sp24);
+    margin-top: var(--sp24); padding-top: var(--sp24);
+    border-top: 1px solid #d8d8d8;
+  }
+  .slider-item { display: flex; align-items: center; gap: var(--sp16); }
+  .sl-lbl {
+    font-size: 0.5625rem; font-weight: 700; font-family: var(--f);
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--t2);
+    min-width: 5.5rem;
+  }
+  .sl-val {
+    font-size: 0.75rem; font-weight: 700;
+    font-family: var(--f-mono); color: var(--ac);
+    min-width: 2.5rem; text-align: right;
+  }
+
+  /* Minimal sliders */
+  .rng {
+    -webkit-appearance: none; appearance: none;
+    flex: 1; height: 1px;
+    background: #ccc;
+    border: none;
+    outline: none; cursor: pointer;
+    position: relative;
+  }
+  .rng::-webkit-slider-runnable-track {
+    height: 1px; background: #ccc;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    background: var(--white);
+    border: 1px solid var(--t1);
+    margin-top: -6px;
+    cursor: pointer;
+    transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
+  }
+  .rng::-webkit-slider-thumb:hover { border-color: var(--ac); background: var(--ac); }
+  .rng::-moz-range-track { height: 1px; background: #ccc; border: none; }
+  .rng::-moz-range-thumb {
+    width: 12px; height: 12px; border-radius: 0 !important;
+    background: var(--white); border: 1px solid var(--t1); cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAV BAR
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: var(--white);
+    border: 1px solid var(--t1);
+    overflow: hidden;
+    max-width: 420px;
+  }
+
+  .nd-screen { padding: var(--sp24) var(--sp24) 0; }
+  .nd-title  {
+    font-size: 1.375rem; font-weight: 700; font-family: var(--f);
+    letter-spacing: -0.025em; color: var(--t1); margin-bottom: 2px;
+  }
+  .nd-sub    {
+    font-size: 0.625rem; color: var(--t3); margin-bottom: var(--sp16);
+    font-family: var(--f); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .nd-rule   { border: none; border-top: 1px solid var(--t1); margin-bottom: var(--sp16); }
+
+  .nd-items { display: flex; flex-direction: column; margin-bottom: var(--sp24); }
+  .nd-item {
+    padding: var(--sp12) 0;
+    border-bottom: 1px solid #e8e8e8;
+    display: flex; align-items: baseline; gap: var(--sp16);
+  }
+  .nd-item:last-child { border-bottom: none; }
+  .nd-item-num {
+    font-size: 0.5rem; font-weight: 700; font-family: var(--f-mono);
+    color: var(--ac); min-width: 1rem;
+    letter-spacing: 0.06em;
+  }
+  .nd-item-title {
+    font-size: 0.9375rem; font-weight: 700; font-family: var(--f);
+    color: var(--t1); flex: 1;
+  }
+  .nd-item-sub   {
+    font-size: 0.625rem; font-weight: 400; font-family: var(--f);
+    color: var(--t3); letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  /* Bottom nav — uppercase Helvetica row */
+  .swiss-navbar {
+    background: var(--white);
+    border-top: 1px solid var(--t1);
+    display: flex; justify-content: space-around; align-items: stretch;
+  }
+
+  .ni {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 4px;
+    background: none; border: none; border-right: 1px solid #e8e8e8; cursor: pointer;
+    font-family: var(--f); padding: var(--sp12) var(--sp8); flex: 1;
+    transition: background 0.15s var(--ease);
+    position: relative;
+  }
+  .ni:last-child { border-right: none; }
+  .ni:hover { background: var(--bg); }
+  .ni::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 0;
+    background: var(--ac);
+    transition: height 0.15s var(--ease);
+  }
+  .ni-on::after { height: 3px; }
+
+  .ni-lbl {
+    font-size: 0.5rem; font-weight: 700; font-family: var(--f);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--t3); transition: color 0.15s var(--ease);
+  }
+  .ni-on .ni-lbl { color: var(--ac); }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 var(--sp16) var(--sp64); }
+    .topnav { padding: 0 var(--sp16); }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .ts-disp { font-size: 2rem; }
+    .ts-h1   { font-size: 1.75rem; }
+    .hero-widget { grid-template-columns: 1fr; }
+    .player-top { grid-template-columns: 1fr; }
+    .pc-row { justify-content: flex-start; }
+    .palette-grid { grid-template-columns: repeat(4, 1fr); }
+    .form-panel { padding: var(--sp24); }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+    </svg>
+    Gallery
+  </a>
+  <span class="tnav-title">Swiss International</span>
+  <a class="tnav-dl" href="style-guide.md" download="swiss-style-guide.md">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M6 1v8M3.5 6.5L6 9l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+      <path d="M1 11h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress dots (squares) ─── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"     aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"       aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"   aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"      aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Form Inputs"  aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"        aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"     aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"   aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <span class="hero-kicker">Editorial · Zürich 1950</span>
+    <h1 class="hero-h1">Swiss<br><span>Inter&shy;national</span></h1>
+    <hr class="hero-rule">
+    <p class="hero-desc">Grid-based objectivity. The page as a rational system. Every element earns its position through proportion, not decoration. Typography is the design — everything else is structure.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Helvetica only</span>
+      <span class="hero-tag">8px baseline grid</span>
+      <span class="hero-tag">Red the sole accent</span>
+      <span class="hero-tag">Flush-left ragged-right</span>
+    </div>
+    <div class="hero-widget">
+      <div class="hero-specimen">
+        <span class="hw-label">Typographic specimen</span>
+        <div class="hw-big">Aa<span class="hw-big-red">.</span></div>
+        <p class="hw-body">Helvetica, 1957. Designed by Max Miedinger. The face of functional modernism. Neither warm nor cold — precise.</p>
+      </div>
+      <div class="hero-specimen">
+        <span class="hw-label">Baseline grid · 8px unit</span>
+        <div class="hw-baseline">
+          <div class="hw-baseline-line">Structure</div>
+          <div class="hw-baseline-line">Objectivity</div>
+          <div class="hw-baseline-line">Clarity</div>
+          <div class="hw-baseline-line">Order</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ─────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-num" aria-hidden="true">01</span>
+      <h2 class="sec-title" id="colors-h">Color Palette</h2>
+      <span class="sec-ghost" aria-hidden="true">01</span>
+    </div>
+    <div class="spec-callout">
+      Swiss palette: three shades of structure (white, light gray, near-black) plus <strong>one red that carries all meaning</strong>. Nothing else. Color is information, not decoration.
+    </div>
+    <div class="palette-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#f5f5f5;border-bottom:1px solid #e0e0e0"></div>
+        <div class="swatch-body"><span class="swatch-hex">#f5f5f5</span><span class="swatch-name">--bg · background</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#ffffff;border-bottom:1px solid #e0e0e0"></div>
+        <div class="swatch-body"><span class="swatch-hex">#ffffff</span><span class="swatch-name">--white · surface</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#888888"></div>
+        <div class="swatch-body"><span class="swatch-hex">#888888</span><span class="swatch-name">--t3 · faint</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#4a4a4a"></div>
+        <div class="swatch-body"><span class="swatch-hex">#4a4a4a</span><span class="swatch-name">--t2 · secondary</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1a1a1a"></div>
+        <div class="swatch-body"><span class="swatch-hex">#1a1a1a</span><span class="swatch-name">--t1 · primary</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#e8261d"></div>
+        <div class="swatch-body"><span class="swatch-hex">#e8261d</span><span class="swatch-name">--ac · the one red</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#c01810"></div>
+        <div class="swatch-body"><span class="swatch-hex">#c01810</span><span class="swatch-name">red hover</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#ff4a3d"></div>
+        <div class="swatch-body"><span class="swatch-hex">#ff4a3d</span><span class="swatch-name">red light</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ─────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-num" aria-hidden="true">02</span>
+      <h2 class="sec-title" id="type-h">Typography Scale</h2>
+      <span class="sec-ghost" aria-hidden="true">02</span>
+    </div>
+    <div class="spec-callout">
+      <strong>Helvetica.</strong> This is non-negotiable. Every size, every weight, every tracking value is calculated, not chosen by feel. The type scale is the grid made visible.
+    </div>
+    <div class="typescale">
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Display</span>
+          <span class="tr-spec">48px / 700<br>-0.04em · lh 1.0</span>
+        </div>
+        <div class="ts-disp">Helvetica</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H1</span>
+          <span class="tr-spec">36px / 700<br>-0.03em · lh 1.1</span>
+        </div>
+        <div class="ts-h1">Grid Systems</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H2</span>
+          <span class="tr-spec">28px / 700<br>-0.025em · lh 1.15</span>
+        </div>
+        <div class="ts-h2">Typographic Order</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H3</span>
+          <span class="tr-spec">22px / 700<br>-0.02em · lh 1.2</span>
+        </div>
+        <div class="ts-h3">Visual Hierarchy</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H4</span>
+          <span class="tr-spec">18px / 700<br>-0.01em · lh 1.3</span>
+        </div>
+        <div class="ts-h4">Functional Structure</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Body Lg</span>
+          <span class="tr-spec">16px / 400<br>lh 1.65</span>
+        </div>
+        <div class="ts-lg">The page as a rational system. Every element earns its position.</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Body</span>
+          <span class="tr-spec">14px / 400<br>lh 1.6</span>
+        </div>
+        <div class="ts-base">Flush left, ragged right. Never justified. The rag is the breath of the text.</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Body Sm</span>
+          <span class="tr-spec">13px / 400<br>lh 1.55</span>
+        </div>
+        <div class="ts-sm">Captions and supporting metadata follow the same grid as body text.</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Caption</span>
+          <span class="tr-spec">10px / 700<br>+0.12em UC</span>
+        </div>
+        <div class="ts-cap">Caption · Metadata · Label · Reference</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-num" aria-hidden="true">03</span>
+      <h2 class="sec-title" id="btn-h">Buttons</h2>
+      <span class="sec-ghost" aria-hidden="true">03</span>
+    </div>
+    <div class="spec-callout">
+      The button is text with a border. Nothing more. <strong>The red carries all affordance.</strong> Helvetica uppercase with generous tracking. No shadow, no radius, no gradient.
+    </div>
+    <div class="btn-states">
+      <div>
+        <p class="state-row-label">Primary — Red fill</p>
+        <div class="state-row">
+          <div class="state-wrap">
+            <button class="btn btn-p">Submit</button>
+            <span class="state-lbl">Default</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-p state-p-hover" tabindex="-1" aria-hidden="true">Submit</button>
+            <span class="state-lbl">Hover</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-p state-p-active" tabindex="-1" aria-hidden="true">Submit</button>
+            <span class="state-lbl">Active</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-p" disabled>Submit</button>
+            <span class="state-lbl">Disabled</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Secondary — Outline</p>
+        <div class="state-row">
+          <div class="state-wrap">
+            <button class="btn btn-s">Cancel</button>
+            <span class="state-lbl">Default</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-s state-s-hover" tabindex="-1" aria-hidden="true">Cancel</button>
+            <span class="state-lbl">Hover</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-s" style="transform:translateY(1px)" tabindex="-1" aria-hidden="true">Cancel</button>
+            <span class="state-lbl">Active</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-s" disabled>Cancel</button>
+            <span class="state-lbl">Disabled</span>
+          </div>
+        </div>
+      </div>
+      <div class="btn-variants">
+        <button class="btn btn-p">Primary</button>
+        <button class="btn btn-s">Secondary</button>
+        <button class="btn btn-p btn-sm">Small</button>
+        <button class="btn btn-s btn-sm">Small outline</button>
+        <button class="btn btn-p" style="padding:0.75rem 0.75rem" aria-label="Add">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.75" stroke-linecap="square"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-num" aria-hidden="true">04</span>
+      <h2 class="sec-title" id="inputs-h">Form Inputs</h2>
+      <span class="sec-ghost" aria-hidden="true">04</span>
+    </div>
+    <div class="spec-callout">
+      No borders on input fields — only a bottom line. <strong>This removes the box metaphor.</strong> Text appears to float on the grid. Focus is declared by a 2px red underline.
+    </div>
+    <div class="form-panel">
+      <div class="form-title">Account Profile</div>
+      <p class="form-sub">Six input types — text, select, textarea, checkbox, radio, toggle — each stripped to its essential form. Label above in small caps, always.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">Full Name</label>
+          <input class="inp" type="text" id="fi-name" placeholder="Jane Müller" autocomplete="name">
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">Email Address</label>
+          <input class="inp" type="email" id="fi-email" placeholder="jane@example.com" autocomplete="email">
+        </div>
+        <div class="field">
+          <label class="label" for="fi-role">Discipline</label>
+          <div class="sel-wrap">
+            <select class="inp sel" id="fi-role">
+              <option value="">Select…</option>
+              <option>Visual Designer</option>
+              <option>Design Systems</option>
+              <option>Typography</option>
+              <option>Information Architecture</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-loc">Location</label>
+          <input class="inp" type="text" id="fi-loc" placeholder="Zürich, Switzerland" autocomplete="country">
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-bio">Statement</label>
+          <textarea class="inp ta" id="fi-bio" placeholder="Describe your design philosophy in plain language." rows="3"></textarea>
+          <span class="hint">Max 280 characters. Displayed on your public profile.</span>
+        </div>
+        <div class="field">
+          <span class="label" id="chk-lbl">Areas of Practice</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox" checked>
+              <span class="chk-box">
+                <svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+              </span>
+              <span class="chk-txt">Typography</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox">
+              <span class="chk-box">
+                <svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+              </span>
+              <span class="chk-txt">Grid Systems</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox" checked>
+              <span class="chk-box">
+                <svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+              </span>
+              <span class="chk-txt">Signage &amp; Wayfinding</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="rad-lbl">Experience Level</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="exp" value="jr">
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Junior (0–2 yrs)</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="exp" value="mid" checked>
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Mid (2–5 yrs)</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="exp" value="sr">
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Senior (5+ yrs)</span>
+            </label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">Preferences</span>
+          <div class="tgl-rows" style="margin-top: 0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Weekly Digest</div>
+                <div class="tgl-desc">Summary of new publications and events</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Weekly digest">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Public Profile</div>
+                <div class="tgl-desc">Visible to other practitioners</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" aria-label="Public profile">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Grid Overlay</div>
+                <div class="tgl-desc">Show baseline grid in preview mode</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Grid overlay">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ──────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-num" aria-hidden="true">05</span>
+      <h2 class="sec-title" id="cards-h">Cards</h2>
+      <span class="sec-ghost" aria-hidden="true">05</span>
+    </div>
+    <div class="spec-callout">
+      Cards are white rectangles on gray. The only visual hierarchy is typographic. <strong>A red top border marks the primary card.</strong> Hover activates red on all — the color announces itself, briefly.
+    </div>
+    <div class="cards-row">
+      <article class="card-swiss">
+        <div class="card-in">
+          <span class="card-cat">Typography</span>
+          <hr class="card-rule">
+          <h3 class="card-h">The Müller-Brockmann Poster</h3>
+          <p class="card-body-text">Geometry and music made visible. The grid is not a cage — it is the precondition for freedom. Order enables expression.</p>
+          <div class="card-ft">
+            <span class="card-meta">1960 · 4 min read</span>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-swiss">
+        <div class="card-in">
+          <span class="card-cat">History</span>
+          <hr class="card-rule">
+          <h3 class="card-h">Neue Grafik Magazine, 1958</h3>
+          <p class="card-body-text">The journal that codified a movement. Published in Zürich. Text in four languages, aligned to a single grid. A manifesto in print form.</p>
+          <div class="card-ft">
+            <span class="card-meta">1958 · 6 min read</span>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-swiss">
+        <div class="card-in">
+          <span class="card-cat">Practice</span>
+          <hr class="card-rule">
+          <h3 class="card-h">The 12-Column Grid</h3>
+          <p class="card-body-text">Not an arbitrary division. 12 divides by 2, 3, 4, and 6. Every column relationship has a reason. The grid is mathematics made spatial.</p>
+          <div class="card-ft">
+            <span class="card-meta">Systems · 5 min read</span>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ───────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-num" aria-hidden="true">06</span>
+      <h2 class="sec-title" id="ctrl-h">Controls · Player</h2>
+      <span class="sec-ghost" aria-hidden="true">06</span>
+    </div>
+    <div class="spec-callout">
+      The player is a typographic layout. Track information is flush left. Controls are <strong>labeled rectangles</strong> — no icons, no decoration. The progress bar is a 1px line with a red fill. Minimal sliders.
+    </div>
+    <div class="player">
+      <div class="player-top">
+        <div>
+          <span class="player-track-label">Now Playing</span>
+          <div class="player-title">Music for Airports</div>
+          <div class="player-artist">Brian Eno · 1978 · Ambient 1</div>
+        </div>
+        <div class="pc-row">
+          <button class="pc-btn pc-sm" aria-label="Previous" title="Previous">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10.5 3L5.5 7l5 4V3ZM3.5 3v8" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/></svg>
+          </button>
+          <button class="pc-btn pc-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+            <svg class="play-ico" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 2l9 5-9 5V2Z" fill="currentColor"/></svg>
+            <svg class="pause-ico" width="14" height="14" viewBox="0 0 14 14" fill="none" style="display:none"><path d="M4 2h2v10H4V2ZM8 2h2v10H8V2Z" fill="currentColor"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Next" title="Next">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 3l5 4-5 4V3ZM10.5 3v8" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-outer">
+        <div class="progress-track" id="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+          <div class="progress-handle" id="progress-handle"></div>
+          <input class="progress-rng" type="range" id="progress" min="0" max="222" value="67" aria-label="Track progress">
+        </div>
+        <div class="progress-times">
+          <span class="ptime" id="curr-time">1:07</span>
+          <span class="ptime">3:42</span>
+        </div>
+      </div>
+
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">Volume</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="72" aria-label="Volume">
+          <span class="sl-val" id="vol-v">72</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Treble</span>
+          <input class="rng" type="range" id="bright" min="0" max="100" value="50" aria-label="Treble">
+          <span class="sl-val" id="bright-v">50%</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Balance</span>
+          <input class="rng" type="range" id="bal" min="-50" max="50" value="0" aria-label="Left-right balance">
+          <span class="sl-val" id="bal-v">C</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ─────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-num" aria-hidden="true">07</span>
+      <h2 class="sec-title" id="nav-h">Navigation Bar</h2>
+      <span class="sec-ghost" aria-hidden="true">07</span>
+    </div>
+    <div class="spec-callout">
+      Navigation is Helvetica in a row. Active item has a red underline — <strong>three pixels of pure information.</strong> No icons, no backgrounds. The text is the interface.
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <div class="nd-title">Morning Review</div>
+        <div class="nd-sub">Tuesday · 12 May 2026</div>
+        <hr class="nd-rule">
+        <div class="nd-items">
+          <div class="nd-item">
+            <span class="nd-item-num">01</span>
+            <span class="nd-item-title">Grid Systems in Graphic Design</span>
+            <span class="nd-item-sub">Müller-Brockmann</span>
+          </div>
+          <div class="nd-item">
+            <span class="nd-item-num">02</span>
+            <span class="nd-item-title">Typographie — Emil Ruder</span>
+            <span class="nd-item-sub">Niggli, 1967</span>
+          </div>
+          <div class="nd-item">
+            <span class="nd-item-num">03</span>
+            <span class="nd-item-title">Designing Programmes</span>
+            <span class="nd-item-sub">Karl Gerstner</span>
+          </div>
+        </div>
+      </div>
+      <nav class="swiss-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Home" aria-current="page">
+          <span class="ni-lbl">Home</span>
+        </button>
+        <button class="ni" aria-label="Search">
+          <span class="ni-lbl">Search</span>
+        </button>
+        <button class="ni" aria-label="Library">
+          <span class="ni-lbl">Library</span>
+        </button>
+        <button class="ni" aria-label="Alerts">
+          <span class="ni-lbl">Alerts</span>
+        </button>
+        <button class="ni" aria-label="Profile">
+          <span class="ni-lbl">Profile</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Sliders ──────────────────────────── */
+document.getElementById('vol').addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = e.target.value;
+});
+document.getElementById('bright').addEventListener('input', e => {
+  document.getElementById('bright-v').textContent = e.target.value + '%';
+});
+document.getElementById('bal').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  document.getElementById('bal-v').textContent = v < -5 ? 'L' + Math.abs(v) : v > 5 ? 'R' + v : 'C';
+});
+
+/* ── Progress bar ─────────────────────── */
+const progressInput = document.getElementById('progress');
+const progressFill  = document.getElementById('progress-fill');
+const progressHandle = document.getElementById('progress-handle');
+const currTime      = document.getElementById('curr-time');
+
+function updateProgress() {
+  const val = parseInt(progressInput.value);
+  const max = parseInt(progressInput.max);
+  const pct = (val / max) * 100;
+  progressFill.style.width  = pct + '%';
+  progressHandle.style.left = pct + '%';
+  currTime.textContent = `${Math.floor(val/60)}:${String(val%60).padStart(2,'0')}`;
+}
+progressInput.addEventListener('input', updateProgress);
+updateProgress();
+
+/* ── Play/pause ───────────────────────── */
+const playBtn = document.getElementById('play-btn');
+playBtn.addEventListener('click', () => {
+  const p = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!p));
+  playBtn.querySelector('.play-ico').style.display  = !p ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = !p ? '' : 'none';
+});
+
+/* ── Bottom nav ───────────────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => {
+      n.classList.remove('ni-on');
+      n.removeAttribute('aria-current');
+    });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ── Scroll reveal ────────────────────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secId  = entry.target.id;
+      const secKey = sections[secId];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot navigation ──────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

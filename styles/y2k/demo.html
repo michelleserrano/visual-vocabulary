@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Y2K Chrome · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg-grad:    linear-gradient(135deg, #d4f1ff 0%, #e8c8ff 50%, #ffd4f0 100%);
+    --surface:    rgba(255,255,255,0.78);
+    --surface-2:  rgba(255,255,255,0.55);
+    --chrome:     linear-gradient(135deg, rgba(255,255,255,0.92), rgba(200,220,255,0.72));
+    --iridescent: conic-gradient(from 180deg, #ff77e9 0%, #b3b3ff 25%, #74d4ff 50%, #a8f0c8 75%, #ff77e9 100%);
+    --border:     1px solid rgba(255,255,255,0.85);
+    --border-col: rgba(180,180,255,0.4);
+    --t1:    #3a3a8c;
+    --t2:    #6060a8;
+    --t3:    #9090c8;
+    --ac:    #ff77e9;
+    --ac2:   #7b7bff;
+    --ac3:   #74d4ff;
+    --ok:    #a8f0c8;
+    --err:   #ff8fa8;
+    --warn:  #ffe8a0;
+    --r-sm:  14px; --r: 20px; --r-md: 28px; --r-lg: 40px; --r-full: 9999px;
+    --ease:  cubic-bezier(0.4,0,0.2,1);
+    --spring:cubic-bezier(0.34,1.56,0.64,1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --f: 'Fredoka', system-ui, sans-serif;
+    --shine: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 60%);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f);
+    background: linear-gradient(135deg, #d4f1ff 0%, #e8c8ff 50%, #ffd4f0 100%);
+    background-attachment: fixed;
+    color: var(--t1);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ac);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.6);
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--t2);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .tnav-back:hover { color: var(--t1); }
+
+  .tnav-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--t1);
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1.125rem;
+    background: linear-gradient(135deg, #ff77e9, #b3b3ff);
+    color: white;
+    border-radius: var(--r-full);
+    border: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 4px 16px rgba(255,119,233,0.35);
+    font-family: var(--f);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: box-shadow 0.2s var(--ease), transform 0.15s var(--ease);
+    position: relative;
+    overflow: hidden;
+  }
+  .tnav-dl::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+  .tnav-dl:hover  { box-shadow: 0 6px 24px rgba(255,119,233,0.5); transform: translateY(-1px); }
+  .tnav-dl:active { transform: translateY(1px); box-shadow: 0 3px 12px rgba(255,119,233,0.35); }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS INDICATOR
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .prog-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(180,180,255,0.3);
+    border: 1.5px solid rgba(180,180,255,0.5);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
+    padding: 0;
+  }
+  .prog-dot:hover    { background: rgba(180,180,255,0.6); transform: scale(1.5); }
+  .prog-dot.active   {
+    background: conic-gradient(from 180deg, #ff77e9 0%, #b3b3ff 25%, #74d4ff 50%, #a8f0c8 75%, #ff77e9 100%);
+    border-color: transparent;
+    transform: scale(1.5);
+  }
+  .prog-dot:focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.75rem 7rem;
+  }
+
+  /* ── Section ────────────────────────── */
+  .sec {
+    margin-top: 5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  /* Ghost mega-number */
+  .sec-hd {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(180,180,255,0.18);
+  }
+  .sec-hd::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 80px; height: 2px;
+    background: linear-gradient(90deg, var(--ac), var(--ac2), var(--ac3));
+    border-radius: 2px;
+  }
+
+  .sec-ghost {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    font-weight: 700;
+    line-height: 1;
+    color: rgba(123,123,255,0.06);
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+
+  .sec-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: white;
+    background: linear-gradient(135deg, var(--ac), var(--ac2));
+    border-radius: var(--r-full);
+    padding: 0.25rem 0.75rem;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(255,119,233,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  .sec-pill::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+
+  .sec-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--t1);
+  }
+
+  /* ── Spec callout ───────────────────── */
+  .spec-callout {
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.875rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .spec-callout::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+  .spec-callout-ico {
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+  .spec-callout-text {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--t2);
+    font-weight: 400;
+  }
+  .spec-callout-text strong {
+    font-weight: 600;
+    color: var(--t1);
+    font-family: 'Courier New', monospace;
+    font-size: 0.8125rem;
+    background: rgba(123,123,255,0.08);
+    padding: 0.1em 0.35em;
+    border-radius: 6px;
+  }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 3.5rem 0 4rem;
+  }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t2);
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.85);
+    backdrop-filter: blur(8px);
+    border-radius: var(--r-full);
+    padding: 0.3rem 0.875rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px rgba(150,100,200,0.1);
+  }
+  .hero-kicker-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: conic-gradient(from 180deg, #ff77e9 0%, #b3b3ff 25%, #74d4ff 50%, #a8f0c8 75%, #ff77e9 100%);
+    animation: spin-hue 4s linear infinite;
+  }
+  @keyframes spin-hue {
+    0%   { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+
+  .hero-h1 {
+    font-size: clamp(3rem, 8vw, 5.25rem);
+    font-weight: 700;
+    line-height: 0.97;
+    color: var(--t1);
+    margin-bottom: 0.25rem;
+    background: linear-gradient(135deg, #3a3a8c 0%, #7b7bff 40%, #ff77e9 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-h1-sub {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 500;
+    color: var(--t3);
+    margin-bottom: 1.25rem;
+    display: block;
+    -webkit-text-fill-color: var(--t3);
+  }
+
+  .hero-desc {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--t2);
+    max-width: 55ch;
+    margin-bottom: 2rem;
+    font-weight: 400;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+  .hero-tag {
+    background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r-full);
+    padding: 0.375rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--t2);
+    backdrop-filter: blur(6px);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-tag::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+
+  /* Hero demo widget */
+  .hero-widget {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .hero-widget-card {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r-lg);
+    box-shadow: 0 8px 32px rgba(150,100,200,0.15), inset 0 1px 0 rgba(255,255,255,0.7);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 200px;
+    max-width: 280px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s var(--spring), box-shadow 0.3s var(--ease);
+  }
+  .hero-widget-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+  .hero-widget-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 40px rgba(150,100,200,0.22), inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+  .hw-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(200,220,255,0.7));
+    border: 1px solid rgba(255,255,255,0.85);
+    border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(150,100,200,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .hw-icon::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+  }
+  .hw-title { font-size: 0.9375rem; font-weight: 600; color: var(--t1); margin-bottom: 0.15rem; }
+  .hw-sub   { font-size: 0.75rem;   font-weight: 400; color: var(--t3); }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(126px, 1fr));
+    gap: 1rem;
+  }
+
+  .swatch {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r);
+    overflow: hidden;
+    transition: transform 0.25s var(--spring), box-shadow 0.25s var(--ease);
+    box-shadow: 0 4px 16px rgba(150,100,200,0.1), inset 0 1px 0 rgba(255,255,255,0.7);
+    position: relative;
+  }
+  .swatch::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .swatch:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(150,100,200,0.2), inset 0 1px 0 rgba(255,255,255,0.7); }
+  .swatch-color { height: 72px; position: relative; }
+  .swatch-body  { padding: 0.75rem 0.875rem; position: relative; z-index: 2; }
+  .swatch-hex   { font-size: 0.8125rem; font-weight: 600; color: var(--t1); display: block; margin-bottom: 0.15rem; font-variant-numeric: tabular-nums; font-family: 'Courier New', monospace; }
+  .swatch-name  { font-size: 0.5625rem; font-weight: 500; color: var(--t3); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* Iridescent swatch special */
+  .swatch-iridescent .swatch-color {
+    background: conic-gradient(from 180deg, #ff77e9 0%, #b3b3ff 25%, #74d4ff 50%, #a8f0c8 75%, #ff77e9 100%);
+    animation: rotate-conic 6s linear infinite;
+  }
+  @keyframes rotate-conic {
+    0%   { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r-lg);
+    box-shadow: 0 8px 32px rgba(150,100,200,0.15), inset 0 1px 0 rgba(255,255,255,0.7);
+    overflow: hidden;
+    position: relative;
+  }
+  .typescale::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.125rem 1.75rem;
+    border-bottom: 1px solid rgba(180,180,255,0.12);
+    position: relative;
+    z-index: 1;
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { text-align: right; }
+  .tr-lbl  { font-size: 0.5625rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ac); display: block; margin-bottom: 0.15rem; }
+  .tr-spec { font-size: 0.5625rem; color: var(--t3); line-height: 1.5; }
+
+  .ts-disp  { font-size: 3rem;     font-weight: 700; line-height: 1.1; color: var(--t1); }
+  .ts-h1    { font-size: 2.25rem;  font-weight: 600; line-height: 1.15; color: var(--t1); }
+  .ts-h2    { font-size: 1.75rem;  font-weight: 600; line-height: 1.2; color: var(--t1); }
+  .ts-h3    { font-size: 1.375rem; font-weight: 500; line-height: 1.25; color: var(--t1); }
+  .ts-h4    { font-size: 1.125rem; font-weight: 500; line-height: 1.3; color: var(--t1); }
+  .ts-lg    { font-size: 1.0625rem;font-weight: 400; line-height: 1.6; color: var(--t2); }
+  .ts-base  { font-size: 1rem;     font-weight: 400; line-height: 1.55; color: var(--t2); }
+  .ts-sm    { font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: var(--t2); }
+  .ts-cap   { font-size: 0.75rem;  font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t3); }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    border-radius: var(--r-full);
+    padding: 0.75rem 1.75rem;
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 500; 
+    cursor: pointer; white-space: nowrap; text-decoration: none;
+    transition: box-shadow 0.2s var(--ease), transform 0.15s var(--spring);
+    position: relative; overflow: hidden;
+    border: none;
+  }
+  .btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+
+  .btn-p {
+    background: linear-gradient(135deg, #ff77e9, #b3b3ff);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 6px 24px rgba(255,119,233,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .btn-p:hover:not(:disabled)  { box-shadow: 0 8px 32px rgba(255,119,233,0.55); transform: translateY(-2px); }
+  .btn-p:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 4px 16px rgba(255,119,233,0.4); }
+
+  .btn-sec {
+    background: var(--surface);
+    color: var(--t1);
+    border: 1px solid rgba(180,180,255,0.4);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+  .btn-sec:hover:not(:disabled)  { box-shadow: 0 8px 24px rgba(150,100,200,0.18), inset 0 1px 0 rgba(255,255,255,0.7); transform: translateY(-2px); }
+  .btn-sec:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 2px 10px rgba(150,100,200,0.12); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ac2);
+    border: 1.5px solid rgba(123,123,255,0.4);
+    box-shadow: none;
+  }
+  .btn-ghost:hover:not(:disabled) { background: rgba(123,123,255,0.06); border-color: var(--ac2); transform: translateY(-1px); }
+  .btn-ghost:active:not(:disabled) { transform: translateY(0); }
+
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .btn-sm   { padding: 0.5625rem 1.25rem; font-size: 0.875rem; }
+  .btn-icon { width: 46px; height: 46px; padding: 0; border-radius: 50%; }
+  .btn-icon-p {
+    background: linear-gradient(135deg, #ff77e9, #b3b3ff);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 4px 16px rgba(255,119,233,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .btn-icon-p:hover:not(:disabled) { box-shadow: 0 6px 22px rgba(255,119,233,0.55); transform: translateY(-2px); }
+
+  /* Static state previews */
+  .state-p-hover  { box-shadow: 0 8px 32px rgba(255,119,233,0.55) !important; transform: translateY(-2px); }
+  .state-p-active { transform: translateY(1px) !important; box-shadow: 0 4px 16px rgba(255,119,233,0.4) !important; }
+  .state-s-hover  { box-shadow: 0 8px 24px rgba(150,100,200,0.18), inset 0 1px 0 rgba(255,255,255,0.7) !important; transform: translateY(-2px); }
+  .state-s-active { transform: translateY(1px) !important; box-shadow: 0 2px 10px rgba(150,100,200,0.12) !important; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 2rem; }
+  .state-row-label { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t3); margin-bottom: 1rem; }
+  .state-row { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .state-lbl  { font-size: 0.5625rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--t3); }
+
+  .btn-variants {
+    display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+    padding-top: 2rem; margin-top: 2rem;
+    border-top: 1px solid rgba(180,180,255,0.12);
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r-lg);
+    box-shadow: 0 8px 32px rgba(150,100,200,0.15), inset 0 1px 0 rgba(255,255,255,0.7);
+    padding: 2.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-panel::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+  .form-title { font-size: 1.125rem; font-weight: 600; color: var(--t1); margin-bottom: 0.25rem; position: relative; z-index: 1; }
+  .form-sub   { font-size: 0.875rem; font-weight: 400; color: var(--t2); margin-bottom: 2rem; line-height: 1.5; position: relative; z-index: 1; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.375rem; position: relative; z-index: 1; }
+  .fg-full   { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .label { font-size: 0.875rem; font-weight: 500; color: var(--t2); }
+  .hint  { font-size: 0.75rem; font-weight: 400; color: var(--t3); margin-top: 0.15rem; }
+
+  .inp {
+    background: var(--surface);
+    border: 1px solid rgba(180,180,255,0.3);
+    border-radius: var(--r);
+    box-shadow: inset 0 2px 8px rgba(100,100,200,0.06);
+    padding: 0.75rem 1rem;
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 400; color: var(--t1);
+    outline: none; width: 100%;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .inp::placeholder { color: var(--t3); font-weight: 400; }
+  .inp:focus {
+    border-color: var(--ac);
+    box-shadow: 0 0 0 3px rgba(255,119,233,0.2), inset 0 2px 8px rgba(100,100,200,0.06);
+  }
+
+  .inp-wrap { position: relative; }
+  .inp-ico  { position: absolute; right: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none; }
+  .inp.has-ico { padding-right: 2.5rem; }
+
+  .sel {
+    -webkit-appearance: none;
+    background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%239090c8' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.875rem center;
+    border: 1px solid rgba(180,180,255,0.3);
+    border-radius: var(--r);
+    box-shadow: inset 0 2px 8px rgba(100,100,200,0.06);
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    font-family: var(--f); font-size: 0.9375rem; font-weight: 400; color: var(--t1);
+    outline: none; width: 100%; cursor: pointer;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .sel:focus {
+    border-color: var(--ac);
+    box-shadow: 0 0 0 3px rgba(255,119,233,0.2), inset 0 2px 8px rgba(100,100,200,0.06);
+  }
+
+  .ta { resize: vertical; min-height: 96px; line-height: 1.55; }
+
+  /* Checkboxes — circular with gradient */
+  .chk-group { display: flex; flex-direction: column; gap: 0.875rem; }
+  .chk-row {
+    display: flex; align-items: center; gap: 0.875rem;
+    cursor: pointer; user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 22px; height: 22px; flex-shrink: 0;
+    background: var(--surface);
+    border: 2px solid rgba(180,180,255,0.4);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .chk-mark  { opacity: 0; color: white; transition: opacity 0.12s; }
+  .chk-in:checked + .chk-box {
+    background: linear-gradient(135deg, #ff77e9, #b3b3ff);
+    border-color: transparent;
+  }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-in:focus-visible + .chk-box { box-shadow: 0 0 0 3px rgba(255,119,233,0.25); }
+  .chk-txt { font-size: 0.9375rem; font-weight: 400; color: var(--t1); }
+
+  .rad-box {
+    width: 22px; height: 22px; flex-shrink: 0;
+    background: var(--surface);
+    border: 2px solid rgba(180,180,255,0.4);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s var(--ease);
+  }
+  .rad-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: linear-gradient(135deg, #ff77e9, #b3b3ff);
+    opacity: 0; transform: scale(0.4);
+    transition: opacity 0.15s, transform 0.2s var(--spring);
+  }
+  .chk-in:checked + .rad-box { border-color: var(--ac); }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1); }
+  .chk-in:focus-visible + .rad-box { box-shadow: 0 0 0 3px rgba(255,119,233,0.25); }
+
+  /* Toggles — super rounded, gradient active */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.0625rem 0; gap: 1rem;
+    border-bottom: 1px solid rgba(180,180,255,0.1);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title { font-size: 0.9375rem; font-weight: 500; color: var(--t1); }
+  .tgl-desc  { font-size: 0.8125rem; font-weight: 400; color: var(--t3); margin-top: 0.125rem; }
+
+  .tgl { flex-shrink: 0; cursor: pointer; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 56px; height: 30px;
+    background: rgba(180,180,255,0.2);
+    border: 1.5px solid rgba(180,180,255,0.3);
+    border-radius: var(--r-full);
+    position: relative;
+    transition: background 0.28s var(--ease), border-color 0.28s var(--ease);
+  }
+  .tgl-thumb {
+    position: absolute; top: 3px; left: 3px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: white;
+    border: 1.5px solid rgba(180,180,255,0.3);
+    box-shadow: 0 2px 8px rgba(150,100,200,0.2);
+    transition: transform 0.3s var(--spring), box-shadow 0.3s var(--ease);
+  }
+  .tgl-in:checked ~ .tgl-track {
+    background: linear-gradient(135deg, #ff77e9, #b3b3ff);
+    border-color: transparent;
+  }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb {
+    transform: translateX(26px);
+    border-color: rgba(255,255,255,0.4);
+    box-shadow: 0 2px 10px rgba(255,119,233,0.35);
+  }
+  .tgl-in:focus-visible ~ .tgl-track { box-shadow: 0 0 0 3px rgba(255,119,233,0.25); }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .card-y2k {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r-lg);
+    box-shadow: 0 8px 32px rgba(150,100,200,0.15), inset 0 1px 0 rgba(255,255,255,0.7);
+    overflow: hidden;
+    transition: transform 0.3s var(--spring), box-shadow 0.3s var(--ease);
+    position: relative;
+  }
+  .card-y2k::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .card-y2k:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(150,100,200,0.22), inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+
+  .card-thumb {
+    height: 128px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    position: relative;
+  }
+  .ct1 { background: linear-gradient(135deg, #ffd4f0, #e8c8ff, #d4f1ff); }
+  .ct2 { background: linear-gradient(135deg, #d4f1ff, #c8e8ff, #e8c8ff); }
+  .ct3 { background: linear-gradient(135deg, #e8c8ff, #d4f4e8, #c8f4e8); }
+
+  .card-in {
+    padding: 1.25rem 1.5rem 1.625rem;
+    position: relative;
+    z-index: 2;
+  }
+  .card-eye  { font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ac); margin-bottom: 0.375rem; }
+  .card-h    { font-size: 1.0625rem; font-weight: 600; color: var(--t1); margin-bottom: 0.5rem; }
+  .card-body-text { font-size: 0.875rem; font-weight: 400; line-height: 1.55; color: var(--t2); margin-bottom: 1.25rem; }
+  .card-ft {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(180,180,255,0.12);
+  }
+  .card-av {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 600; color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.6);
+  }
+  .av1 { background: linear-gradient(135deg, #ff77e9, #b3b3ff); }
+  .av2 { background: linear-gradient(135deg, #74d4ff, #a8f0c8); }
+  .av3 { background: linear-gradient(135deg, #b3b3ff, #74d4ff); }
+  .card-dt { font-size: 0.75rem; font-weight: 400; color: var(--t3); }
+  .card-act {
+    background: linear-gradient(135deg, rgba(255,119,233,0.12), rgba(179,179,255,0.12));
+    border: 1px solid rgba(255,119,233,0.3);
+    border-radius: var(--r-full);
+    padding: 0.35rem 0.875rem;
+    font-family: var(--f); font-size: 0.75rem; font-weight: 500; color: var(--ac);
+    cursor: pointer; transition: background 0.2s var(--ease), transform 0.15s var(--spring);
+  }
+  .card-act:hover { background: linear-gradient(135deg, rgba(255,119,233,0.2), rgba(179,179,255,0.2)); transform: translateY(-1px); }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ */
+  .player {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r-lg);
+    box-shadow: 0 8px 32px rgba(150,100,200,0.15), inset 0 1px 0 rgba(255,255,255,0.7);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .player::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+
+  .player-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .player-art {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, #ffd4f0, #e8c8ff, #d4f1ff);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(150,100,200,0.2), inset 0 1px 0 rgba(255,255,255,0.6);
+    position: relative;
+    overflow: hidden;
+    animation: art-pulse 3s ease-in-out infinite;
+  }
+  @keyframes art-pulse {
+    0%, 100% { box-shadow: 0 4px 16px rgba(255,119,233,0.2), inset 0 1px 0 rgba(255,255,255,0.6); }
+    50%       { box-shadow: 0 4px 24px rgba(116,212,255,0.35), inset 0 1px 0 rgba(255,255,255,0.6); }
+  }
+  .player-art::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+  }
+  .player-title  { font-size: 1.0625rem; font-weight: 600; color: var(--t1); margin-bottom: 0.2rem; }
+  .player-artist { font-size: 0.875rem; font-weight: 400; color: var(--t2); }
+
+  .pc-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+  }
+  .pc-btn {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(200,220,255,0.7));
+    border: 1px solid rgba(255,255,255,0.85);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--t2);
+    box-shadow: 0 3px 12px rgba(150,100,200,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
+    transition: transform 0.2s var(--spring), box-shadow 0.2s var(--ease);
+    position: relative; overflow: hidden;
+  }
+  .pc-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+  .pc-btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(150,100,200,0.22), inset 0 1px 0 rgba(255,255,255,0.6); }
+  .pc-btn:active { transform: translateY(1px); box-shadow: 0 2px 8px rgba(150,100,200,0.1); }
+  .pc-sm { width: 40px; height: 40px; }
+  .pc-lg {
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, #ff77e9, #b3b3ff);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 6px 22px rgba(255,119,233,0.45), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .pc-lg:hover  { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,119,233,0.55), inset 0 1px 0 rgba(255,255,255,0.5); }
+  .pc-lg:active { transform: translateY(1px); box-shadow: 0 4px 16px rgba(255,119,233,0.4); }
+  .pc-lg[aria-pressed="true"] .play-ico  { display: none; }
+  .pc-lg[aria-pressed="false"] .pause-ico { display: none; }
+
+  /* Progress bar with gradient fill */
+  .progress-outer { margin: 1.75rem 0; position: relative; z-index: 1; }
+  .prog-track {
+    width: 100%; height: 8px; border-radius: var(--r-full);
+    background: rgba(180,180,255,0.2);
+    border: 1px solid rgba(180,180,255,0.2);
+    position: relative; cursor: pointer;
+    overflow: hidden;
+  }
+  .prog-fill {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: linear-gradient(90deg, #ff77e9, #b3b3ff, #74d4ff);
+    border-radius: var(--r-full);
+    transition: width 0.05s linear;
+    pointer-events: none;
+  }
+  .progress-rng {
+    position: absolute; inset: 0;
+    -webkit-appearance: none;
+    width: 100%; height: 100%;
+    opacity: 0; cursor: pointer; margin: 0;
+  }
+  .prog-thumb {
+    position: absolute; top: 50%; right: 0;
+    transform: translate(50%, -50%);
+    width: 20px; height: 20px; border-radius: 50%;
+    background: linear-gradient(135deg, #ff77e9, #b3b3ff);
+    border: 2px solid white;
+    box-shadow: 0 2px 10px rgba(255,119,233,0.5);
+    pointer-events: none;
+    transition: transform 0.15s var(--spring);
+  }
+
+  .progress-times {
+    display: flex; justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  .ptime { font-size: 0.6875rem; font-weight: 500; color: var(--t3); }
+
+  .slider-list { display: flex; flex-direction: column; gap: 1.375rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(180,180,255,0.1); position: relative; z-index: 1; }
+  .slider-item { display: flex; align-items: center; gap: 1rem; }
+  .sl-lbl { font-size: 0.8125rem; font-weight: 500; color: var(--t2); min-width: 5rem; }
+  .sl-val { font-size: 0.8125rem; font-weight: 600; color: var(--ac); min-width: 2.5rem; text-align: right; }
+
+  .sl-track-wrap { flex: 1; position: relative; height: 12px; }
+  .sl-track {
+    width: 100%; height: 10px; border-radius: var(--r-full);
+    background: rgba(180,180,255,0.2);
+    border: 1px solid rgba(180,180,255,0.2);
+    position: absolute; top: 50%; transform: translateY(-50%);
+    overflow: hidden;
+  }
+  .sl-fill {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: linear-gradient(90deg, #ff77e9, #b3b3ff, #74d4ff);
+    border-radius: var(--r-full);
+    pointer-events: none;
+  }
+  .rng {
+    -webkit-appearance: none;
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    opacity: 0; cursor: pointer; margin: 0;
+    z-index: 2;
+  }
+  .sl-thumb {
+    position: absolute; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px; height: 24px; border-radius: 50%;
+    background: linear-gradient(135deg, #ff77e9, #b3b3ff);
+    border: 2px solid white;
+    box-shadow: 0 2px 10px rgba(255,119,233,0.45);
+    pointer-events: none;
+    transition: transform 0.1s var(--spring);
+    z-index: 1;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAV BAR
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r-lg);
+    box-shadow: 0 8px 32px rgba(150,100,200,0.15), inset 0 1px 0 rgba(255,255,255,0.7);
+    overflow: hidden;
+    max-width: 420px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .navdemo::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .nd-screen { padding: 1.75rem 1.5rem 0; position: relative; z-index: 1; }
+  .nd-title  { font-size: 1.375rem; font-weight: 600; color: var(--t1); margin-bottom: 0.2rem; }
+  .nd-sub    { font-size: 0.875rem; font-weight: 400; color: var(--t3); margin-bottom: 1.25rem; }
+
+  .nd-search {
+    background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: var(--r-full);
+    padding: 0.625rem 1rem;
+    display: flex; align-items: center; gap: 0.625rem;
+    color: var(--t3); font-size: 0.875rem; font-weight: 400;
+    margin-bottom: 1.25rem;
+    backdrop-filter: blur(6px);
+  }
+
+  .nd-items { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.75rem; }
+  .nd-item {
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(255,255,255,0.75);
+    border-radius: var(--r);
+    padding: 0.875rem 1rem;
+    display: flex; align-items: center; gap: 0.875rem;
+    position: relative; overflow: hidden;
+  }
+  .nd-item::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+  .nd-ico {
+    width: 38px; height: 38px; flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(200,220,255,0.7));
+    border: 1px solid rgba(255,255,255,0.85);
+    border-radius: var(--r-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(150,100,200,0.1);
+  }
+  .nd-item-title { font-size: 0.9375rem; font-weight: 500; color: var(--t1); }
+  .nd-item-sub   { font-size: 0.75rem;   font-weight: 400; color: var(--t3); }
+
+  /* Nav bar */
+  .y2k-navbar {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255,255,255,0.7);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 0.875rem 0.5rem;
+    position: relative; z-index: 1;
+  }
+
+  .ni {
+    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--f); padding: 0.25rem; flex: 1;
+    transition: transform 0.2s var(--spring);
+  }
+  .ni:hover { transform: translateY(-2px); }
+  .ni-wrap {
+    width: 44px; height: 44px; border-radius: var(--r);
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.7);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .ni-wrap::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--shine);
+    pointer-events: none;
+  }
+  .ni-on .ni-wrap {
+    background: linear-gradient(135deg, rgba(255,119,233,0.15), rgba(179,179,255,0.15));
+    border-color: rgba(255,119,233,0.35);
+    box-shadow: 0 3px 12px rgba(255,119,233,0.2);
+  }
+  .ni-lbl { font-size: 0.625rem; font-weight: 500; color: var(--t3); transition: color 0.15s; }
+  .ni-on .ni-lbl { color: var(--ac); }
+  .ni-badge { position: absolute; top: -2px; right: -2px; width: 9px; height: 9px; background: var(--err); border-radius: 50%; border: 2px solid white; }
+  .ni-ico-wrap { position: relative; }
+
+  /* Active tab gradient indicator */
+  .ni-indicator {
+    width: 20px; height: 3px;
+    background: linear-gradient(90deg, #ff77e9, #b3b3ff);
+    border-radius: var(--r-full);
+    opacity: 0;
+    transition: opacity 0.2s var(--ease);
+    margin-top: 1px;
+  }
+  .ni-on .ni-indicator { opacity: 1; }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .tr { grid-template-columns: 72px 1fr; gap: 0.75rem; padding: 0.875rem 1.25rem; }
+    .ts-disp { font-size: 2rem; }
+    .ts-h1   { font-size: 1.75rem; }
+    .palette-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+    .state-row { gap: 0.75rem; }
+    .player-top { grid-template-columns: auto 1fr; }
+    .pc-row { grid-column: 1 / -1; margin-top: 1rem; }
+    .hero-h1 { font-size: 2.75rem; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 2.5L4.5 7 9 11.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Gallery
+  </a>
+  <span class="tnav-title">Y2K Chrome</span>
+  <a class="tnav-dl" href="style-guide.md" download="y2k-chrome-style-guide.md">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 2v7.5M4.5 7l2.5 2.5 2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress dots ────────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"     aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"       aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"   aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"      aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Form Inputs"  aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"        aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"     aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"   aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <div class="hero-kicker"><span class="hero-kicker-dot"></span>Retro Digital · Y2K</div>
+    <h1 class="hero-h1">Y2K Chrome</h1>
+    <span class="hero-h1-sub">Iridescent bubble UI</span>
+    <p class="hero-desc">A design language born from millennium optimism — surfaces that shimmer like CDs in sunlight, bubbles that beg to be pressed, gradients that can't decide what color they want to be. Windows Aero meets Lisa Frank meets early iTunes visualizer.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Fredoka · friendly</span>
+      <span class="hero-tag">Bubble surfaces</span>
+      <span class="hero-tag">Conic gradients</span>
+      <span class="hero-tag">Maximum roundness</span>
+    </div>
+    <div class="hero-widget">
+      <div class="hero-widget-card">
+        <div class="hw-icon">💿</div>
+        <div><div class="hw-title">Holographic</div><div class="hw-sub">iridescent conic fills</div></div>
+      </div>
+      <div class="hero-widget-card">
+        <div class="hw-icon">✨</div>
+        <div><div class="hw-title">Chrome shine</div><div class="hw-sub">::before overlay, always</div></div>
+      </div>
+      <div class="hero-widget-card">
+        <div class="hw-icon">🫧</div>
+        <div><div class="hw-title">Bubble UI</div><div class="hw-sub">glass surfaces, pink glow</div></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ─────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">01</span>
+      <h2 class="sec-title" id="colors-h">Color Palette</h2>
+      <span class="sec-ghost" aria-hidden="true">01</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">💿</span>
+      <p class="spec-callout-text">The Y2K palette is holographic — <strong>#ff77e9</strong> pink, <strong>#7b7bff</strong> periwinkle, <strong>#74d4ff</strong> baby blue, and <strong>#a8f0c8</strong> pastel green shift like a CD in sunlight. No matte surfaces allowed. All fills should be gradient or frosted-glass. The iridescent swatch (bottom right) is the system soul — it animates endlessly.</p>
+    </div>
+    <div class="palette-grid">
+      <!-- Backgrounds -->
+      <div class="swatch">
+        <div class="swatch-color" style="background:linear-gradient(135deg,#d4f1ff 0%,#e8c8ff 50%,#ffd4f0 100%)"></div>
+        <div class="swatch-body"><span class="swatch-hex">--bg-grad</span><span class="swatch-name">body background</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(255,255,255,0.78)"></div>
+        <div class="swatch-body"><span class="swatch-hex">rgba(255,255,255,.78)</span><span class="swatch-name">--surface · primary</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(255,255,255,0.55)"></div>
+        <div class="swatch-body"><span class="swatch-hex">rgba(255,255,255,.55)</span><span class="swatch-name">--surface-2 · secondary</span></div>
+      </div>
+      <!-- Text -->
+      <div class="swatch">
+        <div class="swatch-color" style="background:#3a3a8c"></div>
+        <div class="swatch-body"><span class="swatch-hex">#3a3a8c</span><span class="swatch-name">--t1 · text primary</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#6060a8"></div>
+        <div class="swatch-body"><span class="swatch-hex">#6060a8</span><span class="swatch-name">--t2 · text muted</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#9090c8"></div>
+        <div class="swatch-body"><span class="swatch-hex">#9090c8</span><span class="swatch-name">--t3 · text faint</span></div>
+      </div>
+      <!-- Accent -->
+      <div class="swatch">
+        <div class="swatch-color" style="background:#ff77e9"></div>
+        <div class="swatch-body"><span class="swatch-hex">#ff77e9</span><span class="swatch-name">--ac · hot pink</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#7b7bff"></div>
+        <div class="swatch-body"><span class="swatch-hex">#7b7bff</span><span class="swatch-name">--ac2 · periwinkle</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#74d4ff"></div>
+        <div class="swatch-body"><span class="swatch-hex">#74d4ff</span><span class="swatch-name">--ac3 · baby blue</span></div>
+      </div>
+      <!-- Status -->
+      <div class="swatch">
+        <div class="swatch-color" style="background:#a8f0c8"></div>
+        <div class="swatch-body"><span class="swatch-hex">#a8f0c8</span><span class="swatch-name">--ok · mint</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#ff8fa8"></div>
+        <div class="swatch-body"><span class="swatch-hex">#ff8fa8</span><span class="swatch-name">--err · blush</span></div>
+      </div>
+      <div class="swatch swatch-iridescent">
+        <div class="swatch-color"></div>
+        <div class="swatch-body"><span class="swatch-hex">conic-gradient</span><span class="swatch-name">iridescent · animated</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ─────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">02</span>
+      <h2 class="sec-title" id="type-h">Typography Scale</h2>
+      <span class="sec-ghost" aria-hidden="true">02</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">Aa</span>
+      <p class="spec-callout-text"><strong>Fredoka</strong> is bubbly and approachable — Y2K's optimism in a typeface. Every letterform is slightly rounded, matching the UI's bubble shapes. Use weight 300–700; the geometric softness is the point. Never swap for a condensed or high-contrast serif — that would break the spell.</p>
+    </div>
+    <div class="typescale">
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Display</span><span class="tr-spec">48px / 700<br>lh 1.1</span></div><div class="ts-disp">Fredoka</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H1</span><span class="tr-spec">36px / 600</span></div><div class="ts-h1">Heading one</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H2</span><span class="tr-spec">28px / 600</span></div><div class="ts-h2">Heading two</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H3</span><span class="tr-spec">22px / 500</span></div><div class="ts-h3">Heading three</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H4</span><span class="tr-spec">18px / 500</span></div><div class="ts-h4">Heading four</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Lg</span><span class="tr-spec">17px / 400<br>lh 1.6</span></div><div class="ts-lg">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body</span><span class="tr-spec">16px / 400<br>lh 1.55</span></div><div class="ts-base">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Sm</span><span class="tr-spec">14px / 400<br>lh 1.5</span></div><div class="ts-sm">The quick brown fox jumps over the lazy dog</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Caption</span><span class="tr-spec">12px / 500<br>+0.06em UC</span></div><div class="ts-cap">Caption · metadata · label</div></div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">03</span>
+      <h2 class="sec-title" id="btn-h">Buttons</h2>
+      <span class="sec-ghost" aria-hidden="true">03</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">🫧</span>
+      <p class="spec-callout-text">Every button is a bubble: <strong>gradient fill</strong>, <strong>shine overlay</strong>, soft shadow. Primary = pink-to-periwinkle gradient. Secondary = chrome frosted glass. Ghost = transparent with gradient border. The <strong>::before shine</strong> overlay must always be present — it's what separates Y2K from flat design.</p>
+    </div>
+    <div class="btn-states">
+      <div>
+        <p class="state-row-label">Primary — pink gradient</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-p">Default</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-p-hover" tabindex="-1" aria-hidden="true">Hover</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-p-active" tabindex="-1" aria-hidden="true">Pressed</button><span class="state-lbl">Pressed ↓</span></div>
+          <div class="state-wrap"><button class="btn btn-p" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Secondary — chrome glass</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-sec">Default</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-sec state-s-hover" tabindex="-1" aria-hidden="true">Hover</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-sec state-s-active" tabindex="-1" aria-hidden="true">Pressed</button><span class="state-lbl">Pressed ↓</span></div>
+          <div class="state-wrap"><button class="btn btn-sec" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div class="btn-variants">
+        <button class="btn btn-p">Primary</button>
+        <button class="btn btn-sec">Secondary</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <button class="btn btn-p btn-sm">Small</button>
+        <button class="btn btn-icon btn-icon-p" aria-label="Add">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="btn btn-icon btn-sec" aria-label="Favorite">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 14.5S2.5 11 2.5 6A3.5 3.5 0 0 1 9 4.25 3.5 3.5 0 0 1 15.5 6c0 5-6.5 8.5-6.5 8.5Z" stroke="#ff77e9" stroke-width="1.5" fill="#ff77e9" fill-opacity="0.2"/></svg>
+        </button>
+        <button class="btn btn-icon btn-sec" aria-label="More">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="4.5" r="1.25" fill="#9090c8"/><circle cx="9" cy="9" r="1.25" fill="#9090c8"/><circle cx="9" cy="13.5" r="1.25" fill="#9090c8"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">04</span>
+      <h2 class="sec-title" id="inputs-h">Form Inputs</h2>
+      <span class="sec-ghost" aria-hidden="true">04</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">🔮</span>
+      <p class="spec-callout-text">Input fields are frosted glass bubbles — <strong>rgba(255,255,255,0.78)</strong> background with a soft inset shadow. Focus adds a pink glow ring: <strong>box-shadow: 0 0 0 3px rgba(255,119,233,0.2)</strong> — the bubble activates. Checkboxes are circular. Toggles have gradient active tracks. Nothing is square.</p>
+    </div>
+    <div class="form-panel">
+      <div class="form-title">Account Settings</div>
+      <p class="form-sub">All six input types in Y2K Chrome form — text, select, textarea, checkbox, radio, toggle. Every control is a bubble.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">Full name</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="text" id="fi-name" placeholder="Jane Smith" autocomplete="name">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="5" r="2.75" stroke="currentColor" stroke-width="1.3"/><path d="M2.5 13c0-2.76 2.24-4.5 5-4.5s5 1.74 5 4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">Email</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="email" id="fi-email" placeholder="jane@example.com" autocomplete="email">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="3.5" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5l6 4 6-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-role">Role</label>
+          <select class="inp sel" id="fi-role">
+            <option value="">Select…</option>
+            <option>Product Designer</option>
+            <option>Engineer</option>
+            <option>Product Manager</option>
+            <option>Researcher</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-pass">Password</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="password" id="fi-pass" placeholder="••••••••">
+            <svg class="inp-ico" width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="3.5" y="6.5" width="8" height="6.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 6.5V4.5a2 2 0 0 1 4 0v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-bio">Bio</label>
+          <textarea class="inp ta" id="fi-bio" placeholder="Tell us about yourself…" rows="3"></textarea>
+          <span class="hint">Max 280 characters. Shown on your public profile.</span>
+        </div>
+        <div class="field">
+          <span class="label" id="chk-lbl">Interests</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><svg class="chk-mark" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Visual Design</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox"><span class="chk-box"><svg class="chk-mark" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Interaction Design</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><svg class="chk-mark" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Design Systems</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="rad-lbl">Seniority</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row"><input class="chk-in" type="radio" name="sen" value="jr"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">Junior (0–2 yrs)</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="sen" value="mid" checked><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">Mid (2–5 yrs)</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="sen" value="sr"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">Senior (5+ yrs)</span></label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">Notifications</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Email digests</div><div class="tgl-desc">Weekly summary of activity</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Email digests"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Push notifications</div><div class="tgl-desc">Mentions and replies in real time</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" aria-label="Push notifications"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Auto-save drafts</div><div class="tgl-desc">Save changes every 30 seconds</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Auto-save drafts"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ──────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">05</span>
+      <h2 class="sec-title" id="cards-h">Cards</h2>
+      <span class="sec-ghost" aria-hidden="true">05</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">💿</span>
+      <p class="spec-callout-text">Cards are chrome surfaces — <strong>gradient underlay</strong>, <strong>shine overlay</strong>, very rounded (<strong>border-radius: 40px</strong>). Like holding a CD case. On hover they lift 6px with expanded shadow. Card thumbnails use pastel gradient fills — no photos, no flat fills.</p>
+    </div>
+    <div class="cards-row">
+      <article class="card-y2k">
+        <div class="card-thumb ct1">💿</div>
+        <div class="card-in">
+          <p class="card-eye">Design</p>
+          <h3 class="card-h">Iridescent Surfaces</h3>
+          <p class="card-body-text">Every surface is a light-catching moment. Gradients shift, shine overlays shimmer, and nothing is ever just one color.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem"><div class="card-av av1">J</div><span class="card-dt">3 min read</span></div>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-y2k">
+        <div class="card-thumb ct2">✨</div>
+        <div class="card-in">
+          <p class="card-eye">Engineering</p>
+          <h3 class="card-h">Conic Gradients 101</h3>
+          <p class="card-body-text">The conic-gradient is the heart of Y2K holographics. Animate hue-rotate on it for a living, breathing iridescent swatch.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem"><div class="card-av av2">M</div><span class="card-dt">5 min read</span></div>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-y2k">
+        <div class="card-thumb ct3">🫧</div>
+        <div class="card-in">
+          <p class="card-eye">Accessibility</p>
+          <h3 class="card-h">Keeping Bubbles WCAG-Safe</h3>
+          <p class="card-body-text">Frosted glass and pastels are beautiful but low-contrast. Always test text on glass surfaces with a contrast checker.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:0.5rem"><div class="card-av av3">A</div><span class="card-dt">7 min read</span></div>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ───────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">06</span>
+      <h2 class="sec-title" id="ctrl-h">Controls · Player</h2>
+      <span class="sec-ghost" aria-hidden="true">06</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">🎛️</span>
+      <p class="spec-callout-text">The music player is a chrome disc player. The play button has a <strong>holographic gradient fill</strong>. The progress bar is a <strong>glowing filament of color</strong> — gradient from pink to periwinkle to baby blue. Slider thumbs are gradient circles. Track is a frosted glass groove.</p>
+    </div>
+    <div class="player">
+      <div class="player-top">
+        <div class="player-art">💿</div>
+        <div>
+          <div class="player-title">Digital Girl · Y2K Mix</div>
+          <div class="player-artist">Holographic, Euphoric</div>
+        </div>
+        <div class="pc-row">
+          <button class="pc-btn pc-sm" aria-label="Shuffle">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 5h3l8 8h3M14 5h2v2M14 13h2v-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13h3l2.5-2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Previous">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M13.5 4.5L7 9l6.5 4.5V4.5ZM4.5 4.5v9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="pc-btn pc-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+            <svg class="play-ico" width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M7 4.5l11 6.5L7 17.5V4.5Z" fill="currentColor"/></svg>
+            <svg class="pause-ico" width="22" height="22" viewBox="0 0 22 22" fill="none" style="display:none"><path d="M7 4h3v14H7V4ZM13 4h3v14h-3V4Z" fill="currentColor"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Next">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 4.5L11 9l-6.5 4.5V4.5ZM13.5 4.5v9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Repeat">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 12V7a4 4 0 0 1 4-4h8M14 6l2-3-2-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 6v5a4 4 0 0 1-4 4H4M6 12l-2 3 2 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-outer">
+        <div class="prog-track" id="prog-track-wrap">
+          <div class="prog-fill" id="prog-fill" style="width:30%"></div>
+          <input class="progress-rng" type="range" id="progress" min="0" max="222" value="67" aria-label="Track progress">
+          <div class="prog-thumb" id="prog-thumb" style="right:calc(70% - 10px); left:auto; transform:translateY(-50%)"></div>
+        </div>
+        <div class="progress-times">
+          <span class="ptime" id="curr-time">1:07</span>
+          <span class="ptime">3:42</span>
+        </div>
+      </div>
+
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">Volume</span>
+          <div class="sl-track-wrap" id="vol-wrap">
+            <div class="sl-track"><div class="sl-fill" id="vol-fill" style="width:68%"></div></div>
+            <input class="rng" type="range" id="vol" min="0" max="100" value="68" aria-label="Volume">
+            <div class="sl-thumb" id="vol-thumb" style="left:68%"></div>
+          </div>
+          <span class="sl-val" id="vol-v">68</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Brightness</span>
+          <div class="sl-track-wrap" id="bright-wrap">
+            <div class="sl-track"><div class="sl-fill" id="bright-fill" style="width:45%"></div></div>
+            <input class="rng" type="range" id="bright" min="0" max="100" value="45" aria-label="Brightness">
+            <div class="sl-thumb" id="bright-thumb" style="left:45%"></div>
+          </div>
+          <span class="sl-val" id="bright-v">45%</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Balance</span>
+          <div class="sl-track-wrap" id="bal-wrap">
+            <div class="sl-track"><div class="sl-fill" id="bal-fill" style="width:50%"></div></div>
+            <input class="rng" type="range" id="bal" min="-50" max="50" value="0" aria-label="Left-right balance">
+            <div class="sl-thumb" id="bal-thumb" style="left:50%"></div>
+          </div>
+          <span class="sl-val" id="bal-v">C</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ─────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">07</span>
+      <h2 class="sec-title" id="nav-h">Navigation Bar</h2>
+      <span class="sec-ghost" aria-hidden="true">07</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">🌈</span>
+      <p class="spec-callout-text">Nav tabs have gradient active states — the selected tab gets a <strong>pink-periwinkle gradient underline indicator</strong> and a soft glow on the icon wrap. The whole bar is a <strong>chrome strip</strong>: frosted glass with backdrop blur. Inactive tabs are minimal; active glows.</p>
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <div class="nd-title">Good morning, Jane ✨</div>
+        <div class="nd-sub">Tuesday, May 12</div>
+        <div class="nd-search">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.4"/><path d="M9.5 9.5L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          Search anything…
+        </div>
+        <div class="nd-items">
+          <div class="nd-item"><div class="nd-ico">🎵</div><div><div class="nd-item-title">Digital Girl</div><div class="nd-item-sub">Now playing · 1:07 / 3:42</div></div></div>
+          <div class="nd-item"><div class="nd-ico">📋</div><div><div class="nd-item-title">Today's Tasks</div><div class="nd-item-sub">5 remaining · 3 done</div></div></div>
+          <div class="nd-item"><div class="nd-ico">🌤️</div><div><div class="nd-item-title">San Francisco</div><div class="nd-item-sub">72°F · Partly cloudy</div></div></div>
+        </div>
+      </div>
+      <nav class="y2k-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Home" aria-current="page">
+          <div class="ni-wrap">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 8.5 10 3l7 5.5V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5Z" stroke="#ff77e9" stroke-width="1.6" fill="rgba(255,119,233,.12)"/></svg>
+          </div>
+          <div class="ni-indicator"></div>
+          <span class="ni-lbl">Home</span>
+        </button>
+        <button class="ni" aria-label="Search">
+          <div class="ni-wrap">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="5.5" stroke="#9090c8" stroke-width="1.6"/><path d="M13 13l3.5 3.5" stroke="#9090c8" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <div class="ni-indicator"></div>
+          <span class="ni-lbl">Search</span>
+        </button>
+        <button class="ni" aria-label="Create">
+          <div class="ni-wrap" style="background:linear-gradient(135deg,#ff77e9,#b3b3ff);border-color:transparent;box-shadow:0 4px 16px rgba(255,119,233,0.4)">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="ni-indicator" style="background:linear-gradient(90deg,#ff77e9,#b3b3ff);opacity:1"></div>
+          <span class="ni-lbl" style="color:var(--ac)">Create</span>
+        </button>
+        <button class="ni" aria-label="Alerts, 3 unread">
+          <div class="ni-wrap">
+            <div class="ni-ico-wrap">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 0 0-6 6v3.5L2.5 14h15L16 11.5V8a6 6 0 0 0-6-6Z" stroke="#9090c8" stroke-width="1.6"/><path d="M8.5 17.5a1.5 1.5 0 0 0 3 0" stroke="#9090c8" stroke-width="1.6"/></svg>
+              <span class="ni-badge"></span>
+            </div>
+          </div>
+          <div class="ni-indicator"></div>
+          <span class="ni-lbl">Alerts</span>
+        </button>
+        <button class="ni" aria-label="Profile">
+          <div class="ni-wrap">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3.5" stroke="#9090c8" stroke-width="1.6"/><path d="M4 18c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" stroke="#9090c8" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <div class="ni-indicator"></div>
+          <span class="ni-lbl">Profile</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Custom slider visual sync ──────── */
+function syncSlider(rangeId, fillId, thumbId, pct) {
+  const fill  = document.getElementById(fillId);
+  const thumb = document.getElementById(thumbId);
+  if (fill)  fill.style.width = pct + '%';
+  if (thumb) thumb.style.left = pct + '%';
+}
+
+document.getElementById('vol').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  syncSlider('vol', 'vol-fill', 'vol-thumb', v);
+  document.getElementById('vol-v').textContent = v;
+});
+
+document.getElementById('bright').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  syncSlider('bright', 'bright-fill', 'bright-thumb', v);
+  document.getElementById('bright-v').textContent = v + '%';
+});
+
+document.getElementById('bal').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  const pct = (v + 50) / 100 * 100;
+  syncSlider('bal', 'bal-fill', 'bal-thumb', pct);
+  document.getElementById('bal-v').textContent = v < -5 ? 'L' + Math.abs(v) : v > 5 ? 'R' + v : 'C';
+});
+
+/* ── Progress bar visual sync ─────── */
+const progressRng   = document.getElementById('progress');
+const progFill      = document.getElementById('prog-fill');
+const progThumb     = document.getElementById('prog-thumb');
+const currTimeEl    = document.getElementById('curr-time');
+
+function syncProgress(val) {
+  const max = parseInt(progressRng.max);
+  const pct = (val / max) * 100;
+  if (progFill)  progFill.style.width = pct + '%';
+  if (progThumb) {
+    progThumb.style.left = pct + '%';
+    progThumb.style.right = 'auto';
+    progThumb.style.transform = 'translate(-50%, -50%)';
+  }
+}
+
+progressRng.addEventListener('input', e => {
+  const s = parseInt(e.target.value);
+  syncProgress(s);
+  currTimeEl.textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+});
+syncProgress(67);
+
+/* ── Play/pause ─────────────────────── */
+const playBtn = document.getElementById('play-btn');
+playBtn.addEventListener('click', () => {
+  const p = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!p));
+  playBtn.querySelector('.play-ico').style.display  = !p ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = !p ? '' : 'none';
+});
+
+/* ── Bottom nav ─────────────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => {
+      n.classList.remove('ni-on');
+      n.removeAttribute('aria-current');
+    });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ── Scroll reveal ──────────────────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secKey = sections[entry.target.id];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot navigation ────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

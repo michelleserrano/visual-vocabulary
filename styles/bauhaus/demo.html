@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bauhaus · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS — BAUHAUS 1919
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:      #fafafa;
+    --s1:      #f0f0f0;
+    --s2:      #e0e0e0;
+    --t1:      #1a1a1a;
+    --t2:      #4a4a4a;
+    --t3:      #8a8a8a;
+    --red:     #e8261d;
+    --blue:    #1a4a8a;
+    --yellow:  #f7c600;
+    --black:   #1a1a1a;
+    --r:       0px;
+    --r-circle: 50%;
+    --f:       'Oswald', 'Helvetica Neue', Helvetica, sans-serif;
+    --f-body:  'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+    --ease:    cubic-bezier(0.4, 0, 0.2, 1);
+    --spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f-body);
+    background: var(--bg);
+    color: var(--t1);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: white;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+    border-bottom: 3px solid var(--black);
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--f);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t3);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .tnav-back:hover { color: var(--black); }
+
+  .tnav-title {
+    font-family: var(--f);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t1);
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1.125rem;
+    background: var(--black);
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: white;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .tnav-dl:hover { background: var(--red); }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS DOTS — alternating shapes
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+  }
+
+  /* Circle dot (default) */
+  .prog-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--t3);
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    display: block;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .prog-dot:hover    { background: var(--t2); transform: scale(1.5); }
+  .prog-dot.active   { background: var(--red); transform: scale(1.4); }
+
+  /* Square dot */
+  .prog-dot.sq       { border-radius: 0; }
+  .prog-dot.sq.active { background: var(--blue); }
+  .prog-dot.sq:hover  { background: var(--t2); transform: scale(1.5); }
+
+  /* Triangle dot — CSS border trick */
+  .prog-dot.tri {
+    width: 0;
+    height: 0;
+    background: transparent !important;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 9px solid var(--t3);
+    border-radius: 0;
+  }
+  .prog-dot.tri:hover  { border-bottom-color: var(--t2); transform: scale(1.5); }
+  .prog-dot.tri.active { border-bottom-color: var(--yellow); transform: scale(1.4); }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.75rem 7rem;
+  }
+
+  .sec {
+    margin-top: 5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  .sec-hd {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 2px solid var(--black);
+  }
+
+  /* Ghost number behind heading */
+  .sec-ghost {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--f);
+    font-size: 7rem;
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.04);
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.02em;
+  }
+
+  /* Section badge — black square with number */
+  .sec-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: var(--black);
+    color: white;
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  .sec-title {
+    font-family: var(--f);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t1);
+  }
+
+  /* Spec callout — left red border */
+  .spec-callout {
+    background: var(--s1);
+    border-left: 4px solid var(--red);
+    padding: 1rem 1.375rem;
+    margin-bottom: 2rem;
+  }
+  .spec-callout p {
+    font-family: var(--f-body);
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: var(--t2);
+  }
+  .spec-callout strong {
+    font-weight: 600;
+    color: var(--t1);
+    font-family: 'Courier New', monospace;
+    font-size: 0.8125rem;
+  }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 4rem 0 4.5rem;
+  }
+
+  .hero-kicker {
+    display: inline-block;
+    font-family: var(--f);
+    font-size: 0.625rem;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-h1 {
+    font-family: var(--f);
+    font-size: clamp(4.5rem, 14vw, 9rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 0.88;
+    color: var(--t1);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-desc {
+    font-family: var(--f-body);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--t2);
+    max-width: 50ch;
+    margin-bottom: 2.5rem;
+  }
+
+  /* Two-panel hero composition */
+  .hero-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 2px solid var(--black);
+  }
+
+  .hero-panel {
+    padding: 2rem;
+  }
+
+  .hero-panel.hp-dark {
+    background: var(--black);
+    border-right: 2px solid var(--black);
+  }
+
+  .hero-panel.hp-light {
+    background: white;
+  }
+
+  .hp-label {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 1.75rem;
+  }
+  .hp-dark .hp-label { color: rgba(255, 255, 255, 0.3); }
+
+  /* Shapes trio — Kandinsky theory */
+  .shapes-trio {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .shape-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.875rem;
+    flex: 1;
+  }
+
+  .sh-circle {
+    width: 56px;
+    height: 56px;
+    background: var(--blue);
+    border-radius: 50%;
+  }
+
+  .sh-triangle {
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 52px solid var(--yellow);
+  }
+
+  .sh-square {
+    width: 56px;
+    height: 56px;
+    background: var(--red);
+  }
+
+  .shape-label {
+    font-family: var(--f);
+    font-size: 0.5rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* Primaries color bar */
+  .primaries-row {
+    display: flex;
+    height: 72px;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--s2);
+  }
+
+  .prim {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    padding: 0.5rem 0.5rem;
+  }
+
+  .prim-label {
+    font-family: var(--f);
+    font-size: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .prim.pwhite .prim-label { color: var(--t3); }
+
+  .hero-manifesto {
+    font-family: var(--f-body);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: var(--t2);
+  }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    border: 2px solid var(--black);
+  }
+
+  .swatch {
+    border-right: 1px solid var(--s2);
+    border-bottom: 1px solid var(--s2);
+    overflow: hidden;
+    cursor: default;
+    transition: transform 0.18s var(--ease);
+    position: relative;
+    z-index: 0;
+  }
+  .swatch:hover { transform: scale(1.03); z-index: 1; box-shadow: 4px 4px 0 var(--black); }
+
+  .swatch-color {
+    height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .swatch-body {
+    padding: 0.75rem;
+    background: white;
+    border-top: 2px solid var(--black);
+  }
+
+  .swatch-hex {
+    font-family: var(--f);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--t1);
+    display: block;
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.02em;
+  }
+
+  .swatch-name {
+    font-family: var(--f-body);
+    font-size: 0.5625rem;
+    font-weight: 400;
+    color: var(--t3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Color mixing theory bar */
+  .color-theory {
+    margin-top: 1.5rem;
+    background: var(--black);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .ct-heading {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+    flex: 1;
+    min-width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .ct-mix {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--f);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .ct-swatch {
+    width: 22px;
+    height: 22px;
+  }
+
+  .ct-plus { color: rgba(255, 255, 255, 0.25); font-size: 1rem; }
+  .ct-arrow { color: rgba(255, 255, 255, 0.25); font-size: 0.875rem; }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  /* Font pairing panels */
+  .type-pairing {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 2px solid var(--black);
+    margin-bottom: 1.5rem;
+  }
+
+  .tp-panel {
+    padding: 2rem;
+  }
+
+  .tp-panel:first-child {
+    border-right: 2px solid var(--black);
+  }
+
+  .tp-role {
+    font-family: var(--f-body);
+    font-size: 0.625rem;
+    color: var(--t3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .tp-chars {
+    font-family: var(--f-body);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    color: var(--t2);
+  }
+
+  /* Type scale table */
+  .typescale {
+    border: 2px solid var(--black);
+    overflow: hidden;
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.125rem 1.75rem;
+    border-bottom: 1px solid var(--s2);
+  }
+  .tr:last-child { border-bottom: none; }
+
+  .tr-meta { text-align: right; }
+  .tr-lbl {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+  .tr-spec {
+    font-family: var(--f-body);
+    font-size: 0.5rem;
+    color: var(--t3);
+    line-height: 1.6;
+  }
+
+  /* Type specimens */
+  .ts-d1   { font-family: var(--f); font-size: 3rem;    font-weight: 700; line-height: 1;    text-transform: uppercase; letter-spacing: 0.02em; }
+  .ts-d2   { font-family: var(--f); font-size: 2rem;    font-weight: 600; line-height: 1.1;  text-transform: uppercase; letter-spacing: 0.04em; }
+  .ts-h1   { font-family: var(--f); font-size: 1.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .ts-h2   { font-family: var(--f); font-size: 1.375rem;font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+  .ts-h3   { font-family: var(--f); font-size: 1.0625rem;font-weight: 500;text-transform: uppercase; letter-spacing: 0.08em; }
+  .ts-body { font-family: var(--f-body); font-size: 1rem;     font-weight: 400; line-height: 1.65; }
+  .ts-sm   { font-family: var(--f-body); font-size: 0.875rem; font-weight: 400; line-height: 1.6; color: var(--t2); }
+  .ts-cap  { font-family: var(--f); font-size: 0.6875rem;font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--t2); }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    padding: 0.875rem 2rem;
+    font-family: var(--f);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    position: relative;
+    transition: background 0.15s, box-shadow 0.15s var(--ease), transform 0.1s var(--ease);
+  }
+
+  /* Red — primary */
+  .btn-red { background: var(--red); color: white; }
+  .btn-red:hover:not(:disabled)  { background: #c01810; box-shadow: 4px 4px 0 var(--black); }
+  .btn-red:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: none; }
+
+  /* Blue — secondary */
+  .btn-blue { background: var(--blue); color: white; }
+  .btn-blue:hover:not(:disabled)  { background: #133a6e; box-shadow: 4px 4px 0 var(--black); }
+  .btn-blue:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: none; }
+
+  /* Yellow — tertiary */
+  .btn-yellow { background: var(--yellow); color: var(--black); }
+  .btn-yellow:hover:not(:disabled)  { background: #d9ae00; box-shadow: 4px 4px 0 var(--black); }
+  .btn-yellow:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: none; }
+
+  /* Ghost */
+  .btn-ghost { background: transparent; color: var(--black); border: 2px solid var(--black); }
+  .btn-ghost:hover:not(:disabled)  { background: var(--black); color: white; box-shadow: 4px 4px 0 var(--t3); }
+  .btn-ghost:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: none; }
+
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .btn-sm { padding: 0.5rem 1.25rem; font-size: 0.8125rem; }
+
+  .btn-circle {
+    width: 48px; height: 48px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    border: none;
+  }
+  .btn-circle:hover:not(:disabled)  { background: #c01810; box-shadow: 3px 3px 0 var(--black); }
+  .btn-circle:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: none; }
+
+  /* Static state previews */
+  .sh-red-hover  { background: #c01810 !important; box-shadow: 4px 4px 0 var(--black) !important; }
+  .sh-red-active { background: #c01810 !important; transform: translate(4px, 4px) !important; box-shadow: none !important; }
+  .sh-blue-hover { background: #133a6e !important; box-shadow: 4px 4px 0 var(--black) !important; }
+  .sh-blue-active{ background: #133a6e !important; transform: translate(4px, 4px) !important; box-shadow: none !important; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 2.5rem; }
+
+  .state-row-label {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 1rem;
+  }
+
+  .state-row { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-end; }
+
+  .state-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .state-lbl {
+    font-family: var(--f-body);
+    font-size: 0.5625rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+
+  .btn-variants-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 2rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--s2);
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: white;
+    border: 2px solid var(--black);
+    padding: 2.25rem;
+  }
+
+  .form-title {
+    font-family: var(--f);
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--t1);
+    margin-bottom: 0.25rem;
+  }
+
+  .form-sub {
+    font-family: var(--f-body);
+    font-size: 0.875rem;
+    color: var(--t2);
+    margin-bottom: 2rem;
+    line-height: 1.55;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 1.75rem;
+  }
+  .fg-full { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  /* Bauhaus label — Oswald uppercase */
+  .label {
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t2);
+  }
+
+  .hint {
+    font-family: var(--f-body);
+    font-size: 0.75rem;
+    color: var(--t3);
+    margin-top: 0.2rem;
+  }
+
+  /* Bottom-line input */
+  .inp {
+    border: none;
+    border-bottom: 2px solid var(--black);
+    background: transparent;
+    padding: 0.75rem 0;
+    font-family: var(--f-body);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--t1);
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s var(--ease);
+  }
+  .inp::placeholder { color: var(--t3); }
+  .inp:focus { border-bottom-color: var(--red); }
+
+  /* Select */
+  .sel {
+    -webkit-appearance: none;
+    border: none;
+    border-bottom: 2px solid var(--black);
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231a1a1a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.25rem center;
+    padding: 0.75rem 1.5rem 0.75rem 0;
+    font-family: var(--f-body);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--t1);
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .sel:focus { border-bottom-color: var(--red); }
+
+  /* Textarea */
+  .ta {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.55;
+    border: 2px solid var(--black);
+    padding: 0.625rem 0.75rem;
+    border-bottom-width: 2px;
+  }
+  .ta:focus { border-color: var(--red); }
+
+  /* Checkbox — black square, red checked */
+  .chk-group { display: flex; flex-direction: column; gap: 0.875rem; }
+  .chk-row {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 20px; height: 20px; flex-shrink: 0;
+    border: 2px solid var(--black);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .chk-mark { opacity: 0; color: white; transition: opacity 0.1s; }
+  .chk-in:checked + .chk-box { background: var(--red); border-color: var(--red); }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-in:focus-visible + .chk-box { outline: 2px solid var(--red); outline-offset: 2px; }
+  .chk-txt { font-family: var(--f-body); font-size: 0.9375rem; font-weight: 400; color: var(--t1); }
+
+  /* Radio */
+  .rad-box {
+    width: 20px; height: 20px; flex-shrink: 0;
+    border: 2px solid var(--black);
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s;
+  }
+  .rad-dot {
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.3);
+    transition: opacity 0.15s, transform 0.2s var(--spring);
+  }
+  .chk-in:checked + .rad-box { border-color: var(--red); }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1); }
+  .chk-in:focus-visible + .rad-box { outline: 2px solid var(--red); outline-offset: 2px; }
+
+  /* Toggle — rectangular Bauhaus style */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    gap: 1rem;
+    border-bottom: 1px solid var(--s2);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title { font-family: var(--f-body); font-size: 0.9375rem; font-weight: 500; color: var(--t1); }
+  .tgl-desc  { font-family: var(--f-body); font-size: 0.8125rem; color: var(--t3); margin-top: 0.1rem; }
+
+  .tgl { flex-shrink: 0; cursor: pointer; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 48px; height: 24px;
+    background: white;
+    border: 2px solid var(--black);
+    position: relative;
+    transition: background 0.22s var(--ease), border-color 0.22s;
+  }
+  .tgl-thumb {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 16px; height: 16px;
+    background: var(--black);
+    transition: transform 0.25s var(--spring), background 0.22s;
+  }
+  .tgl-in:checked ~ .tgl-track { background: var(--red); border-color: var(--red); }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb { transform: translateX(24px); background: white; }
+  .tgl-in:focus-visible ~ .tgl-track { outline: 2px solid var(--red); outline-offset: 2px; }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card-bau {
+    background: white;
+    border: 2px solid var(--black);
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.18s var(--ease), transform 0.18s var(--ease);
+    position: relative;
+  }
+  .card-bau:hover { box-shadow: 5px 5px 0 var(--black); transform: translate(-2px, -2px); }
+
+  /* Top color bar */
+  .card-bar { height: 4px; }
+  .cb-red    { background: var(--red); }
+  .cb-blue   { background: var(--blue); }
+  .cb-yellow { background: var(--yellow); }
+
+  /* Thumbnail — solid color + white geometric shape */
+  .card-thumb {
+    height: 116px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ct-red    { background: var(--red); }
+  .ct-blue   { background: var(--blue); }
+  .ct-yellow { background: var(--yellow); }
+
+  .thumb-shape-circle {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.28);
+  }
+  .thumb-shape-tri {
+    width: 0; height: 0;
+    border-left: 28px solid transparent;
+    border-right: 28px solid transparent;
+    border-bottom: 50px solid rgba(255, 255, 255, 0.28);
+  }
+  .thumb-shape-sq {
+    width: 52px; height: 52px;
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  .card-in { padding: 1.25rem 1.375rem 1.5rem; }
+  .card-eye {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 0.4rem;
+  }
+  .card-h {
+    font-family: var(--f);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--t1);
+    margin-bottom: 0.5rem;
+  }
+  .card-body-text {
+    font-family: var(--f-body);
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--t2);
+    margin-bottom: 1.125rem;
+  }
+  .card-ft {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.875rem;
+    border-top: 1px solid var(--s2);
+  }
+  .card-tag {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+  .card-act {
+    background: transparent;
+    border: 1.5px solid var(--black);
+    padding: 0.3125rem 0.875rem;
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--black);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.1s;
+  }
+  .card-act:hover  { background: var(--black); color: white; box-shadow: 2px 2px 0 var(--t3); }
+  .card-act:active { transform: translate(2px, 2px); box-shadow: none; }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ */
+  .player {
+    background: white;
+    border: 2px solid var(--black);
+    padding: 2rem;
+  }
+
+  .player-top {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  /* Geometric album art — red square with white circle */
+  .player-art {
+    width: 72px; height: 72px;
+    background: var(--red);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .art-circle {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .player-title {
+    font-family: var(--f);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--t1);
+    margin-bottom: 0.2rem;
+  }
+  .player-artist {
+    font-family: var(--f-body);
+    font-size: 0.8125rem;
+    color: var(--t3);
+    margin-bottom: 1.125rem;
+  }
+
+  /* Controls row */
+  .pc-row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .pc-btn {
+    background: transparent;
+    border: 2px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--t1);
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.1s;
+  }
+  .pc-btn:hover  { background: var(--black); color: white; box-shadow: 2px 2px 0 var(--t3); }
+  .pc-btn:active { transform: translate(2px, 2px); box-shadow: none; }
+
+  /* Rectangle skip buttons */
+  .pc-rect { width: 36px; height: 26px; }
+
+  /* Circle play — Bauhaus circle = spiritual */
+  .pc-circle {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+  .pc-circle:hover  { background: #c01810; border-color: #c01810; box-shadow: 3px 3px 0 var(--black); }
+  .pc-circle:active { transform: translate(3px, 3px); box-shadow: none; }
+
+  /* Square stop — Bauhaus square = stable */
+  .pc-square {
+    width: 34px; height: 34px;
+    background: var(--black);
+    border-color: var(--black);
+    color: white;
+  }
+  .pc-square:hover  { background: var(--t2); border-color: var(--t2); box-shadow: 2px 2px 0 var(--t3); }
+  .pc-square:active { transform: translate(2px, 2px); box-shadow: none; }
+
+  .pc-circle[aria-pressed="true"]  .play-ico  { display: none; }
+  .pc-circle[aria-pressed="false"] .pause-ico { display: none; }
+
+  /* Progress bar */
+  .progress-outer { margin: 1.5rem 0 1rem; }
+  .progress-rng {
+    -webkit-appearance: none;
+    width: 100%; height: 6px;
+    background: var(--s2);
+    border: 1px solid var(--black);
+    outline: none;
+    cursor: pointer;
+  }
+  .progress-rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    background: var(--red);
+    border: 2px solid var(--black);
+    cursor: pointer;
+  }
+  .progress-rng::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border: 2px solid var(--black);
+    background: var(--red);
+    cursor: pointer;
+    border-radius: 0;
+  }
+  .progress-times {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.375rem;
+  }
+  .ptime {
+    font-family: var(--f);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--t3);
+  }
+
+  /* Sliders */
+  .slider-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--s2);
+  }
+  .slider-item { display: flex; align-items: center; gap: 1rem; }
+  .sl-lbl {
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t2);
+    min-width: 5.5rem;
+  }
+  .sl-val {
+    font-family: var(--f);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--red);
+    min-width: 2.5rem;
+    text-align: right;
+  }
+
+  .rng {
+    -webkit-appearance: none;
+    flex: 1; height: 6px;
+    background: var(--s2);
+    border: 1px solid var(--black);
+    outline: none;
+    cursor: pointer;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    background: var(--black);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .rng::-webkit-slider-thumb:hover { transform: scale(1.25); }
+  .rng::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border: none;
+    border-radius: 0;
+    background: var(--black);
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAV BAR
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: white;
+    border: 2px solid var(--black);
+    max-width: 420px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .nd-screen { padding: 1.75rem 1.5rem 0; }
+
+  .nd-title {
+    font-family: var(--f);
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--t1);
+    margin-bottom: 0.2rem;
+  }
+  .nd-sub {
+    font-family: var(--f-body);
+    font-size: 0.8125rem;
+    color: var(--t3);
+    margin-bottom: 1.5rem;
+  }
+
+  .nd-items { display: flex; flex-direction: column; margin-bottom: 0; }
+  .nd-item {
+    background: var(--bg);
+    border-bottom: 1px solid var(--s2);
+    padding: 0.875rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .nd-item:last-child { border-bottom: none; margin-bottom: 1.25rem; }
+
+  .nd-ico {
+    width: 28px; height: 28px; flex-shrink: 0;
+  }
+
+  .nd-item-title {
+    font-family: var(--f);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--t1);
+  }
+  .nd-item-sub {
+    font-family: var(--f-body);
+    font-size: 0.6875rem;
+    color: var(--t3);
+  }
+
+  /* Bauhaus bottom nav — text + icons, uppercase, red active */
+  .bau-navbar {
+    background: white;
+    border-top: 2px solid var(--black);
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+  }
+
+  .ni {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    background: none;
+    border: none;
+    border-right: 1px solid var(--s2);
+    cursor: pointer;
+    font-family: var(--f);
+    padding: 0.75rem 0;
+    flex: 1;
+    position: relative;
+    color: var(--t3);
+    transition: background 0.15s, color 0.15s;
+  }
+  .ni:last-child { border-right: none; }
+  .ni:hover { background: var(--s1); color: var(--t1); }
+
+  /* Active state — red text + 3px red top border */
+  .ni.ni-on { color: var(--red); }
+  .ni.ni-on::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--red);
+  }
+
+  .ni svg { transition: color 0.15s; }
+
+  .ni-lbl {
+    font-size: 0.4375rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: inherit;
+    transition: color 0.15s;
+  }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .hero-panels { grid-template-columns: 1fr; }
+    .hero-panel.hp-dark { border-right: none; border-bottom: 2px solid var(--black); }
+    .type-pairing { grid-template-columns: 1fr; }
+    .tp-panel:first-child { border-right: none; border-bottom: 2px solid var(--black); }
+    .hero-h1 { font-size: clamp(3rem, 16vw, 5rem); }
+    .state-row { gap: 0.75rem; }
+    .tr { grid-template-columns: 72px 1fr; padding: 0.875rem 1.125rem; }
+    .ts-d1 { font-size: 2rem; }
+    .ts-d2 { font-size: 1.5rem; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ───────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 2.5L4.5 7 9 11.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Gallery
+  </a>
+  <span class="tnav-title">Bauhaus</span>
+  <a class="tnav-dl" href="style-guide.md" download="bauhaus-style-guide.md">
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 2v7.5M4.5 7l2.5 2.5 2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress dots ─── circle / square / triangle alternating ── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active"  data-sec="hero"     aria-label="Jump to Overview"></button>
+  <button class="prog-dot sq"      data-sec="colors"   aria-label="Jump to Colors"></button>
+  <button class="prog-dot tri"     data-sec="type"     aria-label="Jump to Typography"></button>
+  <button class="prog-dot"         data-sec="buttons"  aria-label="Jump to Buttons"></button>
+  <button class="prog-dot sq"      data-sec="inputs"   aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot tri"     data-sec="cards"    aria-label="Jump to Cards"></button>
+  <button class="prog-dot"         data-sec="controls" aria-label="Jump to Controls"></button>
+  <button class="prog-dot sq"      data-sec="nav"      aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <div class="hero-kicker">Dessau · 1919–1933</div>
+    <h1 class="hero-h1">Bauhaus</h1>
+    <p class="hero-desc">Form follows function. Three primary colors. Every element reduced to circle, triangle, or square. Typography bold and condensed. The school that unified art and industry.</p>
+
+    <div class="hero-panels">
+      <!-- Left: Kandinsky shape theory — dark panel -->
+      <div class="hero-panel hp-dark">
+        <div class="hp-label">Kandinsky · Shape Theory</div>
+        <div class="shapes-trio">
+          <div class="shape-item">
+            <div class="sh-circle"></div>
+            <div class="shape-label">Circle<br>Spiritual</div>
+          </div>
+          <div class="shape-item" style="align-self:flex-end">
+            <div class="sh-triangle"></div>
+            <div class="shape-label">Triangle<br>Dynamic</div>
+          </div>
+          <div class="shape-item">
+            <div class="sh-square"></div>
+            <div class="shape-label">Square<br>Stable</div>
+          </div>
+        </div>
+        <p style="font-family:var(--f-body);font-size:0.75rem;line-height:1.65;color:rgba(255,255,255,0.38)">
+          Blue = circle. Yellow = triangle. Red = square.<br>Shape and color carry inherent meaning.
+        </p>
+      </div>
+
+      <!-- Right: Primary colors — light panel -->
+      <div class="hero-panel hp-light">
+        <div class="hp-label">Primary Color Theory</div>
+        <div class="primaries-row">
+          <div class="prim" style="background:var(--red)">
+            <span class="prim-label">Red</span>
+          </div>
+          <div class="prim" style="background:var(--blue)">
+            <span class="prim-label">Blue</span>
+          </div>
+          <div class="prim" style="background:var(--yellow)">
+            <span class="prim-label" style="color:rgba(0,0,0,0.4)">Yellow</span>
+          </div>
+          <div class="prim" style="background:var(--black)">
+            <span class="prim-label">Black</span>
+          </div>
+          <div class="prim pwhite" style="background:white">
+            <span class="prim-label">White</span>
+          </div>
+        </div>
+        <p class="hero-manifesto">
+          Three colors. Two neutrals. Nothing else. Every color justifies its form. No tints, no gradients, no mixes in the final product.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLOR PALETTE ─────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-badge" aria-hidden="true">01</span>
+      <h2 class="sec-title" id="colors-h">Color Palette</h2>
+      <span class="sec-ghost" aria-hidden="true">01</span>
+    </div>
+    <div class="spec-callout">
+      <p>The Bauhaus palette has three colors: <strong>red (#e8261d)</strong>, <strong>blue (#1a4a8a)</strong>, <strong>yellow (#f7c600)</strong> — and black and white. Nothing else. Every color justifies its form. Kandinsky mapped them to shapes: blue→circle, yellow→triangle, red→square.</p>
+    </div>
+
+    <div class="palette-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--red)">
+          <!-- Red = square (Kandinsky) -->
+          <div style="width:38px;height:38px;background:rgba(255,255,255,0.22)"></div>
+        </div>
+        <div class="swatch-body">
+          <span class="swatch-hex">#e8261d</span>
+          <span class="swatch-name">--red · primary</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--blue)">
+          <!-- Blue = circle (Kandinsky) -->
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
+        </div>
+        <div class="swatch-body">
+          <span class="swatch-hex">#1a4a8a</span>
+          <span class="swatch-name">--blue · primary</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--yellow);align-items:flex-end;padding-bottom:12px">
+          <!-- Yellow = triangle (Kandinsky) -->
+          <div style="width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-bottom:38px solid rgba(0,0,0,0.14)"></div>
+        </div>
+        <div class="swatch-body">
+          <span class="swatch-hex">#f7c600</span>
+          <span class="swatch-name">--yellow · primary</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--black)">
+          <span style="font-family:var(--f);font-size:1.5rem;font-weight:700;color:rgba(255,255,255,0.12);letter-spacing:0.04em">BK</span>
+        </div>
+        <div class="swatch-body">
+          <span class="swatch-hex">#1a1a1a</span>
+          <span class="swatch-name">--black · structure</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:white;border-bottom:1px solid var(--s2)">
+          <span style="font-family:var(--f);font-size:1.5rem;font-weight:700;color:rgba(0,0,0,0.07);letter-spacing:0.04em">WH</span>
+        </div>
+        <div class="swatch-body">
+          <span class="swatch-hex">#ffffff</span>
+          <span class="swatch-name">white · surface</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--bg);border-bottom:1px solid var(--s2)">
+          <span style="font-family:var(--f);font-size:1.5rem;font-weight:700;color:rgba(0,0,0,0.07);letter-spacing:0.04em">BG</span>
+        </div>
+        <div class="swatch-body">
+          <span class="swatch-hex">#fafafa</span>
+          <span class="swatch-name">--bg · paper</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color mixing theory -->
+    <div class="color-theory">
+      <span class="ct-heading">Primary Mixing · The only exception to pure color — demonstrating how primaries combine</span>
+      <div class="ct-mix">
+        <div class="ct-swatch" style="background:var(--red)"></div>
+        <span class="ct-plus">+</span>
+        <div class="ct-swatch" style="background:var(--yellow)"></div>
+        <span class="ct-arrow">→</span>
+        <div class="ct-swatch" style="background:#ef7e00"></div>
+        <span>Orange</span>
+      </div>
+      <div class="ct-mix">
+        <div class="ct-swatch" style="background:var(--blue)"></div>
+        <span class="ct-plus">+</span>
+        <div class="ct-swatch" style="background:var(--yellow)"></div>
+        <span class="ct-arrow">→</span>
+        <div class="ct-swatch" style="background:#4a7a00"></div>
+        <span>Green</span>
+      </div>
+      <div class="ct-mix">
+        <div class="ct-swatch" style="background:var(--red)"></div>
+        <span class="ct-plus">+</span>
+        <div class="ct-swatch" style="background:var(--blue)"></div>
+        <span class="ct-arrow">→</span>
+        <div class="ct-swatch" style="background:#7a1e50"></div>
+        <span>Violet</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ────────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-badge" aria-hidden="true">02</span>
+      <h2 class="sec-title" id="type-h">Typography</h2>
+      <span class="sec-ghost" aria-hidden="true">02</span>
+    </div>
+    <div class="spec-callout">
+      <p><strong>Oswald</strong> for display — bold, condensed, geometric, industrial. <strong>IBM Plex Sans</strong> for body — functional, clear, built by a company that embodies Bauhaus values. Never decorative. Always purposeful. Both share the same seriousness.</p>
+    </div>
+
+    <!-- Font pairing showcase -->
+    <div class="type-pairing">
+      <div class="tp-panel">
+        <div class="ts-d1">Oswald</div>
+        <div class="tp-role">Display · Headings · Labels · Navigation · UI</div>
+        <p class="tp-chars">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789 !?.,;:—&amp;</p>
+      </div>
+      <div class="tp-panel">
+        <div style="font-family:var(--f-body);font-size:2.5rem;font-weight:600;line-height:1;margin-bottom:0.5rem">IBM Plex Sans</div>
+        <div class="tp-role">Body · Descriptions · Metadata · UI copy</div>
+        <p class="tp-chars">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789 !?.,;:—&amp;</p>
+      </div>
+    </div>
+
+    <!-- Type scale table -->
+    <div class="typescale">
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">Display</span><span class="tr-spec">48px / Oswald 700<br>UC +0.02em lh 1</span></div>
+        <div class="ts-d1">Bauhaus</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">Display 2</span><span class="tr-spec">32px / Oswald 600<br>UC +0.04em lh 1.1</span></div>
+        <div class="ts-d2">Form Follows Function</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">H1</span><span class="tr-spec">28px / Oswald 600<br>UC +0.05em</span></div>
+        <div class="ts-h1">Heading One</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">H2</span><span class="tr-spec">22px / Oswald 500<br>UC +0.06em</span></div>
+        <div class="ts-h2">Heading Two</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">H3</span><span class="tr-spec">17px / Oswald 500<br>UC +0.08em</span></div>
+        <div class="ts-h3">Section Heading Three</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">Body</span><span class="tr-spec">16px / IBM Plex 400<br>lh 1.65</span></div>
+        <div class="ts-body">The quick brown fox jumps over the lazy dog. Form and function unified.</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">Body Sm</span><span class="tr-spec">14px / IBM Plex 400<br>lh 1.6</span></div>
+        <div class="ts-sm">The quick brown fox jumps over the lazy dog. Stripped to essentials.</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">Caption</span><span class="tr-spec">11px / Oswald 500<br>UC +0.14em</span></div>
+        <div class="ts-cap">Caption · Metadata · Label · Tag · UI Text</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ───────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-badge" aria-hidden="true">03</span>
+      <h2 class="sec-title" id="btn-h">Buttons</h2>
+      <span class="sec-ghost" aria-hidden="true">03</span>
+    </div>
+    <div class="spec-callout">
+      <p>Buttons map to primary colors. <strong>Red = primary action. Blue = secondary. Yellow = tertiary.</strong> Each color carries structural meaning, not decoration. On hover: <strong>box-shadow: 4px 4px 0 var(--black)</strong> — the offset shadow gives Bauhaus pieces their physical dimensionality. On press: shadow collapses, button translates 4px right-down.</p>
+    </div>
+    <div class="btn-states">
+      <!-- Red / Primary -->
+      <div>
+        <p class="state-row-label">Red · Primary Action</p>
+        <div class="state-row">
+          <div class="state-wrap">
+            <button class="btn btn-red">Default</button>
+            <span class="state-lbl">Default</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-red sh-red-hover" tabindex="-1" aria-hidden="true">Hover</button>
+            <span class="state-lbl">Hover ↑</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-red sh-red-active" tabindex="-1" aria-hidden="true">Active</button>
+            <span class="state-lbl">Active ↓</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-red" disabled>Disabled</button>
+            <span class="state-lbl">Disabled</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blue / Secondary -->
+      <div>
+        <p class="state-row-label">Blue · Secondary Action</p>
+        <div class="state-row">
+          <div class="state-wrap">
+            <button class="btn btn-blue">Default</button>
+            <span class="state-lbl">Default</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-blue sh-blue-hover" tabindex="-1" aria-hidden="true">Hover</button>
+            <span class="state-lbl">Hover ↑</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-blue sh-blue-active" tabindex="-1" aria-hidden="true">Active</button>
+            <span class="state-lbl">Active ↓</span>
+          </div>
+          <div class="state-wrap">
+            <button class="btn btn-blue" disabled>Disabled</button>
+            <span class="state-lbl">Disabled</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variants row -->
+      <div class="btn-variants-row">
+        <button class="btn btn-yellow">Yellow · Tertiary</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <button class="btn btn-red btn-sm">Small</button>
+        <button class="btn btn-circle" aria-label="Add">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ──────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-badge" aria-hidden="true">04</span>
+      <h2 class="sec-title" id="inputs-h">Form Inputs</h2>
+      <span class="sec-ghost" aria-hidden="true">04</span>
+    </div>
+    <div class="spec-callout">
+      <p>Only a bottom line. The form is stripped to function. <strong>border-bottom: 2px solid var(--black)</strong> at rest. Focus: <strong>border-bottom-color: var(--red)</strong>. The label is the only ornamentation allowed — <strong>Oswald uppercase, 0.75rem, tracking: 0.12em</strong>. Checkboxes: black square, red fill when checked. Toggles: rectangular track, red when active.</p>
+    </div>
+    <div class="form-panel">
+      <div class="form-title">Workshop Registration</div>
+      <p class="form-sub">All input types — text, select, textarea, checkbox, radio, toggle — in Bauhaus form. Stripped to function.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">Full Name</label>
+          <input class="inp" type="text" id="fi-name" placeholder="Walter Gropius" autocomplete="name">
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">Email</label>
+          <input class="inp" type="email" id="fi-email" placeholder="gropius@bauhaus.de" autocomplete="email">
+        </div>
+        <div class="field">
+          <label class="label" for="fi-workshop">Workshop</label>
+          <select class="sel" id="fi-workshop">
+            <option value="">Select workshop…</option>
+            <option>Typography · Herbert Bayer</option>
+            <option>Weaving · Gunta Stölzl</option>
+            <option>Metal · László Moholy-Nagy</option>
+            <option>Theater · Oskar Schlemmer</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-year">Year</label>
+          <select class="sel" id="fi-year">
+            <option>1923</option>
+            <option>1924</option>
+            <option selected>1925</option>
+            <option>1926</option>
+          </select>
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-statement">Design Statement</label>
+          <textarea class="inp ta" id="fi-statement" placeholder="Describe your approach to form and function…" rows="3"></textarea>
+          <span class="hint">Max 280 characters.</span>
+        </div>
+        <div class="field">
+          <span class="label" id="chk-lbl">Disciplines</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox" checked>
+              <span class="chk-box">
+                <svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="chk-txt">Architecture</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox">
+              <span class="chk-box">
+                <svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="chk-txt">Typography</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="checkbox" checked>
+              <span class="chk-box">
+                <svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="chk-txt">Industrial Design</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="rad-lbl">Level</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="level" value="app">
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Apprentice</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="level" value="jour" checked>
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Journeyman</span>
+            </label>
+            <label class="chk-row">
+              <input class="chk-in" type="radio" name="level" value="mast">
+              <span class="rad-box"><span class="rad-dot"></span></span>
+              <span class="chk-txt">Master</span>
+            </label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">Preferences</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Morning Sessions</div>
+                <div class="tgl-desc">7:00 – 12:00 Uhr</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Morning sessions">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Studio Access</div>
+                <div class="tgl-desc">After-hours workshop use</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" aria-label="Studio access">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Critique Rounds</div>
+                <div class="tgl-desc">Weekly peer review sessions</div>
+              </div>
+              <label class="tgl">
+                <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Critique rounds">
+                <span class="tgl-track"><span class="tgl-thumb"></span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ─────────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-badge" aria-hidden="true">05</span>
+      <h2 class="sec-title" id="cards-h">Cards</h2>
+      <span class="sec-ghost" aria-hidden="true">05</span>
+    </div>
+    <div class="spec-callout">
+      <p>Cards are rectangles with color-coded tops. <strong>Red marks the primary</strong>. Blue and yellow mark secondary tiers. Card thumbnails use solid color fields with a geometric shape overlay — circle, triangle, or square. On hover: <strong>box-shadow: 5px 5px 0 var(--black)</strong> + <strong>transform: translate(-2px, -2px)</strong>. The card gains physical weight.</p>
+    </div>
+    <div class="cards-row">
+      <article class="card-bau">
+        <div class="card-bar cb-red"></div>
+        <div class="card-thumb ct-red">
+          <div class="thumb-shape-circle"></div>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">Primary · Foundation</p>
+          <h3 class="card-h">Vorkurs</h3>
+          <p class="card-body-text">The preliminary course. Every student learns to see: color, form, material, space. Nothing assumed. Function first.</p>
+          <div class="card-ft">
+            <span class="card-tag">Itten · 1919</span>
+            <button class="card-act">Study →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-bau">
+        <div class="card-bar cb-blue"></div>
+        <div class="card-thumb ct-blue">
+          <div class="thumb-shape-tri"></div>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">Structure · Space</p>
+          <h3 class="card-h">Architecture</h3>
+          <p class="card-body-text">The building as total artwork. Structure, function, and form unified. No ornament without purpose. Every line earns its place.</p>
+          <div class="card-ft">
+            <span class="card-tag">Gropius · 1926</span>
+            <button class="card-act">Study →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-bau">
+        <div class="card-bar cb-yellow"></div>
+        <div class="card-thumb ct-yellow">
+          <div class="thumb-shape-sq"></div>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">Material · Craft</p>
+          <h3 class="card-h">Workshops</h3>
+          <p class="card-body-text">Weaving, metal, ceramics, wood. Theory meets material. The hand teaches what the eye cannot see alone.</p>
+          <div class="card-ft">
+            <span class="card-tag">Moholy-Nagy · 1923</span>
+            <button class="card-act">Study →</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ──────────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-badge" aria-hidden="true">06</span>
+      <h2 class="sec-title" id="ctrl-h">Controls · Player</h2>
+      <span class="sec-ghost" aria-hidden="true">06</span>
+    </div>
+    <div class="spec-callout">
+      <p>The player's <strong>circle play button</strong> (spiritual / continuous), <strong>square stop</strong> (stable / decisive), <strong>rectangle forward/back</strong> (directional) — Bauhaus theory says shapes carry inherent meaning. We use them correctly. Slider track: <strong>2px border</strong>. Progress fill: <strong>red</strong>. Thumb: <strong>black square</strong>.</p>
+    </div>
+    <div class="player">
+      <div class="player-top">
+        <!-- Geometric album art: red square with white circle -->
+        <div class="player-art" aria-hidden="true">
+          <div class="art-circle"></div>
+        </div>
+        <div>
+          <div class="player-title">Stahl und Rhythmus</div>
+          <div class="player-artist">Bauhaus Kapelle · Dessau, 1926</div>
+          <div class="pc-row">
+            <button class="pc-btn pc-rect" aria-label="Previous track">
+              <svg width="14" height="12" viewBox="0 0 14 12" fill="none" aria-hidden="true">
+                <path d="M10 2L5 6l5 4V2ZM4 2v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button class="pc-btn pc-circle" id="play-btn" aria-label="Play" aria-pressed="false">
+              <svg class="play-ico" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M5 3l9 5-9 5V3Z" fill="currentColor"/>
+              </svg>
+              <svg class="pause-ico" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M5 2h2v12H5V2ZM9 2h2v12H9V2Z" fill="currentColor"/>
+              </svg>
+            </button>
+            <button class="pc-btn pc-square" aria-label="Stop">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <rect x="1" y="1" width="8" height="8" fill="currentColor"/>
+              </svg>
+            </button>
+            <button class="pc-btn pc-rect" aria-label="Next track">
+              <svg width="14" height="12" viewBox="0 0 14 12" fill="none" aria-hidden="true">
+                <path d="M4 2l5 4-5 4V2ZM10 2v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-outer">
+        <input class="progress-rng" type="range" id="progress" min="0" max="196" value="58" aria-label="Track progress">
+        <div class="progress-times">
+          <span class="ptime" id="curr-time">0:58</span>
+          <span class="ptime">3:16</span>
+        </div>
+      </div>
+
+      <!-- Sliders -->
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">Volume</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="75" aria-label="Volume">
+          <span class="sl-val" id="vol-v">75</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Tempo</span>
+          <input class="rng" type="range" id="tempo" min="60" max="180" value="120" aria-label="Tempo BPM">
+          <span class="sl-val" id="tempo-v">120</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Balance</span>
+          <input class="rng" type="range" id="bal" min="-50" max="50" value="0" aria-label="Left-right balance">
+          <span class="sl-val" id="bal-v">C</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ────────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-badge" aria-hidden="true">07</span>
+      <h2 class="sec-title" id="nav-h">Navigation Bar</h2>
+      <span class="sec-ghost" aria-hidden="true">07</span>
+    </div>
+    <div class="spec-callout">
+      <p>Text only, uppercase, Oswald. Active tab: <strong>color: var(--red)</strong> + <strong>3px solid red top border</strong>. Dividers between tabs: <strong>1px solid var(--s2)</strong>. The minimum information architecture. No decorative background fills — position communicates state.</p>
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <div class="nd-title">Das Bauhaus</div>
+        <div class="nd-sub">Dessau, 1925 · Current Exhibition</div>
+        <div class="nd-items">
+          <div class="nd-item">
+            <div class="nd-ico" style="background:var(--red)"></div>
+            <div>
+              <div class="nd-item-title">Vorkurs</div>
+              <div class="nd-item-sub">Foundation Course · Itten &amp; Moholy-Nagy</div>
+            </div>
+          </div>
+          <div class="nd-item">
+            <div class="nd-ico" style="background:var(--blue)"></div>
+            <div>
+              <div class="nd-item-title">Workshop</div>
+              <div class="nd-item-sub">Metal, Weaving, Ceramics, Theater</div>
+            </div>
+          </div>
+          <div class="nd-item">
+            <div class="nd-ico" style="background:var(--yellow)"></div>
+            <div>
+              <div class="nd-item-title">Ausstellung</div>
+              <div class="nd-item-sub">Art and Technology — A New Unity</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="bau-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Home" aria-current="page">
+          <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M2 8.5L9 2l7 6.5V17a.5.5 0 0 1-.5.5h-4V13h-5v4.5h-4A.5.5 0 0 1 2 17V8.5Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </svg>
+          <span class="ni-lbl">Home</span>
+        </button>
+        <button class="ni" aria-label="Gallery">
+          <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <rect x="2" y="2" width="6" height="6" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="10" y="2" width="6" height="6" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="2" y="10" width="6" height="6" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="10" y="10" width="6" height="6" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span class="ni-lbl">Gallery</span>
+        </button>
+        <button class="ni" aria-label="Workshop">
+          <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span class="ni-lbl">Workshop</span>
+        </button>
+        <button class="ni" aria-label="Archive">
+          <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+          <span class="ni-lbl">Archive</span>
+        </button>
+        <button class="ni" aria-label="Profile">
+          <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <circle cx="9" cy="6" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M3 17c0-3.3 2.7-5 6-5s6 1.7 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span class="ni-lbl">Profile</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Range fill helper ─────────────────── */
+function fillRange(el) {
+  const pct = (el.value - el.min) / (el.max - el.min) * 100;
+  el.style.background =
+    `linear-gradient(to right, var(--red) 0%, var(--red) ${pct}%, var(--s2) ${pct}%, var(--s2) 100%)`;
+}
+
+/* Initialize all fills on load */
+document.querySelectorAll('.rng, .progress-rng').forEach(fillRange);
+
+/* ── Slider listeners ──────────────────── */
+document.getElementById('vol').addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = e.target.value;
+  fillRange(e.target);
+});
+document.getElementById('tempo').addEventListener('input', e => {
+  document.getElementById('tempo-v').textContent = e.target.value;
+  fillRange(e.target);
+});
+document.getElementById('bal').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  document.getElementById('bal-v').textContent = v < -5 ? 'L' + Math.abs(v) : v > 5 ? 'R' + v : 'C';
+  fillRange(e.target);
+});
+document.getElementById('progress').addEventListener('input', e => {
+  const s = parseInt(e.target.value);
+  document.getElementById('curr-time').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  fillRange(e.target);
+});
+
+/* ── Play / pause toggle ───────────────── */
+const playBtn = document.getElementById('play-btn');
+playBtn.addEventListener('click', () => {
+  const playing = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!playing));
+  playBtn.querySelector('.play-ico').style.display  = !playing ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = !playing ? ''     : 'none';
+});
+
+/* ── Bottom nav switching ──────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => {
+      n.classList.remove('ni-on');
+      n.removeAttribute('aria-current');
+    });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ── Scroll reveal + progress dots ──────── */
+const sectionMap = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const key = sectionMap[entry.target.id];
+      if (key) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${key}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => revealObserver.observe(el));
+
+/* ── Progress dot navigation ───────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const key   = dot.dataset.sec;
+    const entry = Object.entries(sectionMap).find(([, v]) => v === key);
+    if (entry) {
+      const el = document.getElementById(entry[0]);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

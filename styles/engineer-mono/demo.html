@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engineer Mono · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:        #0a0a0c;
+    --bg-2:      #0e0e12;
+    --surface-1: #131319;
+    --surface-2: #1c1c24;
+    --surface-3: #25252f;
+
+    --t1: #ffffff;
+    --t2: rgba(255,255,255,0.70);
+    --t3: rgba(255,255,255,0.45);
+    --t4: rgba(255,255,255,0.22);
+    --t5: rgba(255,255,255,0.08);
+
+    /* The accent — violet, the Linear/Vercel signal */
+    --ac:       #7c5cff;
+    --ac-hi:    #9b85ff;
+    --ac-lo:    rgba(124,92,255,0.15);
+    --ac-faint: rgba(124,92,255,0.04);
+    --ac-glow:  rgba(124,92,255,0.35);
+
+    /* Secondary cool/mint — used sparingly, for status only */
+    --ac2: #5fa4d4;
+    --ac3: #2dd4bf;
+    --warn: #fbbf24;
+    --err:  #f87171;
+
+    --border:    1px solid rgba(255,255,255,0.06);
+    --border-hi: 1px solid rgba(255,255,255,0.12);
+
+    --r-sm: 4px;
+    --r:    6px;
+    --r-md: 8px;
+    --r-lg: 12px;
+    --r-xl: 16px;
+    --r-full: 9999px;
+
+    --f-mono:    'JetBrains Mono', 'Geist Mono', 'SF Mono', Menlo, monospace;
+    --f-sans:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --f-display: 'Inter', sans-serif;
+    --f:         var(--f-mono);
+
+    --ease:   cubic-bezier(0.4, 0, 0.2, 1);
+    --spring: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--t1);
+    font-family: var(--f);
+    font-size: 14px;
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--ac-lo); color: var(--t1); }
+
+  :focus-visible {
+    outline: 2px solid var(--ac);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     ATMOSPHERIC ORB BACKGROUNDS — the signature
+  ═══════════════════════════════════════ */
+  .orb-bg {
+    position: relative;
+    isolation: isolate;
+  }
+  .orb-bg::before, .orb-bg::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(80px);
+    z-index: -1;
+  }
+
+  /* Page-level ambient orbs (fixed, very subtle) */
+  .ambient {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -10;
+    overflow: hidden;
+  }
+  .ambient::before, .ambient::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+  }
+  .ambient::before {
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(124,92,255,0.18), transparent 65%);
+    top: -250px; right: -150px;
+    animation: drift-1 26s ease-in-out infinite;
+  }
+  .ambient::after {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(45,212,191,0.10), transparent 60%);
+    top: 40%; left: -200px;
+    animation: drift-2 32s ease-in-out infinite;
+  }
+  @keyframes drift-1 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50%     { transform: translate(-60px, 50px) scale(1.08); }
+  }
+  @keyframes drift-2 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50%     { transform: translate(80px, -60px) scale(1.10); }
+  }
+
+  /* Per-section orb compositions */
+  .orb-hero::before {
+    width: 720px; height: 720px;
+    background: radial-gradient(circle, rgba(124,92,255,0.32), transparent 65%);
+    top: -180px; right: -120px;
+    animation: drift-1 22s ease-in-out infinite;
+  }
+  .orb-hero::after {
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, rgba(45,212,191,0.14), transparent 60%);
+    bottom: -160px; left: -80px;
+    animation: drift-2 28s ease-in-out infinite;
+  }
+  .orb-colors::before {
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(124,92,255,0.18), transparent 60%);
+    top: 20%; left: -150px;
+  }
+  .orb-type::after {
+    width: 540px; height: 540px;
+    background: radial-gradient(circle, rgba(95,164,212,0.16), transparent 65%);
+    top: 30%; right: -200px;
+    animation: drift-2 30s ease-in-out infinite;
+  }
+  .orb-buttons::before {
+    width: 580px; height: 580px;
+    background: radial-gradient(circle, rgba(124,92,255,0.20), transparent 60%);
+    top: 0; right: -150px;
+    animation: drift-1 24s ease-in-out infinite;
+  }
+  .orb-inputs::before {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(45,212,191,0.10), transparent 60%);
+    top: 40%; left: -180px;
+  }
+  .orb-cards::after {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,92,255,0.18), transparent 60%);
+    top: 20%; right: -200px;
+    animation: drift-2 26s ease-in-out infinite;
+  }
+  .orb-controls::before {
+    width: 540px; height: 540px;
+    background: radial-gradient(circle, rgba(124,92,255,0.18), transparent 60%);
+    top: -100px; left: 30%;
+    animation: drift-1 28s ease-in-out infinite;
+  }
+  .orb-nav::before {
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(95,164,212,0.14), transparent 60%);
+    top: 0; right: -100px;
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY TOP NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+    background: rgba(10,10,12,0.72);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(90deg, transparent, rgba(124,92,255,0.30), transparent) 1;
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--t3);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s var(--ease);
+  }
+  .tnav-back:hover { color: var(--t1); }
+
+  .tnav-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 0.625rem;
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--t1);
+    letter-spacing: -0.015em;
+  }
+  .tnav-brand-mono {
+    font-family: var(--f-mono);
+    font-weight: 400;
+    font-size: 0.6875rem;
+    color: var(--t3);
+    letter-spacing: 0;
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4375rem 0.875rem;
+    background: transparent;
+    border: 1px solid rgba(124,92,255,0.40);
+    border-radius: var(--r-md);
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--ac-hi);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: all 0.2s var(--ease);
+  }
+  .tnav-dl:hover {
+    border-color: var(--ac);
+    background: var(--ac-lo);
+    box-shadow: 0 0 24px rgba(124,92,255,0.25);
+  }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS INDICATOR
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .prog-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--t4);
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.25s var(--ease);
+  }
+  .prog-dot:hover {
+    border-color: var(--t2);
+    transform: scale(1.4);
+  }
+  .prog-dot.active {
+    background: var(--ac);
+    border-color: var(--ac);
+    box-shadow: 0 0 12px var(--ac-glow);
+    transform: scale(1.4);
+  }
+  .prog-dot:focus-visible { outline: 2px solid var(--ac); outline-offset: 3px; }
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 1.75rem 8rem;
+    position: relative;
+  }
+
+  /* Section ─ generous whitespace, scroll-reveal */
+  .sec {
+    margin-top: 8rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  /* Section heading: mono kicker + Inter display + ghost mega-number */
+  .sec-hd {
+    position: relative;
+    margin-bottom: 3rem;
+  }
+  .sec-kicker {
+    display: inline-block;
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: var(--t3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .sec-kicker-num { color: var(--ac); }
+  .sec-title {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--t1);
+    max-width: 18ch;
+    margin-bottom: 0.875rem;
+  }
+  .sec-lede {
+    font-family: var(--f-mono);
+    font-size: 0.875rem;
+    color: var(--t2);
+    line-height: 1.7;
+    max-width: 60ch;
+  }
+  .sec-ghost {
+    position: absolute;
+    right: -1rem;
+    top: -1.5rem;
+    font-family: var(--f-mono);
+    font-weight: 600;
+    font-size: 9rem;
+    line-height: 1;
+    color: rgba(255,255,255,0.025);
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.04em;
+    z-index: -1;
+  }
+
+  /* Geometric line dividers */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--t5) 18%, var(--ac-lo) 50%, var(--t5) 82%, transparent);
+    margin: 5rem 0;
+    position: relative;
+  }
+  .divider-label {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg);
+    padding: 0 0.875rem;
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: var(--t3);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Spec callout — left-rule violet, mono `// note` header */
+  .spec-callout {
+    background: var(--surface-1);
+    border: var(--border);
+    border-left: 2px solid var(--ac);
+    border-radius: var(--r-md);
+    padding: 1rem 1.25rem;
+    margin-bottom: 2.5rem;
+    font-family: var(--f-mono);
+  }
+  .spec-callout-label {
+    display: block;
+    font-size: 0.6875rem;
+    color: var(--t3);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.375rem;
+  }
+  .spec-callout-text {
+    font-size: 0.8125rem;
+    color: var(--t2);
+    line-height: 1.65;
+  }
+  .spec-callout-text code {
+    color: var(--ac-hi);
+    background: var(--ac-faint);
+    padding: 0.0625rem 0.375rem;
+    border-radius: 3px;
+  }
+
+  /* ═══════════════════════════════════════
+     STATUS BADGES — the signal vocabulary
+  ═══════════════════════════════════════ */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    padding: 2px 8px;
+    border-radius: var(--r-full);
+    border: 1px solid;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+  }
+  .badge-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .badge.success { color: var(--ac3);  border-color: rgba(45,212,191,0.30);  background: rgba(45,212,191,0.06); }
+  .badge.warn    { color: var(--warn); border-color: rgba(251,191,36,0.30);  background: rgba(251,191,36,0.06); }
+  .badge.err     { color: var(--err);  border-color: rgba(248,113,113,0.30); background: rgba(248,113,113,0.06); }
+  .badge.muted   { color: var(--t3);   border-color: var(--t5);              background: var(--surface-1); }
+  .badge.violet  { color: var(--ac-hi);border-color: rgba(124,92,255,0.35);  background: rgba(124,92,255,0.06); }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 5rem 0 4rem;
+    position: relative;
+  }
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.4375rem 0.875rem;
+    background: var(--surface-1);
+    border: var(--border);
+    border-radius: var(--r-full);
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    color: var(--t2);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  .hero-kicker-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ac);
+    box-shadow: 0 0 10px var(--ac-glow);
+  }
+  .hero-h1 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(3rem, 8vw, 5.25rem);
+    line-height: 0.97;
+    letter-spacing: -0.04em;
+    color: var(--t1);
+    margin-bottom: 1.75rem;
+    max-width: 16ch;
+  }
+  .hero-h1 em {
+    font-style: normal;
+    background: linear-gradient(120deg, var(--ac-hi) 0%, var(--ac) 50%, #c4b3ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    font-family: var(--f-mono);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--t2);
+    max-width: 56ch;
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+  }
+  .hero-cta-row {
+    display: flex;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+    margin-bottom: 4rem;
+  }
+
+  /* Hero example card grid — Linear/Vercel mini-components */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .hero-card {
+    background: var(--surface-1);
+    border: var(--border);
+    border-radius: var(--r-lg);
+    padding: 1.125rem 1.25rem;
+    transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+  }
+  .hero-card:hover {
+    border-color: rgba(255,255,255,0.10);
+    transform: translateY(-2px);
+  }
+  .hero-card-label {
+    font-family: var(--f-mono);
+    font-size: 0.625rem;
+    color: var(--t3);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    margin-bottom: 0.875rem;
+  }
+  .hero-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4375rem 0;
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+  }
+  .hero-card-row + .hero-card-row { border-top: 1px solid var(--t5); }
+  .hcr-key { color: var(--t3); }
+  .hcr-val { color: var(--t1); font-variant-numeric: tabular-nums; }
+
+  /* Code-snippet hero card */
+  .hero-code {
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    color: var(--t2);
+    margin-top: 0.5rem;
+  }
+  .hero-code .kw { color: #c084fc; }
+  .hero-code .fn { color: #7dd3fc; }
+  .hero-code .st { color: var(--ac3); }
+  .hero-code .cm { color: var(--t4); }
+
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4375rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.875rem;
+  }
+  .swatch {
+    background: var(--surface-1);
+    border: var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    transition: border-color 0.25s var(--ease), transform 0.2s var(--ease);
+  }
+  .swatch:hover { border-color: rgba(255,255,255,0.14); transform: translateY(-2px); }
+  .swatch-color {
+    height: 88px;
+    border-bottom: var(--border);
+    position: relative;
+  }
+  .swatch-color.checker {
+    background-image:
+      linear-gradient(45deg, rgba(255,255,255,0.04) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(255,255,255,0.04) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.04) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.04) 75%);
+    background-size: 12px 12px;
+    background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
+  }
+  .swatch-body { padding: 0.75rem 0.875rem; }
+  .swatch-hex {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--t1);
+    display: block;
+    margin-bottom: 0.1875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+  }
+  .swatch-name {
+    font-family: var(--f-mono);
+    font-size: 0.625rem;
+    color: var(--t3);
+    letter-spacing: 0.04em;
+  }
+  .swatch-note {
+    font-family: var(--f-mono);
+    font-size: 0.5625rem;
+    color: var(--ac-hi);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 0.4rem;
+    display: block;
+  }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    background: var(--surface-1);
+    border: var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+  .tr {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 1.25rem;
+    align-items: baseline;
+    padding: 1.5rem 1.75rem;
+    border-bottom: var(--border);
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { padding-top: 0.4rem; }
+  .tr-lbl {
+    display: block;
+    font-family: var(--f-mono);
+    font-size: 0.625rem;
+    color: var(--ac-hi);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+  .tr-spec {
+    font-family: var(--f-mono);
+    font-size: 0.625rem;
+    color: var(--t3);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+  .ts-display {
+    font-family: var(--f-display);
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    color: var(--t1);
+  }
+  .ts-h1 { font-family: var(--f-display); font-size: 2.25rem;  font-weight: 700; letter-spacing: -0.03em;  line-height: 1.1; }
+  .ts-h2 { font-family: var(--f-display); font-size: 1.75rem;  font-weight: 600; letter-spacing: -0.025em; line-height: 1.15; }
+  .ts-h3 { font-family: var(--f-display); font-size: 1.375rem; font-weight: 600; letter-spacing: -0.02em;  line-height: 1.25; }
+  .ts-body-mono {
+    font-family: var(--f-mono);
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: var(--t2);
+  }
+  .ts-body-mono strong { color: var(--t1); font-weight: 500; }
+  .ts-body-mono em     { color: var(--ac-hi); font-style: normal; }
+  .ts-mono-sm {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    color: var(--t3);
+    line-height: 1.6;
+  }
+  .ts-cap {
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    color: var(--ac);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .type-philosophy {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .type-philo {
+    background: var(--surface-1);
+    border: var(--border);
+    border-radius: var(--r-md);
+    padding: 1.25rem 1.5rem;
+  }
+  .type-philo-eye {
+    font-family: var(--f-mono);
+    font-size: 0.625rem;
+    color: var(--t3);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    margin-bottom: 0.625rem;
+  }
+  .type-philo h4 {
+    font-family: var(--f-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin-bottom: 0.5rem;
+  }
+  .type-philo p {
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    color: var(--t2);
+    line-height: 1.65;
+  }
+  @media (max-width: 640px) {
+    .type-philosophy { grid-template-columns: 1fr; }
+  }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+  .btn-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .btn-row-label {
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    color: var(--t3);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+  .btn-row-items {
+    display: flex;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4375rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--r-md);
+    font-family: var(--f-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    white-space: nowrap;
+    transition: all 0.18s var(--ease);
+  }
+
+  /* Primary */
+  .btn-p {
+    background: var(--ac);
+    color: #ffffff;
+  }
+  .btn-p:hover:not(:disabled) {
+    background: var(--ac-hi);
+    box-shadow: 0 0 0 1px rgba(155,133,255,0.40), 0 6px 20px rgba(124,92,255,0.30);
+  }
+  .btn-p:active:not(:disabled) { transform: scale(0.98); }
+
+  /* Secondary — outlined */
+  .btn-s {
+    background: transparent;
+    color: var(--t1);
+    border: 1px solid var(--t5);
+  }
+  .btn-s:hover:not(:disabled) {
+    border-color: var(--t3);
+    background: var(--surface-1);
+  }
+  .btn-s:active:not(:disabled) { transform: scale(0.98); }
+
+  /* Ghost — no border, mono */
+  .btn-g {
+    background: transparent;
+    color: var(--t2);
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    padding: 0.5rem 0.75rem;
+  }
+  .btn-g:hover:not(:disabled) { color: var(--t1); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--t4); }
+
+  /* Code-style — keyboard shortcut feel */
+  .btn-c {
+    background: var(--surface-2);
+    color: var(--t1);
+    border: var(--border-hi);
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    padding: 0.375rem 0.625rem;
+    letter-spacing: 0.02em;
+  }
+  .btn-c:hover:not(:disabled) {
+    background: var(--surface-3);
+    border-color: rgba(255,255,255,0.18);
+  }
+  .btn-c kbd {
+    font-family: inherit;
+    color: var(--t3);
+    margin-left: 0.4rem;
+    padding-left: 0.4rem;
+    border-left: 1px solid var(--t5);
+  }
+
+  .btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* Hover/Active state previews */
+  .state-hover-p  { background: var(--ac-hi) !important; box-shadow: 0 0 0 1px rgba(155,133,255,0.40), 0 6px 20px rgba(124,92,255,0.30) !important; }
+  .state-active-p { background: var(--ac-hi) !important; transform: scale(0.98) !important; }
+  .state-hover-s  { border-color: var(--t3) !important; background: var(--surface-1) !important; }
+  .state-active-s { border-color: var(--t3) !important; background: var(--surface-1) !important; transform: scale(0.98) !important; }
+
+  .btn-state-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  .btn-state-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .btn-state-lbl {
+    font-family: var(--f-mono);
+    font-size: 0.625rem;
+    color: var(--t3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  @media (max-width: 640px) {
+    .btn-state-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: var(--surface-1);
+    border: var(--border);
+    border-radius: var(--r-lg);
+    padding: 2.25rem;
+  }
+  .form-eye {
+    font-family: var(--f-mono);
+    font-size: 0.625rem;
+    color: var(--ac-hi);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .form-title {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    color: var(--t1);
+    margin-bottom: 0.4rem;
+  }
+  .form-sub {
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    color: var(--t3);
+    line-height: 1.65;
+    margin-bottom: 2rem;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 1.25rem;
+  }
+  .fg-full { grid-column: 1 / -1; }
+  .field { display: flex; flex-direction: column; gap: 0.5rem; }
+  .label {
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    color: var(--t3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .hint {
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    color: var(--t4);
+    margin-top: 0.25rem;
+  }
+
+  .inp {
+    width: 100%;
+    background: var(--bg-2);
+    border: var(--border-hi);
+    border-radius: var(--r-md);
+    padding: 0.625rem 0.875rem;
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    color: var(--t1);
+    outline: none;
+    caret-color: var(--ac);
+    transition: border-color 0.15s var(--ease), box-shadow 0.18s var(--ease);
+  }
+  .inp::placeholder { color: var(--t4); }
+  .inp:focus {
+    border-color: var(--ac);
+    box-shadow: 0 0 0 3px var(--ac-lo);
+  }
+
+  .inp-wrap { position: relative; }
+  .inp-prefix {
+    position: absolute;
+    left: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    color: var(--t4);
+    pointer-events: none;
+  }
+  .inp.has-prefix { padding-left: 1.875rem; }
+
+  .sel {
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--bg-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 4l3 3 3-3' stroke='rgba(255,255,255,0.45)' stroke-width='1.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.875rem center;
+    cursor: pointer;
+    padding-right: 2.25rem;
+  }
+
+  .ta { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+  .chk-group { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.25rem; }
+  .chk-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 16px; height: 16px; flex-shrink: 0;
+    border: 1px solid var(--t4);
+    border-radius: 3px;
+    background: var(--bg-2);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s var(--ease);
+  }
+  .chk-mark { opacity: 0; color: #ffffff; transition: opacity 0.12s; }
+  .chk-in:checked + .chk-box {
+    background: var(--ac);
+    border-color: var(--ac);
+    box-shadow: 0 0 12px var(--ac-glow);
+  }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-in:focus-visible + .chk-box { box-shadow: 0 0 0 3px var(--ac-lo); }
+  .chk-txt {
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    color: var(--t1);
+  }
+
+  .rad-box {
+    width: 16px; height: 16px; flex-shrink: 0;
+    border: 1px solid var(--t4);
+    border-radius: 50%;
+    background: var(--bg-2);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s var(--ease);
+  }
+  .rad-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--ac);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.15s, transform 0.18s var(--spring);
+  }
+  .chk-in:checked + .rad-box {
+    border-color: var(--ac);
+    box-shadow: 0 0 0 1px var(--ac-lo);
+  }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1); }
+  .chk-in:focus-visible + .rad-box { box-shadow: 0 0 0 3px var(--ac-lo); }
+
+  /* Toggles */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 0;
+    gap: 1rem;
+    border-bottom: 1px solid var(--t5);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title { font-family: var(--f-mono); font-size: 0.8125rem; color: var(--t1); }
+  .tgl-desc  { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--t4); margin-top: 0.1875rem; line-height: 1.5; }
+
+  .tgl { flex-shrink: 0; cursor: pointer; position: relative; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 32px; height: 18px;
+    background: var(--surface-2);
+    border: 1px solid var(--t5);
+    border-radius: var(--r-full);
+    position: relative;
+    transition: all 0.22s var(--ease);
+  }
+  .tgl-thumb {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--t3);
+    transition: all 0.26s var(--spring);
+  }
+  .tgl-in:checked ~ .tgl-track {
+    background: var(--ac);
+    border-color: var(--ac);
+    box-shadow: 0 0 12px var(--ac-glow);
+  }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb {
+    transform: translateX(14px);
+    background: #ffffff;
+  }
+  .tgl-in:focus-visible ~ .tgl-track { box-shadow: 0 0 0 3px var(--ac-lo); }
+
+  /* Status row inside form */
+  .status-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+    gap: 1.125rem;
+  }
+  .card {
+    background: var(--surface-1);
+    border: var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    transition: all 0.28s var(--ease);
+    position: relative;
+  }
+  .card:hover {
+    border-color: rgba(124,92,255,0.30);
+    transform: translateY(-3px);
+    box-shadow: 0 24px 48px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(124,92,255,0.06), 0 0 32px -8px var(--ac-glow);
+  }
+
+  .card-thumb {
+    height: 132px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: var(--border);
+  }
+  /* Thumb 1 — code snippet */
+  .ct-code {
+    background: var(--bg-2);
+    padding: 1rem 1.125rem;
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    line-height: 1.7;
+    color: var(--t3);
+  }
+  .ct-code .kw { color: #c084fc; }
+  .ct-code .fn { color: #7dd3fc; }
+  .ct-code .st { color: var(--ac3); }
+  .ct-code .nm { color: var(--t1); }
+
+  /* Thumb 2 — orb gradient */
+  .ct-orb {
+    background:
+      radial-gradient(circle at 30% 30%, rgba(124,92,255,0.55), transparent 55%),
+      radial-gradient(circle at 75% 70%, rgba(45,212,191,0.35), transparent 50%),
+      var(--bg-2);
+    position: relative;
+  }
+  .ct-orb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  /* Thumb 3 — terminal line */
+  .ct-term {
+    background: var(--bg-2);
+    padding: 1rem 1.125rem;
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    color: var(--t2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    justify-content: flex-end;
+  }
+  .ct-term-line { display: flex; gap: 0.5rem; }
+  .ct-term-prompt { color: var(--ac); }
+  .ct-term-out    { color: var(--t3); padding-left: 0.875rem; }
+  .ct-term-cur::after {
+    content: '';
+    display: inline-block;
+    width: 7px; height: 13px;
+    background: var(--ac);
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .card-in { padding: 1.125rem 1.25rem 1.25rem; }
+  .card-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4375rem;
+    margin-bottom: 0.75rem;
+  }
+  .card-h {
+    font-family: var(--f-display);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--t1);
+    margin-bottom: 0.4375rem;
+    line-height: 1.3;
+  }
+  .card-body {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    line-height: 1.65;
+    color: var(--t3);
+    margin-bottom: 1rem;
+  }
+  .card-ft {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.875rem;
+    border-top: 1px solid var(--t5);
+  }
+  .card-ft-mono {
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    color: var(--t4);
+    letter-spacing: 0.02em;
+  }
+  .card-act {
+    background: transparent;
+    border: none;
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    color: var(--ac-hi);
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .card-act:hover { color: var(--t1); }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ */
+  .player {
+    background: var(--surface-1);
+    border: var(--border);
+    border-radius: var(--r-lg);
+    padding: 1.75rem;
+  }
+  .player-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  .player-eye {
+    font-family: var(--f-mono);
+    font-size: 0.625rem;
+    color: var(--t3);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .player-eye-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ac3);
+    box-shadow: 0 0 8px rgba(45,212,191,0.6);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50%     { opacity: 0.4; }
+  }
+  .player-meta {
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    color: var(--t4);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .player-track {
+    margin-bottom: 1.75rem;
+  }
+  .player-title {
+    font-family: var(--f-mono);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--t1);
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.01em;
+  }
+  .player-artist {
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    color: var(--t3);
+  }
+
+  /* Progress — single-pixel violet bar with dot thumb */
+  .progress-outer { margin: 1.5rem 0 0.625rem; }
+  .progress-rng {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 12px;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    --val: 30%;
+  }
+  .progress-rng::-webkit-slider-runnable-track {
+    height: 1px;
+    background: linear-gradient(to right, var(--ac) 0%, var(--ac) var(--val), var(--t5) var(--val), var(--t5) 100%);
+    border-radius: 1px;
+  }
+  .progress-rng::-moz-range-track {
+    height: 1px;
+    background: var(--t5);
+  }
+  .progress-rng::-moz-range-progress {
+    height: 1px;
+    background: var(--ac);
+  }
+  .progress-rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--ac);
+    margin-top: -4.5px;
+    box-shadow: 0 0 0 4px rgba(124,92,255,0.18), 0 0 12px var(--ac-glow);
+    cursor: pointer;
+    transition: transform 0.12s;
+  }
+  .progress-rng::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .progress-rng::-moz-range-thumb {
+    width: 10px; height: 10px;
+    border: none;
+    border-radius: 50%;
+    background: var(--ac);
+    box-shadow: 0 0 0 4px rgba(124,92,255,0.18), 0 0 12px var(--ac-glow);
+    cursor: pointer;
+  }
+  .progress-times {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    color: var(--t4);
+    font-variant-numeric: tabular-nums;
+    margin-top: 0.625rem;
+  }
+
+  .pc-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  .pc-btn {
+    background: transparent;
+    border: 1px solid var(--t5);
+    border-radius: var(--r-md);
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--t3);
+    cursor: pointer;
+    transition: all 0.18s var(--ease);
+  }
+  .pc-btn:hover { border-color: var(--t3); color: var(--t1); }
+  .pc-btn:active { transform: scale(0.95); }
+  .pc-lg {
+    width: 44px; height: 44px;
+    background: var(--ac);
+    border-color: var(--ac);
+    color: #fff;
+    box-shadow: 0 0 24px var(--ac-glow);
+  }
+  .pc-lg:hover { background: var(--ac-hi); border-color: var(--ac-hi); color: #fff; }
+  .pc-lg[aria-pressed="true"]  .play-ico  { display: none; }
+  .pc-lg[aria-pressed="false"] .pause-ico { display: none; }
+
+  /* Sliders */
+  .slider-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--t5);
+  }
+  .slider-item {
+    display: grid;
+    grid-template-columns: 90px 1fr 56px;
+    align-items: center;
+    gap: 1rem;
+  }
+  .sl-lbl {
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    color: var(--t3);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+  .sl-val {
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    color: var(--ac-hi);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .rng {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 16px;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    --val: 50%;
+  }
+  .rng::-webkit-slider-runnable-track {
+    height: 1px;
+    background: linear-gradient(to right, var(--ac) 0%, var(--ac) var(--val), var(--t5) var(--val), var(--t5) 100%);
+  }
+  .rng::-moz-range-track    { height: 1px; background: var(--t5); }
+  .rng::-moz-range-progress { height: 1px; background: var(--ac); }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--ac);
+    margin-top: -5.5px;
+    box-shadow: 0 0 0 4px rgba(124,92,255,0.18), 0 0 14px var(--ac-glow);
+    cursor: pointer;
+    transition: transform 0.12s;
+  }
+  .rng::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .rng::-moz-range-thumb {
+    width: 12px; height: 12px; border: none; border-radius: 50%;
+    background: var(--ac);
+    box-shadow: 0 0 0 4px rgba(124,92,255,0.18), 0 0 14px var(--ac-glow);
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAVIGATION (sidebar + topbar)
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: var(--surface-1);
+    border: var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: 380px;
+  }
+  .nd-side {
+    background: var(--bg-2);
+    border-right: var(--border);
+    padding: 1.25rem 0.875rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+  .nd-side-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0 0.625rem 1.25rem;
+    border-bottom: 1px solid var(--t5);
+    margin-bottom: 1rem;
+  }
+  .nd-side-brand-name {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--t1);
+    letter-spacing: -0.015em;
+  }
+  .nd-side-brand-ver {
+    font-family: var(--f-mono);
+    font-size: 0.625rem;
+    color: var(--t4);
+  }
+  .nd-side-eye {
+    font-family: var(--f-mono);
+    font-size: 0.5625rem;
+    color: var(--t4);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.875rem 0.625rem 0.5rem;
+  }
+  .nd-link {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: var(--r-sm);
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    color: var(--t3);
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: all 0.18s var(--ease);
+    position: relative;
+  }
+  .nd-link:hover { color: var(--t1); background: rgba(255,255,255,0.03); }
+  .nd-link.on {
+    color: var(--t1);
+    background: rgba(124,92,255,0.10);
+  }
+  .nd-link.on::before {
+    content: '';
+    position: absolute;
+    left: -0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px; height: 16px;
+    background: var(--ac);
+    box-shadow: 0 0 8px var(--ac-glow);
+    border-radius: 2px;
+  }
+  .nd-link svg { color: inherit; opacity: 0.65; flex-shrink: 0; }
+  .nd-link.on svg { opacity: 1; color: var(--ac-hi); }
+  .nd-link-shortcut {
+    margin-left: auto;
+    font-size: 0.625rem;
+    color: var(--t4);
+    background: var(--surface-2);
+    border: 1px solid var(--t5);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .nd-main {
+    padding: 1.5rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .nd-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1.125rem;
+    border-bottom: 1px solid var(--t5);
+  }
+  .nd-tabs { display: flex; gap: 0.125rem; }
+  .nd-tab {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    color: var(--t3);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.18s var(--ease);
+  }
+  .nd-tab:hover { color: var(--t1); }
+  .nd-tab.on { color: var(--t1); }
+  .nd-tab.on::after {
+    content: '';
+    position: absolute;
+    left: 0.5rem; right: 0.5rem;
+    bottom: -1.125rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ac), transparent);
+  }
+
+  .nd-search {
+    display: flex;
+    align-items: center;
+    gap: 0.4375rem;
+    background: var(--bg-2);
+    border: var(--border-hi);
+    border-radius: var(--r-md);
+    padding: 0.3125rem 0.625rem;
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    color: var(--t4);
+    min-width: 200px;
+  }
+  .nd-search-shortcut {
+    margin-left: auto;
+    font-size: 0.6875rem;
+    color: var(--t4);
+    background: var(--surface-2);
+    border: 1px solid var(--t5);
+    padding: 0px 5px;
+    border-radius: 3px;
+  }
+
+  .nd-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .nd-h1 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.025em;
+    color: var(--t1);
+    margin-bottom: 0.25rem;
+  }
+  .nd-sub {
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    color: var(--t3);
+  }
+
+  .nd-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.625rem;
+    margin-top: 0.75rem;
+  }
+  .nd-stat {
+    background: var(--bg-2);
+    border: var(--border);
+    border-radius: var(--r-md);
+    padding: 0.875rem 1rem;
+  }
+  .nd-stat-lbl {
+    font-family: var(--f-mono);
+    font-size: 0.5625rem;
+    color: var(--t4);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    margin-bottom: 0.4375rem;
+  }
+  .nd-stat-val {
+    font-family: var(--f-mono);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--t1);
+    font-variant-numeric: tabular-nums;
+  }
+  .nd-stat-trend {
+    font-family: var(--f-mono);
+    font-size: 0.625rem;
+    color: var(--ac3);
+    margin-top: 0.25rem;
+  }
+
+  @media (max-width: 720px) {
+    .navdemo { grid-template-columns: 1fr; }
+    .nd-side { display: none; }
+  }
+  @media (max-width: 480px) {
+    .nd-stats { grid-template-columns: 1fr; }
+    .nd-search { display: none; }
+  }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page    { padding: 0 1rem 5rem; }
+    .topnav  { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .form-panel { padding: 1.5rem 1.25rem; }
+    .tr {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      padding: 1.125rem 1.25rem;
+    }
+    .ts-display { font-size: 2rem; }
+    .ts-h1 { font-size: 1.625rem; }
+    .palette-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+    .sec { margin-top: 5rem; }
+    .sec-ghost { font-size: 5rem; }
+    .player { padding: 1.25rem; }
+    .slider-item { grid-template-columns: 70px 1fr 44px; gap: 0.625rem; }
+    .tnav-brand-mono { display: none; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- Page-level ambient orbs -->
+<div class="ambient" aria-hidden="true"></div>
+
+<!-- ── Sticky nav ─────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M7.5 2.5L4 6l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    cd ../
+  </a>
+  <div class="tnav-brand">
+    Engineer&nbsp;Mono <span class="tnav-brand-mono">v1.0.0</span>
+  </div>
+  <a class="tnav-dl" href="style-guide.md" download="engineer-mono-style-guide.md">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M6 1.5v6.5M3.5 5.5L6 8l2.5-2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 10.5h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+    style-guide.md
+  </a>
+</nav>
+
+<!-- ── Side progress dots ─────────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"    aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"      aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"  aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"     aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Form Inputs" aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"       aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"    aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"  aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ═══════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════ -->
+  <header class="hero sec orb-bg orb-hero visible" id="sec-hero">
+    <div class="hero-kicker">
+      <span class="hero-kicker-dot"></span>
+      § The Engineer Mono Aesthetic · Linear / Vercel / Cursor
+    </div>
+    <h1 class="hero-h1">Build the future, in your <em>terminal</em>.</h1>
+    <p class="hero-sub">A design language where monospace isn't decoration — it's the voice. Where gradient orbs aren't trends — they're atmosphere. Designed by people who also read philosophy.</p>
+
+    <div class="hero-cta-row">
+      <button class="btn btn-p">
+        Get started
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M3 6h6m-2.5-2.5L9 6 6.5 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="btn btn-c">⌘K <kbd>quick open</kbd></button>
+      <button class="btn btn-g">View on GitHub →</button>
+    </div>
+
+    <div class="hero-grid">
+      <!-- Card 1 — Status badges -->
+      <div class="hero-card">
+        <div class="hero-card-label">// status</div>
+        <div class="hero-badges">
+          <span class="badge success"><span class="badge-dot"></span>passing</span>
+          <span class="badge warn"><span class="badge-dot"></span>building</span>
+          <span class="badge muted"><span class="badge-dot"></span>queued</span>
+          <span class="badge violet"><span class="badge-dot"></span>preview</span>
+        </div>
+      </div>
+      <!-- Card 2 — Code preview -->
+      <div class="hero-card">
+        <div class="hero-card-label">// engineer-mono.ts</div>
+        <pre class="hero-code"><span class="cm">// monospace, the voice</span>
+<span class="kw">export const</span> <span class="fn">accent</span> = <span class="st">'#7c5cff'</span></pre>
+      </div>
+      <!-- Card 3 — Key/value rows -->
+      <div class="hero-card">
+        <div class="hero-card-label">// deployment</div>
+        <div class="hero-card-row"><span class="hcr-key">region</span><span class="hcr-val">sfo1</span></div>
+        <div class="hero-card-row"><span class="hcr-key">latency</span><span class="hcr-val">42ms</span></div>
+        <div class="hero-card-row"><span class="hcr-key">build</span><span class="hcr-val">2.4s</span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="divider" aria-hidden="true">
+    <span class="divider-label">§ specifications</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       01 · COLOR PALETTE
+  ═══════════════════════════════════════ -->
+  <section class="sec orb-bg orb-colors" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-ghost" aria-hidden="true">01</span>
+      <span class="sec-kicker">§ <span class="sec-kicker-num">01</span> / 08 — Color</span>
+      <h2 class="sec-title" id="colors-h">Near-monochrome, one violet.</h2>
+      <p class="sec-lede">True black surfaces. Five steps of white at decreasing opacity. Exactly one chromatic moment — violet — used only where interaction lives. Mint and amber appear for status only, never decoration.</p>
+    </div>
+
+    <div class="spec-callout">
+      <span class="spec-callout-label">// note</span>
+      <p class="spec-callout-text">Background uses <code>#0a0a0c</code>, not pure <code>#000</code> — the warmth keeps the eye relaxed during long sessions. Surfaces escalate: <code>--surface-1</code> → <code>--surface-3</code>. Text never goes solid white-on-white; we use opacity scales <code>(t1 → t5)</code>.</p>
+    </div>
+
+    <div class="palette-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#0a0a0c"></div>
+        <div class="swatch-body"><span class="swatch-hex">#0a0a0c</span><span class="swatch-name">--bg · base</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#131319"></div>
+        <div class="swatch-body"><span class="swatch-hex">#131319</span><span class="swatch-name">--surface-1</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1c1c24"></div>
+        <div class="swatch-body"><span class="swatch-hex">#1c1c24</span><span class="swatch-name">--surface-2</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#25252f"></div>
+        <div class="swatch-body"><span class="swatch-hex">#25252f</span><span class="swatch-name">--surface-3</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#7c5cff"></div>
+        <div class="swatch-body">
+          <span class="swatch-hex">#7c5cff</span>
+          <span class="swatch-name">--ac · violet</span>
+          <span class="swatch-note">the only accent</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#9b85ff"></div>
+        <div class="swatch-body"><span class="swatch-hex">#9b85ff</span><span class="swatch-name">--ac-hi · hover</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color checker"></div>
+        <div class="swatch-body"><span class="swatch-hex">rgba 1.0</span><span class="swatch-name">--t1 · primary</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color checker" style="background:rgba(255,255,255,0.7)"></div>
+        <div class="swatch-body"><span class="swatch-hex">rgba 0.70</span><span class="swatch-name">--t2 · body</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color checker" style="background:rgba(255,255,255,0.45)"></div>
+        <div class="swatch-body"><span class="swatch-hex">rgba 0.45</span><span class="swatch-name">--t3 · muted</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#2dd4bf"></div>
+        <div class="swatch-body"><span class="swatch-hex">#2dd4bf</span><span class="swatch-name">mint · success only</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#fbbf24"></div>
+        <div class="swatch-body"><span class="swatch-hex">#fbbf24</span><span class="swatch-name">amber · warn only</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#f87171"></div>
+        <div class="swatch-body"><span class="swatch-hex">#f87171</span><span class="swatch-name">coral · error only</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════
+       02 · TYPOGRAPHY
+  ═══════════════════════════════════════ -->
+  <section class="sec orb-bg orb-type" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-ghost" aria-hidden="true">02</span>
+      <span class="sec-kicker">§ <span class="sec-kicker-num">02</span> / 08 — Typography</span>
+      <h2 class="sec-title" id="type-h">Mono is the voice. Inter is the headline.</h2>
+      <p class="sec-lede">JetBrains Mono runs the body — every paragraph, label, kicker, and caption. Inter only appears at large display sizes, where it becomes the rare flash of warmth in an otherwise rigorous grid.</p>
+    </div>
+
+    <div class="spec-callout">
+      <span class="spec-callout-label">// rule</span>
+      <p class="spec-callout-text">If the text is <strong>under 18px</strong>, it is <code>JetBrains Mono</code>. If it is <strong>≥ 24px display</strong>, it is <code>Inter</code> at 600–700 with <code>letter-spacing: -0.025em</code> (tight). Never the inverse. Never another typeface.</p>
+    </div>
+
+    <div class="typescale">
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Display</span>
+          <span class="tr-spec">Inter 700<br>48px / -0.035em<br>line-height 1.05</span>
+        </div>
+        <div class="ts-display">Designed by engineers.</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H1</span>
+          <span class="tr-spec">Inter 700<br>36px / -0.03em</span>
+        </div>
+        <div class="ts-h1">A heading in Inter</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H2</span>
+          <span class="tr-spec">Inter 600<br>28px / -0.025em</span>
+        </div>
+        <div class="ts-h2">A subheading in Inter</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">H3</span>
+          <span class="tr-spec">Inter 600<br>22px / -0.02em</span>
+        </div>
+        <div class="ts-h3">A section header</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Body · Mono</span>
+          <span class="tr-spec">JetBrains 400<br>15px / 1.65 lh</span>
+        </div>
+        <div class="ts-body-mono">The mono is not for code alone. It is the <strong>voice of the document</strong>. Every paragraph runs through it — and the design earns its <em>engineer-philosophical</em> tone.</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Body · Sm</span>
+          <span class="tr-spec">JetBrains 400<br>12px / 1.6 lh</span>
+        </div>
+        <div class="ts-mono-sm">Smaller body for hints, helper text, and metadata. Still mono. Still calm. Reduces to t3 opacity.</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta">
+          <span class="tr-lbl">Caption</span>
+          <span class="tr-spec">JetBrains 400<br>11px · 0.14em UC<br>color var(--ac)</span>
+        </div>
+        <div class="ts-cap">§ caption · kicker · section index</div>
+      </div>
+    </div>
+
+    <div class="type-philosophy">
+      <div class="type-philo">
+        <div class="type-philo-eye">// the inter rule</div>
+        <h4>Sans only at display.</h4>
+        <p>Inter shows up only when the type is large enough to feel like a moment — a hero, a section heading, a stat. At smaller sizes, sans loses its restraint and the page starts to feel like marketing.</p>
+      </div>
+      <div class="type-philo">
+        <div class="type-philo-eye">// the mono rule</div>
+        <h4>Mono is the default.</h4>
+        <p>Body text is mono. Labels are mono. Buttons that look like keyboard shortcuts are mono. The page should read like well-written documentation — tight, uniform, almost typewritten.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true">
+    <span class="divider-label">§ components</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       03 · BUTTONS
+  ═══════════════════════════════════════ -->
+  <section class="sec orb-bg orb-buttons" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-ghost" aria-hidden="true">03</span>
+      <span class="sec-kicker">§ <span class="sec-kicker-num">03</span> / 08 — Buttons</span>
+      <h2 class="sec-title" id="btn-h">Four voices. One accent.</h2>
+      <p class="sec-lede">Primary in violet for the single most important action. Secondary outlined for everything else. Ghost for subordinate links. Code-style for shortcuts that should feel like a keyboard.</p>
+    </div>
+
+    <div class="spec-callout">
+      <span class="spec-callout-label">// note</span>
+      <p class="spec-callout-text">Hover state is a <strong>1px halo + soft violet glow</strong> (<code>box-shadow</code>). Active state is <code>scale(0.98)</code> — barely there, the way a real key responds. Never use translateY on press; this aesthetic doesn't bounce.</p>
+    </div>
+
+    <div class="btn-grid">
+
+      <div class="btn-row">
+        <span class="btn-row-label">// variants</span>
+        <div class="btn-row-items">
+          <button class="btn btn-p">Deploy</button>
+          <button class="btn btn-s">Cancel</button>
+          <button class="btn btn-g">Documentation →</button>
+          <button class="btn btn-c">⌘K <kbd>open command bar</kbd></button>
+          <button class="btn btn-c">esc</button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <span class="btn-row-label">// primary states</span>
+        <div class="btn-state-grid">
+          <div class="btn-state-cell"><button class="btn btn-p">Deploy</button><span class="btn-state-lbl">default</span></div>
+          <div class="btn-state-cell"><button class="btn btn-p state-hover-p" tabindex="-1" aria-hidden="true">Deploy</button><span class="btn-state-lbl">hover</span></div>
+          <div class="btn-state-cell"><button class="btn btn-p state-active-p" tabindex="-1" aria-hidden="true">Deploy</button><span class="btn-state-lbl">pressed</span></div>
+          <div class="btn-state-cell"><button class="btn btn-p" disabled>Deploy</button><span class="btn-state-lbl">disabled</span></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <span class="btn-row-label">// secondary states</span>
+        <div class="btn-state-grid">
+          <div class="btn-state-cell"><button class="btn btn-s">Cancel</button><span class="btn-state-lbl">default</span></div>
+          <div class="btn-state-cell"><button class="btn btn-s state-hover-s" tabindex="-1" aria-hidden="true">Cancel</button><span class="btn-state-lbl">hover</span></div>
+          <div class="btn-state-cell"><button class="btn btn-s state-active-s" tabindex="-1" aria-hidden="true">Cancel</button><span class="btn-state-lbl">pressed</span></div>
+          <div class="btn-state-cell"><button class="btn btn-s" disabled>Cancel</button><span class="btn-state-lbl">disabled</span></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <span class="btn-row-label">// status badges</span>
+        <div class="btn-row-items">
+          <span class="badge success"><span class="badge-dot"></span>deployed</span>
+          <span class="badge warn"><span class="badge-dot"></span>building 32%</span>
+          <span class="badge err"><span class="badge-dot"></span>failed</span>
+          <span class="badge muted"><span class="badge-dot"></span>queued</span>
+          <span class="badge violet"><span class="badge-dot"></span>preview</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════
+       04 · FORM INPUTS
+  ═══════════════════════════════════════ -->
+  <section class="sec orb-bg orb-inputs" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-ghost" aria-hidden="true">04</span>
+      <span class="sec-kicker">§ <span class="sec-kicker-num">04</span> / 08 — Inputs</span>
+      <h2 class="sec-title" id="inputs-h">Inputs that feel like a code editor.</h2>
+      <p class="sec-lede">Mono caret. Violet halo on focus. Tiny uppercase labels above each field. Toggles and checkboxes glow softly when active — just enough to read state from across a room.</p>
+    </div>
+
+    <div class="spec-callout">
+      <span class="spec-callout-label">// focus</span>
+      <p class="spec-callout-text">Focus state is a <code>1px violet border + 3px violet halo</code> (<code>box-shadow: 0 0 0 3px var(--ac-lo)</code>). Caret color matches the accent. The halo is the entire affordance — no labels move, no rings inflate.</p>
+    </div>
+
+    <div class="form-panel">
+      <div class="form-eye">// account-settings.tsx</div>
+      <div class="form-title">Account settings</div>
+      <p class="form-sub">All input primitives — text, select, textarea, checkbox, radio, toggle — each in its monospaced form, with violet as the only chromatic affordance.</p>
+
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-handle">Handle</label>
+          <div class="inp-wrap">
+            <span class="inp-prefix">@</span>
+            <input class="inp has-prefix" type="text" id="fi-handle" value="janedoe" autocomplete="username">
+          </div>
+          <span class="hint">your.url/janedoe</span>
+        </div>
+
+        <div class="field">
+          <label class="label" for="fi-email">Email</label>
+          <input class="inp" type="email" id="fi-email" placeholder="jane@example.com" autocomplete="email">
+        </div>
+
+        <div class="field">
+          <label class="label" for="fi-region">Deploy region</label>
+          <select class="inp sel" id="fi-region">
+            <option>sfo1 — San Francisco</option>
+            <option>iad1 — Washington D.C.</option>
+            <option>fra1 — Frankfurt</option>
+            <option>nrt1 — Tokyo</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="label" for="fi-key">API key</label>
+          <input class="inp" type="text" id="fi-key" value="sk_live_••••••••••••••••92x7" readonly>
+        </div>
+
+        <div class="field fg-full">
+          <label class="label" for="fi-readme">README</label>
+          <textarea class="inp ta" id="fi-readme" placeholder="# project name&#10;&#10;A short description of what you're building…"></textarea>
+          <span class="hint">supports markdown · max 4096 chars</span>
+        </div>
+
+        <div class="field">
+          <span class="label" id="chk-lbl">Stack</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><svg class="chk-mark" width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Next.js</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><svg class="chk-mark" width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">TypeScript</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox"><span class="chk-box"><svg class="chk-mark" width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Tailwind</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="label" id="rad-lbl">Theme</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row"><input class="chk-in" type="radio" name="th"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">light</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="th" checked><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">dark · (default)</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="th"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">system</span></label>
+          </div>
+        </div>
+
+        <div class="field fg-full">
+          <span class="label">Notifications</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Deploy notifications</div><div class="tgl-desc">Slack ping when a build finishes</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Deploy notifications"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Weekly digest</div><div class="tgl-desc">Mondays at 9am, your time</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" aria-label="Weekly digest"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Vim mode</div><div class="tgl-desc">because of course</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Vim mode"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field fg-full">
+          <span class="label">Current status</span>
+          <div class="status-row" style="margin-top:0.5rem">
+            <span class="badge success"><span class="badge-dot"></span>all systems operational</span>
+            <span class="badge muted">last checked 14s ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════
+       05 · CARDS
+  ═══════════════════════════════════════ -->
+  <section class="sec orb-bg orb-cards" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-ghost" aria-hidden="true">05</span>
+      <span class="sec-kicker">§ <span class="sec-kicker-num">05</span> / 08 — Cards</span>
+      <h2 class="sec-title" id="cards-h">Cards as documentation.</h2>
+      <p class="sec-lede">Each card opens with either a code snippet, an atmospheric orb, or a terminal session. Hover lifts the card 3px and bathes it in a soft violet halo — the only time the page brightens.</p>
+    </div>
+
+    <div class="spec-callout">
+      <span class="spec-callout-label">// hover</span>
+      <p class="spec-callout-text">Cards rest at <code>--surface-1</code> with <code>--border</code>. On hover, border becomes <code>rgba(124,92,255,0.30)</code> and a layered shadow appears — depth shadow for elevation, violet glow for warmth. <code>translateY(-3px)</code>.</p>
+    </div>
+
+    <div class="cards-row">
+      <article class="card">
+        <div class="card-thumb ct-code"><pre><span class="kw">const</span> <span class="nm">deploy</span> = <span class="kw">async</span> () =&gt; {
+  <span class="kw">await</span> <span class="fn">build</span>()
+  <span class="kw">return</span> <span class="st">'ok'</span>
+}</pre></div>
+        <div class="card-in">
+          <div class="card-meta-row">
+            <span class="badge violet"><span class="badge-dot"></span>changelog</span>
+            <span class="badge muted">v1.4.0</span>
+          </div>
+          <h3 class="card-h">Edge runtime, region-aware</h3>
+          <p class="card-body">Deployments now route to the closest edge in 12ms cold-start. Configurable per route with a single export.</p>
+          <div class="card-ft">
+            <span class="card-ft-mono">2026-05-12</span>
+            <button class="card-act">read.md →</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-thumb ct-orb"></div>
+        <div class="card-in">
+          <div class="card-meta-row">
+            <span class="badge success"><span class="badge-dot"></span>shipped</span>
+            <span class="badge muted">essay</span>
+          </div>
+          <h3 class="card-h">On the discipline of restraint</h3>
+          <p class="card-body">Why every additional color is a tax on the user's attention. A short essay on the violet-only rule.</p>
+          <div class="card-ft">
+            <span class="card-ft-mono">7 min · jane</span>
+            <button class="card-act">read.md →</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-thumb ct-term">
+          <div class="ct-term-line"><span class="ct-term-prompt">$</span><span>npm run deploy</span></div>
+          <div class="ct-term-line"><span class="ct-term-out">› ready in 2.4s</span></div>
+          <div class="ct-term-line"><span class="ct-term-prompt">$</span><span class="ct-term-cur"></span></div>
+        </div>
+        <div class="card-in">
+          <div class="card-meta-row">
+            <span class="badge warn"><span class="badge-dot"></span>guide</span>
+            <span class="badge muted">cli</span>
+          </div>
+          <h3 class="card-h">A terminal-first workflow</h3>
+          <p class="card-body">Deploy, log, rollback, and inspect — all from a single keystroke. The CLI as the primary interface, the dashboard as the second.</p>
+          <div class="card-ft">
+            <span class="card-ft-mono">12 min · marco</span>
+            <button class="card-act">read.md →</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════
+       06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ -->
+  <section class="sec orb-bg orb-controls" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-ghost" aria-hidden="true">06</span>
+      <span class="sec-kicker">§ <span class="sec-kicker-num">06</span> / 08 — Controls</span>
+      <h2 class="sec-title" id="ctrl-h">Sliders thin as a hairline.</h2>
+      <p class="sec-lede">A 1px track, a 12px violet dot with a soft halo, and tabular-figure readouts. The player feels less like an iOS music app and more like a Linear command palette playing audio.</p>
+    </div>
+
+    <div class="spec-callout">
+      <span class="spec-callout-label">// minimal slider</span>
+      <p class="spec-callout-text">Track is exactly <code>1px</code> tall, dividing the row in half. Fill is solid violet. Thumb is a <code>12px</code> circle with a <code>4px rgba(124,92,255,0.18)</code> halo and a <code>14px</code> outer glow. No groove, no shadow on the track.</p>
+    </div>
+
+    <div class="player">
+      <div class="player-hdr">
+        <span class="player-eye"><span class="player-eye-dot"></span>now playing</span>
+        <span class="player-meta">~/audio/focus-set</span>
+      </div>
+
+      <div class="player-track">
+        <div class="player-title">Weightless · Marconi Union</div>
+        <div class="player-artist">ambient · focus · 2014</div>
+      </div>
+
+      <div class="progress-outer">
+        <input class="progress-rng" type="range" id="progress" min="0" max="222" value="67" aria-label="Track progress">
+        <div class="progress-times">
+          <span id="curr-time">01:07</span>
+          <span>03:42</span>
+        </div>
+      </div>
+
+      <div class="pc-row">
+        <button class="pc-btn" aria-label="Shuffle">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h2.5l5 6H12M9.5 3.5L12 4l-.5 2M9 10.5l3 .5-.5 2M2 10h2.5l1.5-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="pc-btn" aria-label="Previous">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10.5 3L5 7l5.5 4V3ZM3.5 3v8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="pc-btn pc-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+          <svg class="play-ico" width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M4 2.5L11.5 7 4 11.5V2.5Z"/></svg>
+          <svg class="pause-ico" width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M3.5 2.5h2.5v9H3.5zM8 2.5h2.5v9H8z"/></svg>
+        </button>
+        <button class="pc-btn" aria-label="Next">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 3L9 7l-5.5 4V3ZM10.5 3v8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="pc-btn" aria-label="Repeat">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 9V5a3 3 0 0 1 3-3h6m1 1l-1.5-1L11 1m1 4v4a3 3 0 0 1-3 3H3m-1-1l1.5 1L2 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">volume</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="68" aria-label="Volume">
+          <span class="sl-val" id="vol-v">68</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">density</span>
+          <input class="rng" type="range" id="bright" min="0" max="100" value="42" aria-label="Density">
+          <span class="sl-val" id="bright-v">42%</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">balance</span>
+          <input class="rng" type="range" id="bal" min="-50" max="50" value="0" aria-label="Balance">
+          <span class="sl-val" id="bal-v">C</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════
+       07 · NAVIGATION
+  ═══════════════════════════════════════ -->
+  <section class="sec orb-bg orb-nav" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-ghost" aria-hidden="true">07</span>
+      <span class="sec-kicker">§ <span class="sec-kicker-num">07</span> / 08 — Navigation</span>
+      <h2 class="sec-title" id="nav-h">Sidebar that feels like a sidebar.</h2>
+      <p class="sec-lede">A vertical list of mono links, each with a keyboard shortcut. Active state is a 2px violet rule on the left edge — no fills, no rounded backgrounds. Tabs above carry a single fading violet underline.</p>
+    </div>
+
+    <div class="spec-callout">
+      <span class="spec-callout-label">// active state</span>
+      <p class="spec-callout-text">Sidebar active uses a <strong>2px violet rule</strong> at <code>left: -0.875rem</code> with a soft glow — the page literally bookmarks the row, the way <code>vim</code> highlights a line. Tabs use a <code>linear-gradient</code> 1px underline that fades to transparent at the edges.</p>
+    </div>
+
+    <div class="navdemo">
+      <aside class="nd-side" aria-label="Sidebar">
+        <div class="nd-side-brand">
+          <span class="nd-side-brand-name">acme</span>
+          <span class="nd-side-brand-ver">v1.4.0</span>
+        </div>
+        <div class="nd-side-eye">// workspace</div>
+        <button class="nd-link on" aria-current="page">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 5L6.5 1.5 11 5v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Overview
+          <span class="nd-link-shortcut">G O</span>
+        </button>
+        <button class="nd-link">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1.5" y="2.5" width="10" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 5.5h10" stroke="currentColor" stroke-width="1.2"/></svg>
+          Projects
+          <span class="nd-link-shortcut">G P</span>
+        </button>
+        <button class="nd-link">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7.5l3 3 6-6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Issues
+          <span class="nd-link-shortcut">G I</span>
+        </button>
+        <button class="nd-link">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.2"/><path d="M6.5 4v2.5l1.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Activity
+        </button>
+        <div class="nd-side-eye">// account</div>
+        <button class="nd-link">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M2 11c0-2 2-3.5 4.5-3.5S11 9 11 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Profile
+        </button>
+        <button class="nd-link">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M6.5 1.5v1.5M6.5 10v1.5M11.5 6.5h-1.5M3 6.5H1.5M9.9 3.1l-1 1M4.1 9.9l-1 1M9.9 9.9l-1-1M4.1 3.1l-1-1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Settings
+        </button>
+      </aside>
+
+      <main class="nd-main">
+        <div class="nd-topbar">
+          <div class="nd-tabs">
+            <button class="nd-tab on">overview</button>
+            <button class="nd-tab">deployments</button>
+            <button class="nd-tab">analytics</button>
+            <button class="nd-tab">logs</button>
+          </div>
+          <div class="nd-search">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="4.5" cy="4.5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M7 7l2.5 2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            search...
+            <span class="nd-search-shortcut">⌘K</span>
+          </div>
+        </div>
+
+        <div class="nd-content">
+          <div>
+            <h3 class="nd-h1">good evening, jane</h3>
+            <p class="nd-sub">tuesday · 22:14 · 7 deploys today</p>
+          </div>
+          <div class="nd-stats">
+            <div class="nd-stat">
+              <div class="nd-stat-lbl">// requests</div>
+              <div class="nd-stat-val">42.1k</div>
+              <div class="nd-stat-trend">↑ 12% / 24h</div>
+            </div>
+            <div class="nd-stat">
+              <div class="nd-stat-lbl">// p95 latency</div>
+              <div class="nd-stat-val">68<span style="font-size:0.875rem;color:var(--t3)">ms</span></div>
+              <div class="nd-stat-trend" style="color:var(--t3)">— stable</div>
+            </div>
+            <div class="nd-stat">
+              <div class="nd-stat-lbl">// errors</div>
+              <div class="nd-stat-val">0.04<span style="font-size:0.875rem;color:var(--t3)">%</span></div>
+              <div class="nd-stat-trend">↓ 2% / 24h</div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Slider value display + track fill ────────── */
+function setRng(el) {
+  const min = +el.min, max = +el.max, val = +el.value;
+  const pct = ((val - min) / (max - min)) * 100;
+  el.style.setProperty('--val', pct + '%');
+}
+document.querySelectorAll('.rng, .progress-rng').forEach(setRng);
+
+document.getElementById('vol').addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = e.target.value;
+  setRng(e.target);
+});
+document.getElementById('bright').addEventListener('input', e => {
+  document.getElementById('bright-v').textContent = e.target.value + '%';
+  setRng(e.target);
+});
+document.getElementById('bal').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  document.getElementById('bal-v').textContent = v < -5 ? 'L' + Math.abs(v) : v > 5 ? 'R' + v : 'C';
+  setRng(e.target);
+});
+document.getElementById('progress').addEventListener('input', e => {
+  const s = parseInt(e.target.value);
+  document.getElementById('curr-time').textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  setRng(e.target);
+});
+
+/* ── Play / pause ─────────────────────────────── */
+const playBtn = document.getElementById('play-btn');
+playBtn.addEventListener('click', () => {
+  const p = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!p));
+  playBtn.querySelector('.play-ico').style.display  = !p ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = !p ? '' : 'none';
+});
+
+/* ── Sidebar nav ──────────────────────────────── */
+document.querySelectorAll('.nd-link').forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelectorAll('.nd-link').forEach(l => { l.classList.remove('on'); l.removeAttribute('aria-current'); });
+    link.classList.add('on');
+    link.setAttribute('aria-current', 'page');
+  });
+});
+document.querySelectorAll('.nd-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nd-tab').forEach(t => t.classList.remove('on'));
+    tab.classList.add('on');
+  });
+});
+
+/* ── Scroll reveal + progress dot tracking ────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secKey = sections[entry.target.id];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.18 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot click → smooth scroll ───────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

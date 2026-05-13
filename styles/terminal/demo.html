@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal Mono · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:          #0a0800;
+    --s1:          #110f00;
+    --s2:          #1a1600;
+    --amber:       #ffb000;
+    --amber-hi:    #ffcc44;
+    --amber-dim:   rgba(255,176,0,0.55);
+    --amber-lo:    rgba(255,176,0,0.15);
+    --amber-faint: rgba(255,176,0,0.06);
+    --t1:          rgba(255,176,0,0.92);
+    --t2:          rgba(255,176,0,0.55);
+    --t3:          rgba(255,176,0,0.30);
+    --border:      1px solid rgba(255,176,0,0.2);
+    --border-hi:   1px solid rgba(255,176,0,0.5);
+    --r:           0px;
+    --f:           'Share Tech Mono', 'IBM Plex Mono', 'Courier New', monospace;
+    --glow-xs:     0 0 4px rgba(255,176,0,0.3);
+    --glow-sm:     0 0 8px rgba(255,176,0,0.35), 0 0 3px rgba(255,176,0,0.5);
+    --glow-md:     0 0 12px rgba(255,176,0,0.4), 0 0 5px rgba(255,176,0,0.6);
+    --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-out:    cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f);
+    background: var(--bg);
+    color: var(--t1);
+    letter-spacing: 0.02em;
+    -webkit-font-smoothing: antialiased;
+    box-shadow: inset 0 0 100px rgba(0,0,0,0.4);
+    min-height: 100vh;
+  }
+
+  /* CRT Scanlines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 1px,
+      rgba(0,0,0,0.15) 1px,
+      rgba(0,0,0,0.15) 2px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Phosphor bloom on all text */
+  p, span, h1, h2, h3, h4, h5, h6, div, label, button, a, input, select, textarea, td, th {
+    text-shadow: 0 0 3px rgba(255,176,0,0.4);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--amber);
+    outline-offset: 2px;
+  }
+
+  @keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
+
+  .cursor-blink::after {
+    content: '█';
+    animation: blink 1s step-end infinite;
+    margin-left: 1px;
+    color: var(--amber);
+    text-shadow: var(--glow-sm);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,8,0,0.95);
+    border-bottom: 1px solid rgba(255,176,0,0.2);
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+    backdrop-filter: blur(4px);
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--t2);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.15s;
+  }
+  .tnav-back:hover { color: var(--amber); text-shadow: var(--glow-xs); }
+
+  .tnav-title {
+    font-size: 0.875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    text-shadow: var(--glow-xs);
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.4rem 0.875rem;
+    border: 1px solid var(--amber);
+    color: var(--amber);
+    background: transparent;
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+    text-shadow: var(--glow-xs);
+  }
+  .tnav-dl:hover {
+    background: rgba(255,176,0,0.08);
+    box-shadow: var(--glow-sm);
+    text-shadow: var(--glow-sm);
+  }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS (square dots)
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .prog-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 0;
+    background: transparent;
+    border: 1px solid rgba(255,176,0,0.3);
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+    padding: 0;
+  }
+  .prog-dot:hover { background: rgba(255,176,0,0.4); }
+  .prog-dot.active { background: var(--amber); box-shadow: var(--glow-xs); }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.75rem 7rem;
+  }
+
+  .sec {
+    margin-top: 5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  .sec-hd {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255,176,0,0.15);
+  }
+
+  .sec-ghost {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    line-height: 1;
+    color: var(--amber-faint);
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
+    font-family: var(--f);
+  }
+
+  .sec-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--t2);
+    border: 1px solid rgba(255,176,0,0.25);
+    padding: 0.2rem 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .sec-title {
+    font-size: 0.9375rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--t1);
+    text-shadow: var(--glow-xs);
+  }
+
+  .spec-callout {
+    background: rgba(255,176,0,0.04);
+    border-left: 2px solid var(--amber);
+    padding: 0.875rem 1.25rem;
+    margin-bottom: 1.875rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+  .spec-callout-ico {
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    color: var(--t2);
+  }
+  .spec-callout-text {
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    color: var(--t2);
+  }
+  .spec-callout-text strong {
+    color: var(--amber);
+    font-family: var(--f);
+    font-size: 0.75rem;
+    font-weight: normal;
+  }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 3.5rem 0 4rem;
+  }
+
+  .hero-kicker {
+    display: inline-block;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--t2);
+    border: 1px solid rgba(255,176,0,0.2);
+    padding: 0.25rem 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-h1 {
+    font-size: clamp(3rem, 8vw, 5rem);
+    letter-spacing: 0.05em;
+    line-height: 1.0;
+    color: var(--amber);
+    text-shadow: var(--glow-md);
+    margin-bottom: 1.25rem;
+    text-transform: uppercase;
+  }
+
+  .hero-desc {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--t2);
+    max-width: 56ch;
+    margin-bottom: 2rem;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+  .hero-tag {
+    border: 1px solid rgba(255,176,0,0.2);
+    padding: 0.25rem 0.625rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t2);
+  }
+
+  .hero-widget {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* Terminal session widget */
+  .term-session {
+    background: var(--s1);
+    border: 1px solid rgba(255,176,0,0.2);
+    padding: 1rem 1.25rem;
+    flex: 1;
+    min-width: 240px;
+    max-width: 360px;
+    font-size: 0.75rem;
+    line-height: 1.8;
+    color: var(--t1);
+  }
+  .term-session-bar {
+    font-size: 0.5625rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--t3);
+    border-bottom: 1px solid rgba(255,176,0,0.1);
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .term-prompt { color: var(--amber); }
+  .term-cmd    { color: var(--t1); }
+  .term-out    { color: var(--t2); }
+  .term-ok     { color: var(--amber-hi); }
+  .term-dim    { color: var(--t3); }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .opacity-scale {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .opacity-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .opacity-bar-wrap {
+    flex: 1;
+    height: 28px;
+    border: 1px solid rgba(255,176,0,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .opacity-bar-fill {
+    height: 100%;
+    background: var(--amber);
+    transition: width 0.3s;
+  }
+  .opacity-label {
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t3);
+    min-width: 9rem;
+  }
+  .opacity-val {
+    font-size: 0.6875rem;
+    color: var(--amber);
+    min-width: 4rem;
+    text-align: right;
+    text-shadow: var(--glow-xs);
+  }
+
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
+    gap: 1px;
+    border: 1px solid rgba(255,176,0,0.1);
+  }
+  .swatch {
+    background: var(--s1);
+    overflow: hidden;
+  }
+  .swatch-color { height: 60px; }
+  .swatch-body  { padding: 0.625rem 0.75rem; border-top: 1px solid rgba(255,176,0,0.1); }
+  .swatch-hex   { font-size: 0.6875rem; color: var(--amber); display: block; margin-bottom: 0.1rem; text-shadow: var(--glow-xs); }
+  .swatch-name  { font-size: 0.5625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--t3); }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    background: var(--s1);
+    border: 1px solid rgba(255,176,0,0.15);
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255,176,0,0.08);
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { text-align: right; }
+  .tr-lbl  { font-size: 0.5625rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber); display: block; margin-bottom: 0.1rem; text-shadow: var(--glow-xs); }
+  .tr-spec { font-size: 0.5625rem; color: var(--t3); line-height: 1.5; letter-spacing: 0; }
+
+  .ts-disp  { font-size: 3rem;    line-height: 1.1;  color: var(--t1); }
+  .ts-h1    { font-size: 2.25rem; line-height: 1.15; color: var(--t1); }
+  .ts-h2    { font-size: 1.75rem; line-height: 1.2;  color: var(--t1); }
+  .ts-h3    { font-size: 1.375rem;line-height: 1.25; color: var(--t1); }
+  .ts-h4    { font-size: 1.125rem;line-height: 1.3;  color: var(--t1); }
+  .ts-lg    { font-size: 1rem;    line-height: 1.65; color: var(--t2); }
+  .ts-base  { font-size: 0.875rem;line-height: 1.6;  color: var(--t2); }
+  .ts-sm    { font-size: 0.75rem; line-height: 1.5;  color: var(--t3); }
+  .ts-cap   { font-size: 0.625rem;letter-spacing: 0.15em; text-transform: uppercase; color: var(--t3); }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    border: 1px solid var(--amber);
+    color: var(--amber);
+    background: rgba(255,176,0,0.06);
+    font-family: var(--f); font-size: 0.875rem;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    padding: 0.625rem 1.5rem;
+    cursor: pointer; white-space: nowrap; text-decoration: none;
+    text-shadow: var(--glow-xs);
+    transition: background 0.15s, box-shadow 0.15s, text-shadow 0.15s;
+    border-radius: 0;
+  }
+  .btn:hover:not(:disabled)  {
+    background: rgba(255,176,0,0.12);
+    box-shadow: var(--glow-sm);
+    text-shadow: var(--glow-sm);
+  }
+  .btn:active:not(:disabled) { background: rgba(255,176,0,0.18); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .btn-sec {
+    border-color: rgba(255,176,0,0.3);
+    color: var(--t2);
+    background: transparent;
+  }
+
+  .btn-ghost {
+    border-color: rgba(255,176,0,0.15);
+    color: var(--t3);
+    background: transparent;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    border-color: rgba(255,176,0,0.3);
+    color: var(--t2);
+    box-shadow: none;
+  }
+
+  .btn-sm { padding: 0.4rem 1rem; font-size: 0.75rem; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 2rem; }
+  .state-row-label { font-size: 0.5625rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--t3); margin-bottom: 1rem; }
+  .state-row { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .state-lbl  { font-size: 0.5625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t3); }
+
+  .btn-variants {
+    display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+    padding-top: 2rem; margin-top: 2rem;
+    border-top: 1px solid rgba(255,176,0,0.1);
+  }
+
+  /* Static state previews */
+  .state-hover  { background: rgba(255,176,0,0.12) !important; box-shadow: var(--glow-sm) !important; text-shadow: var(--glow-sm) !important; }
+  .state-active { background: rgba(255,176,0,0.18) !important; }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: var(--s1);
+    border: 1px solid rgba(255,176,0,0.15);
+    padding: 2rem;
+  }
+  .form-title {
+    font-size: 0.875rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--amber);
+    text-shadow: var(--glow-xs);
+    margin-bottom: 0.25rem;
+  }
+  .form-sub { font-size: 0.8125rem; color: var(--t2); margin-bottom: 2rem; line-height: 1.65; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .fg-full   { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 0.375rem; }
+  .label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t2);
+  }
+  .hint { font-size: 0.6875rem; color: var(--t3); margin-top: 0.1rem; }
+
+  .inp {
+    background: rgba(255,176,0,0.03);
+    border: 1px solid rgba(255,176,0,0.2);
+    color: var(--t1);
+    font-family: var(--f); font-size: 0.875rem;
+    padding: 0.625rem 0.875rem;
+    outline: none; width: 100%;
+    caret-color: var(--amber);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    border-radius: 0;
+    letter-spacing: 0.03em;
+  }
+  .inp::placeholder { color: var(--t3); }
+  .inp:focus {
+    border-color: var(--amber);
+    box-shadow: var(--glow-xs);
+  }
+
+  .sel {
+    -webkit-appearance: none;
+    background: rgba(255,176,0,0.03) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3l3 4 3-4' stroke='rgba(255,176,0,0.4)' stroke-width='1.2' fill='none'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    border: 1px solid rgba(255,176,0,0.2);
+    color: var(--t1);
+    font-family: var(--f); font-size: 0.875rem;
+    padding: 0.625rem 2rem 0.625rem 0.875rem;
+    outline: none; width: 100%; cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    border-radius: 0;
+    caret-color: var(--amber);
+  }
+  .sel:focus { border-color: var(--amber); box-shadow: var(--glow-xs); }
+  .sel option { background: var(--s2); color: var(--t1); }
+
+  .ta { resize: vertical; min-height: 88px; line-height: 1.65; }
+
+  /* Checkbox */
+  .chk-group { display: flex; flex-direction: column; gap: 0.75rem; }
+  .chk-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    cursor: pointer; user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 18px; height: 18px; flex-shrink: 0;
+    background: rgba(255,176,0,0.03);
+    border: 1px solid rgba(255,176,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
+  }
+  .chk-mark { opacity: 0; color: var(--amber); font-size: 0.75rem; transition: opacity 0.1s; text-shadow: var(--glow-xs); }
+  .chk-in:checked + .chk-box {
+    background: rgba(255,176,0,0.12);
+    border-color: var(--amber);
+    box-shadow: var(--glow-xs);
+  }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-txt { font-size: 0.8125rem; color: var(--t1); }
+
+  /* Radio */
+  .rad-box {
+    width: 18px; height: 18px; flex-shrink: 0;
+    background: rgba(255,176,0,0.03);
+    border: 1px solid rgba(255,176,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.12s, box-shadow 0.12s;
+  }
+  .rad-dot {
+    width: 8px; height: 8px;
+    background: var(--amber);
+    opacity: 0; transform: scale(0.3);
+    transition: opacity 0.15s, transform 0.15s;
+    text-shadow: none;
+  }
+  .chk-in:checked + .rad-box { border-color: var(--amber); box-shadow: var(--glow-xs); }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1); }
+
+  /* Toggle */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9375rem 0; gap: 1rem;
+    border-bottom: 1px solid rgba(255,176,0,0.08);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title { font-size: 0.875rem; color: var(--t1); }
+  .tgl-desc  { font-size: 0.75rem; color: var(--t3); margin-top: 0.1rem; letter-spacing: 0; }
+
+  .tgl { flex-shrink: 0; cursor: pointer; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 44px; height: 20px;
+    background: rgba(255,176,0,0.05);
+    border: 1px solid rgba(255,176,0,0.25);
+    position: relative;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .tgl-thumb {
+    position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px;
+    background: rgba(255,176,0,0.4);
+    transition: transform 0.22s var(--ease), background 0.22s;
+  }
+  .tgl-in:checked ~ .tgl-track {
+    background: rgba(255,176,0,0.12);
+    border-color: var(--amber);
+    box-shadow: var(--glow-xs);
+  }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb {
+    transform: translateX(24px);
+    background: var(--amber);
+    box-shadow: var(--glow-xs);
+  }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
+    gap: 1px;
+    border: 1px solid rgba(255,176,0,0.1);
+  }
+
+  .card-t {
+    background: var(--s1);
+    border-right: 1px solid rgba(255,176,0,0.1);
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .card-t:last-child { border-right: none; }
+  .card-t:hover {
+    border-color: rgba(255,176,0,0.4) !important;
+    box-shadow: var(--glow-xs);
+  }
+
+  .card-top-line {
+    height: 2px;
+    background: var(--amber);
+    box-shadow: var(--glow-xs);
+  }
+
+  .card-thumb {
+    height: 110px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--s2);
+    border-bottom: 1px solid rgba(255,176,0,0.1);
+    font-family: var(--f); font-size: 0.625rem;
+    line-height: 1.4;
+    color: var(--t2);
+    padding: 0.75rem;
+    overflow: hidden;
+  }
+
+  .ascii-art {
+    white-space: pre;
+    font-size: 0.5rem;
+    line-height: 1.3;
+    color: var(--amber-dim);
+    text-shadow: var(--glow-xs);
+    font-family: var(--f);
+    text-align: left;
+  }
+
+  .card-in { padding: 1rem 1.25rem 1.375rem; }
+  .card-eye {
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 0.375rem;
+  }
+  .card-h {
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--amber);
+    text-shadow: var(--glow-xs);
+    margin-bottom: 0.5rem;
+  }
+  .card-body-text { font-size: 0.8125rem; line-height: 1.6; color: var(--t2); margin-bottom: 1.125rem; letter-spacing: 0; }
+  .card-ft {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 0.875rem;
+    border-top: 1px solid rgba(255,176,0,0.1);
+  }
+  .card-dt { font-size: 0.625rem; letter-spacing: 0.1em; color: var(--t3); }
+  .card-act {
+    font-family: var(--f); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--amber); background: none; border: none; cursor: pointer; padding: 0;
+    text-shadow: var(--glow-xs);
+    transition: text-shadow 0.12s;
+  }
+  .card-act:hover { text-shadow: var(--glow-sm); }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ */
+  .player {
+    background: var(--s1);
+    border: 1px solid rgba(255,176,0,0.15);
+    padding: 1.75rem;
+  }
+
+  .player-header-bar {
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--t3);
+    border-bottom: 1px solid rgba(255,176,0,0.1);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.375rem;
+  }
+
+  .player-track-info {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .player-title {
+    font-size: 0.9375rem;
+    color: var(--amber);
+    text-shadow: var(--glow-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .player-meta { font-size: 0.75rem; color: var(--t2); margin-top: 0.25rem; letter-spacing: 0.06em; }
+  .player-time {
+    font-size: 0.875rem;
+    color: var(--t2);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .player-time-total { font-size: 0.625rem; color: var(--t3); text-align: right; }
+
+  /* ASCII progress bar */
+  .ascii-progress-wrap {
+    margin: 1.25rem 0;
+    font-size: 0.875rem;
+    color: var(--t2);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    letter-spacing: 0;
+  }
+  .ascii-bar {
+    font-family: var(--f);
+    font-size: 0.9375rem;
+    color: var(--amber);
+    text-shadow: var(--glow-xs);
+    cursor: pointer;
+    flex: 1;
+    letter-spacing: 0;
+  }
+
+  /* Clickable progress track */
+  .progress-track {
+    background: rgba(255,176,0,0.05);
+    border: 1px solid rgba(255,176,0,0.2);
+    height: 8px;
+    position: relative;
+    cursor: pointer;
+    margin: 1.25rem 0 0.5rem;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--amber);
+    box-shadow: var(--glow-xs);
+    transition: width 0.1s;
+  }
+  .progress-times {
+    display: flex; justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+  .ptime { font-size: 0.625rem; letter-spacing: 0.08em; color: var(--t3); font-variant-numeric: tabular-nums; }
+
+  /* Player controls */
+  .pc-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .pc-btn {
+    font-family: var(--f); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase;
+    border: 1px solid rgba(255,176,0,0.3);
+    color: var(--t2); background: transparent;
+    padding: 0.4375rem 0.875rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
+    border-radius: 0;
+    text-shadow: none;
+  }
+  .pc-btn:hover { border-color: rgba(255,176,0,0.6); color: var(--amber); box-shadow: var(--glow-xs); }
+  .pc-btn.pc-primary {
+    border-color: var(--amber);
+    color: var(--amber);
+    background: rgba(255,176,0,0.06);
+    text-shadow: var(--glow-xs);
+    padding: 0.4375rem 1.25rem;
+  }
+  .pc-btn.pc-primary:hover { background: rgba(255,176,0,0.12); box-shadow: var(--glow-sm); }
+
+  /* Sliders */
+  .slider-list { display: flex; flex-direction: column; gap: 1.125rem; padding-top: 1.375rem; border-top: 1px solid rgba(255,176,0,0.1); }
+  .slider-item { display: flex; align-items: center; gap: 1rem; }
+  .sl-lbl { font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--t2); min-width: 5.5rem; }
+  .sl-val { font-size: 0.875rem; color: var(--amber); min-width: 3rem; text-align: right; text-shadow: var(--glow-xs); font-variant-numeric: tabular-nums; }
+
+  .rng {
+    -webkit-appearance: none;
+    flex: 1; height: 4px;
+    background: rgba(255,176,0,0.12);
+    border: 1px solid rgba(255,176,0,0.2);
+    outline: none; cursor: pointer;
+    border-radius: 0;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 20px;
+    background: var(--amber);
+    box-shadow: var(--glow-xs);
+    cursor: pointer;
+    border-radius: 0;
+    transition: box-shadow 0.12s;
+  }
+  .rng::-webkit-slider-thumb:hover { box-shadow: var(--glow-sm); }
+  .rng::-moz-range-thumb {
+    width: 12px; height: 20px; border: none; border-radius: 0;
+    background: var(--amber);
+    box-shadow: var(--glow-xs);
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAV BAR
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: var(--s1);
+    border: 1px solid rgba(255,176,0,0.15);
+    max-width: 420px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .nd-screen { padding: 1.5rem 1.5rem 0; }
+  .nd-prompt { font-size: 0.75rem; color: var(--t2); margin-bottom: 0.25rem; }
+  .nd-title  { font-size: 1.25rem; color: var(--amber); text-shadow: var(--glow-xs); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.2rem; }
+  .nd-sub    { font-size: 0.6875rem; color: var(--t3); margin-bottom: 1.25rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  .nd-search {
+    background: rgba(255,176,0,0.03);
+    border: 1px solid rgba(255,176,0,0.18);
+    padding: 0.5rem 0.875rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    color: var(--t3); font-size: 0.8125rem;
+    margin-bottom: 1.125rem;
+    font-family: var(--f);
+    caret-color: var(--amber);
+  }
+  .nd-search-prompt { color: var(--amber); }
+
+  .nd-items { display: flex; flex-direction: column; gap: 1px; margin-bottom: 0; }
+  .nd-item {
+    background: rgba(255,176,0,0.02);
+    border: 1px solid rgba(255,176,0,0.08);
+    padding: 0.75rem 0.875rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .nd-ico { font-size: 0.75rem; color: var(--t3); min-width: 1.5rem; text-align: center; font-family: var(--f); }
+  .nd-item-title { font-size: 0.8125rem; color: var(--t1); text-transform: uppercase; letter-spacing: 0.06em; }
+  .nd-item-sub   { font-size: 0.6875rem; color: var(--t3); letter-spacing: 0; }
+
+  /* Terminal nav bar */
+  .term-navbar {
+    background: rgba(10,8,0,0.85);
+    border-top: 1px solid rgba(255,176,0,0.2);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .ni {
+    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--f); padding: 0.375rem 0.5rem; flex: 1;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .ni-on { border-bottom-color: var(--amber); }
+  .ni-lbl {
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t3);
+    transition: color 0.15s;
+    font-family: var(--f);
+    text-shadow: none;
+  }
+  .ni-on .ni-lbl { color: var(--amber); text-shadow: var(--glow-xs); }
+  .ni:hover:not(.ni-on) .ni-lbl { color: var(--t2); }
+  .ni-icon { font-size: 0.75rem; color: var(--t3); transition: color 0.15s; font-family: var(--f); }
+  .ni-on .ni-icon { color: var(--amber); text-shadow: var(--glow-xs); }
+
+  /* Separator between nav items */
+  .nav-sep {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,176,0,0.12);
+    flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .tr { grid-template-columns: 72px 1fr; gap: 0.75rem; padding: 0.875rem 1rem; }
+    .ts-disp { font-size: 2rem; }
+    .ts-h1   { font-size: 1.75rem; }
+    .hero-h1 { font-size: 2.5rem; }
+    .cards-row { grid-template-columns: 1fr; }
+    .player-track-info { grid-template-columns: 1fr; }
+    .pc-row { flex-wrap: wrap; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M7.5 2L3 6l4.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Gallery
+  </a>
+  <span class="tnav-title">Terminal Mono</span>
+  <a class="tnav-dl" href="style-guide.md" download="terminal-mono-style-guide.md">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M6 2v6M4 6l2 2 2-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 10h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress squares ─────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"     aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"       aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"   aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"      aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Form Inputs"  aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"        aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"     aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"   aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <div class="hero-kicker">VT100 · Terminal · 1978</div>
+    <h1 class="hero-h1 cursor-blink">Terminal Mono</h1>
+    <p class="hero-desc">One color. One typeface. One surface. The design language of the CRT era — amber phosphor on near-black glass, monospace type, absolute focus. Every element is a command prompt waiting for input.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Share Tech Mono</span>
+      <span class="hero-tag">Amber #FFB000</span>
+      <span class="hero-tag">Monochromatic system</span>
+      <span class="hero-tag">CRT scanlines</span>
+      <span class="hero-tag">0px radius</span>
+    </div>
+    <div class="hero-widget">
+      <div class="term-session">
+        <div class="term-session-bar">DEC VT100 · TERM/1 · LOGIN</div>
+        <div><span class="term-prompt">$ </span><span class="term-cmd">identify --system</span></div>
+        <div class="term-out">TERMINAL MONO v1.0.0</div>
+        <div class="term-out">COLOR DEPTH: 1 (amber)</div>
+        <div class="term-out">TYPEFACE: Share Tech Mono</div>
+        <div class="term-out">SURFACE: #0A0800</div>
+        <div class="term-dim">———————————————</div>
+        <div><span class="term-prompt">$ </span><span class="term-cmd">status</span></div>
+        <div class="term-ok">[ OK ] Phosphor warmed.</div>
+        <div class="term-ok">[ OK ] Scanlines active.</div>
+        <div class="term-ok">[ OK ] Cursor blinking.</div>
+        <div><span class="term-prompt">$ </span><span class="cursor-blink" style="font-size:0.7rem"></span></div>
+      </div>
+      <div class="term-session">
+        <div class="term-session-bar">SYSTEM READOUT · 21:39:04</div>
+        <div class="term-out">┌─────────────────────────────┐</div>
+        <div class="term-out">│  DESIGN SYSTEM STATUS       │</div>
+        <div class="term-out">├─────────────────────────────┤</div>
+        <div class="term-out">│  PALETTE    ████████ 100%   │</div>
+        <div class="term-out">│  TYPESCALE  ████████ 100%   │</div>
+        <div class="term-out">│  COMPONENTS ████████ 100%   │</div>
+        <div class="term-out">│  STATES     ████████ 100%   │</div>
+        <div class="term-out">│  EFFECTS    ████████ 100%   │</div>
+        <div class="term-out">├─────────────────────────────┤</div>
+        <div class="term-ok">│  ALL SYSTEMS OPERATIONAL    │</div>
+        <div class="term-out">└─────────────────────────────┘</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ─────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">01</span>
+      <h2 class="sec-title" id="colors-h">Color System</h2>
+      <span class="sec-ghost" aria-hidden="true">01</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">&gt;</span>
+      <p class="spec-callout-text">One color. <strong>#FFB000 amber</strong>. Every tone is an opacity value applied to that single hue. This IS the color system — there is no palette, only depth. The CRT phosphor emits one wavelength; the system never deviates.</p>
+    </div>
+
+    <div class="opacity-scale" aria-label="Amber opacity scale">
+      <div class="opacity-row">
+        <span class="opacity-label">--amber · base</span>
+        <div class="opacity-bar-wrap"><div class="opacity-bar-fill" style="width:100%;opacity:1"></div></div>
+        <span class="opacity-val">#FFB000</span>
+      </div>
+      <div class="opacity-row">
+        <span class="opacity-label">--amber-hi · highlight</span>
+        <div class="opacity-bar-wrap"><div class="opacity-bar-fill" style="width:100%;background:#ffcc44"></div></div>
+        <span class="opacity-val">#FFCC44</span>
+      </div>
+      <div class="opacity-row">
+        <span class="opacity-label">--t1 · primary text</span>
+        <div class="opacity-bar-wrap"><div class="opacity-bar-fill" style="width:92%;opacity:0.92"></div></div>
+        <span class="opacity-val">0.92α</span>
+      </div>
+      <div class="opacity-row">
+        <span class="opacity-label">--amber-dim · mid</span>
+        <div class="opacity-bar-wrap"><div class="opacity-bar-fill" style="width:55%;opacity:0.55"></div></div>
+        <span class="opacity-val">0.55α</span>
+      </div>
+      <div class="opacity-row">
+        <span class="opacity-label">--t2 · secondary</span>
+        <div class="opacity-bar-wrap"><div class="opacity-bar-fill" style="width:55%;opacity:0.55"></div></div>
+        <span class="opacity-val">0.55α</span>
+      </div>
+      <div class="opacity-row">
+        <span class="opacity-label">--t3 · muted</span>
+        <div class="opacity-bar-wrap"><div class="opacity-bar-fill" style="width:30%;opacity:0.30"></div></div>
+        <span class="opacity-val">0.30α</span>
+      </div>
+      <div class="opacity-row">
+        <span class="opacity-label">--amber-lo · subtle</span>
+        <div class="opacity-bar-wrap"><div class="opacity-bar-fill" style="width:15%;opacity:0.15"></div></div>
+        <span class="opacity-val">0.15α</span>
+      </div>
+      <div class="opacity-row">
+        <span class="opacity-label">--amber-faint · ghost</span>
+        <div class="opacity-bar-wrap"><div class="opacity-bar-fill" style="width:6%;opacity:0.06"></div></div>
+        <span class="opacity-val">0.06α</span>
+      </div>
+    </div>
+
+    <div class="palette-grid" role="list" aria-label="Surface tokens">
+      <div class="swatch" role="listitem"><div class="swatch-color" style="background:#0a0800"></div><div class="swatch-body"><span class="swatch-hex">#0A0800</span><span class="swatch-name">--bg · void</span></div></div>
+      <div class="swatch" role="listitem"><div class="swatch-color" style="background:#110f00"></div><div class="swatch-body"><span class="swatch-hex">#110F00</span><span class="swatch-name">--s1 · panel</span></div></div>
+      <div class="swatch" role="listitem"><div class="swatch-color" style="background:#1a1600"></div><div class="swatch-body"><span class="swatch-hex">#1A1600</span><span class="swatch-name">--s2 · raised</span></div></div>
+      <div class="swatch" role="listitem"><div class="swatch-color" style="background:#ffb000"></div><div class="swatch-body"><span class="swatch-hex">#FFB000</span><span class="swatch-name">--amber · THE color</span></div></div>
+      <div class="swatch" role="listitem"><div class="swatch-color" style="background:#ffcc44"></div><div class="swatch-body"><span class="swatch-hex">#FFCC44</span><span class="swatch-name">--amber-hi</span></div></div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ─────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">02</span>
+      <h2 class="sec-title" id="type-h">Typography Scale</h2>
+      <span class="sec-ghost" aria-hidden="true">02</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">Aa</span>
+      <p class="spec-callout-text"><strong>Share Tech Mono</strong> only. Monospace is the terminal's native language. The typeface predates the concept of a typeface choice — the hardware dictated character width, and the system was built around that constraint. Never use proportional type in a Terminal Mono interface.</p>
+    </div>
+    <div class="typescale">
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Display</span><span class="tr-spec">48px / mono<br>lh 1.1</span></div><div class="ts-disp">TERMINAL</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H1</span><span class="tr-spec">36px / mono<br>lh 1.15</span></div><div class="ts-h1">System Ready</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H2</span><span class="tr-spec">28px / mono<br>lh 1.2</span></div><div class="ts-h2">Loading module...</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H3</span><span class="tr-spec">22px / mono<br>lh 1.25</span></div><div class="ts-h3">Process complete</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H4</span><span class="tr-spec">18px / mono<br>lh 1.3</span></div><div class="ts-h4">stdout: ready</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Lg</span><span class="tr-spec">16px / mono<br>lh 1.65</span></div><div class="ts-lg">The quick brown fox jumps over the lazy dog — 0123456789</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body</span><span class="tr-spec">14px / mono<br>lh 1.6</span></div><div class="ts-base">The quick brown fox jumps over the lazy dog — 0123456789</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Small</span><span class="tr-spec">12px / mono<br>lh 1.5</span></div><div class="ts-sm">The quick brown fox jumps over the lazy dog — 0123456789</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Caption</span><span class="tr-spec">10px / mono<br>UC · +0.15em</span></div><div class="ts-cap">SYSTEM · METADATA · STATUS · TIMESTAMP · 21:39:04</div></div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">03</span>
+      <h2 class="sec-title" id="btn-h">Buttons</h2>
+      <span class="sec-ghost" aria-hidden="true">03</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">&gt;</span>
+      <p class="spec-callout-text">Buttons are labeled commands. No decoration, no gradient, no radius. The <strong>border IS the button</strong> — a rectangular boundary that signals "this is interactive." Hover adds a warm amber glow. Active fills the boundary. The press state mimics key depression on a physical keyboard.</p>
+    </div>
+    <div class="btn-states">
+      <div>
+        <p class="state-row-label">Primary · border: var(--amber)</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn">[PRIMARY]</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn state-hover" tabindex="-1" aria-hidden="true">[PRIMARY]</button><span class="state-lbl">Hover</span></div>
+          <div class="state-wrap"><button class="btn state-active" tabindex="-1" aria-hidden="true">[PRIMARY]</button><span class="state-lbl">Active</span></div>
+          <div class="state-wrap"><button class="btn" disabled>[PRIMARY]</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Secondary · border: 0.3 opacity</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-sec">[SECONDARY]</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-sec state-hover" tabindex="-1" aria-hidden="true">[SECONDARY]</button><span class="state-lbl">Hover</span></div>
+          <div class="state-wrap"><button class="btn btn-sec state-active" tabindex="-1" aria-hidden="true">[SECONDARY]</button><span class="state-lbl">Active</span></div>
+          <div class="state-wrap"><button class="btn btn-sec" disabled>[SECONDARY]</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div class="btn-variants">
+        <button class="btn">[EXECUTE]</button>
+        <button class="btn btn-sec">[CANCEL]</button>
+        <button class="btn btn-ghost">[HELP]</button>
+        <button class="btn btn-sm">[SM]</button>
+        <button class="btn" disabled>[LOCKED]</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">04</span>
+      <h2 class="sec-title" id="inputs-h">Form Inputs</h2>
+      <span class="sec-ghost" aria-hidden="true">04</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">&gt;</span>
+      <p class="spec-callout-text">The terminal's data entry. Monospace labels in uppercase. <strong>Amber caret blinks</strong>. The input field is a command prompt — a rectangular aperture into which the user types. Focus illuminates the border; phosphor bloom confirms the field is active.</p>
+    </div>
+    <div class="form-panel">
+      <div class="form-title cursor-blink">User Configuration</div>
+      <p class="form-sub">$ configure --user &nbsp;·&nbsp; All fields accept monospace input. The field boundary activates on focus.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">USER_IDENT</label>
+          <input class="inp" type="text" id="fi-name" placeholder="jane.smith" autocomplete="name">
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">MAIL_ADDR</label>
+          <input class="inp" type="email" id="fi-email" placeholder="jane@host.local" autocomplete="email">
+        </div>
+        <div class="field">
+          <label class="label" for="fi-role">ROLE_TYPE</label>
+          <select class="inp sel" id="fi-role">
+            <option value="">SELECT...</option>
+            <option>DESIGN_DIRECTOR</option>
+            <option>ENGINEER</option>
+            <option>PRODUCT_MANAGER</option>
+            <option>RESEARCHER</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-pass">AUTH_TOKEN</label>
+          <input class="inp" type="password" id="fi-pass" placeholder="••••••••••••">
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-bio">PROC_NOTES</label>
+          <textarea class="inp ta" id="fi-bio" placeholder="// Enter process notes..." rows="3"></textarea>
+          <span class="hint">// MAX 280 CHARS · APPENDED TO PROCESS LOG</span>
+        </div>
+        <div class="field">
+          <span class="label" id="chk-lbl">SYS_FLAGS</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><span class="chk-mark">✓</span></span><span class="chk-txt">VISUAL_PROC</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox"><span class="chk-box"><span class="chk-mark">✓</span></span><span class="chk-txt">INTERACT_PROC</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><span class="chk-mark">✓</span></span><span class="chk-txt">DS_CONNECT</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="rad-lbl">ACCESS_LVL</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row"><input class="chk-in" type="radio" name="sen" value="jr"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">LVL_1 (READ)</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="sen" value="mid" checked><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">LVL_2 (WRITE)</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="sen" value="sr"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">LVL_3 (EXEC)</span></label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">SYS_DAEMONS</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">MAIL_DAEMON</div><div class="tgl-desc">// weekly digest · stdout</div></div>
+              <label class="tgl" aria-label="Mail daemon"><input class="tgl-in" type="checkbox" role="switch" checked><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">PUSH_DAEMON</div><div class="tgl-desc">// realtime alerts · interrupts</div></div>
+              <label class="tgl" aria-label="Push daemon"><input class="tgl-in" type="checkbox" role="switch"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">AUTOSAVE_PROC</div><div class="tgl-desc">// write buffer · 30s interval</div></div>
+              <label class="tgl" aria-label="Autosave process"><input class="tgl-in" type="checkbox" role="switch" checked><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ──────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">05</span>
+      <h2 class="sec-title" id="cards-h">Cards</h2>
+      <span class="sec-ghost" aria-hidden="true">05</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">&gt;</span>
+      <p class="spec-callout-text">Terminal panels. Bordered rectangles. <strong>Amber top line</strong> signals the card header. Data readouts in uppercase. Thumbnails are ASCII art representations of content — no images, no icons, only characters. The card is a viewport, not a decoration.</p>
+    </div>
+    <div class="cards-row">
+      <article class="card-t">
+        <div class="card-top-line"></div>
+        <div class="card-thumb">
+          <pre class="ascii-art">╔══════════════╗
+║  ██ ░░ ██   ║
+║  ░░ ██ ░░   ║
+║  ██ ░░ ██   ║
+║  PATTERN    ║
+║  v1.0       ║
+╚══════════════╝</pre>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">// Design System</p>
+          <h3 class="card-h">One Color Rule</h3>
+          <p class="card-body-text">A monochromatic system achieves hierarchy through opacity, not hue. The amber phosphor is the only light source — vary its intensity, not its wavelength.</p>
+          <div class="card-ft">
+            <span class="card-dt">03 MIN READ</span>
+            <button class="card-act">LOAD &gt;</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-t">
+        <div class="card-top-line"></div>
+        <div class="card-thumb">
+          <pre class="ascii-art">┌──────────────┐
+│ $ run test   │
+│ ............│
+│ ............│
+│ [ PASS ] 12 │
+│ [ FAIL ]  0 │
+└──────────────┘</pre>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">// Engineering</p>
+          <h3 class="card-h">Zero Radius Spec</h3>
+          <p class="card-body-text">CRT terminals had sharp corners. Every panel, button, and input in Terminal Mono follows suit. Border-radius: 0. The rectangle is structurally honest — no softening of edges.</p>
+          <div class="card-ft">
+            <span class="card-dt">05 MIN READ</span>
+            <button class="card-act">LOAD &gt;</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-t">
+        <div class="card-top-line"></div>
+        <div class="card-thumb">
+          <pre class="ascii-art">╔══════════════╗
+║ CONTRAST     ║
+║ ████ 12.5:1  ║
+║ ░░░░  4.5:1  ║
+║ ····  2.1:1  ║
+║ WCAG AA ✓    ║
+╚══════════════╝</pre>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">// Accessibility</p>
+          <h3 class="card-h">Amber Contrast</h3>
+          <p class="card-body-text">Amber #FFB000 on near-black #0A0800 achieves 12.5:1 contrast ratio. The primary text level (0.92α) still passes WCAG AA at 11.5:1. The low tones are for decoration only — never interactive affordance.</p>
+          <div class="card-ft">
+            <span class="card-dt">07 MIN READ</span>
+            <button class="card-act">LOAD &gt;</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ───────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">06</span>
+      <h2 class="sec-title" id="ctrl-h">Controls · Console</h2>
+      <span class="sec-ghost" aria-hidden="true">06</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">&gt;</span>
+      <p class="spec-callout-text">The player is a <strong>media console</strong>. Progress renders as <strong>[████░░░░]</strong> ASCII blocks. Labels are commands — [PLAY] [STOP] [NEXT]. Time is in HH:MM:SS. The slider thumb is a rectangular block with amber glow. No circles, no pill shapes.</p>
+    </div>
+    <div class="player">
+      <div class="player-header-bar">MEDIA_CONSOLE · PLAYER/1 · AUDIO</div>
+
+      <div class="player-track-info">
+        <div>
+          <div class="player-title">Weightless · Marconi Union</div>
+          <div class="player-meta">AMBIENT · FOCUS · 432Hz · STEREO</div>
+        </div>
+        <div>
+          <div class="player-time" id="curr-time-disp">00:01:07</div>
+          <div class="player-time-total">/ 00:03:42</div>
+        </div>
+      </div>
+
+      <div class="ascii-progress-wrap">
+        <span style="font-size:0.625rem;letter-spacing:0.1em;color:var(--t3)">POS</span>
+        <span class="ascii-bar" id="ascii-bar">[███████████░░░░░░░░░░░░░░░░░░░]</span>
+        <span style="font-size:0.625rem;letter-spacing:0.1em;color:var(--t3)">END</span>
+      </div>
+
+      <div class="progress-track" id="progress-track" role="slider" aria-label="Track position" aria-valuemin="0" aria-valuemax="222" aria-valuenow="67">
+        <div class="progress-fill" id="progress-fill" style="width:30.2%"></div>
+      </div>
+      <div class="progress-times">
+        <span class="ptime" id="curr-time">01:07</span>
+        <span class="ptime">03:42</span>
+      </div>
+
+      <div class="pc-row">
+        <button class="pc-btn" aria-label="Previous">[PREV]</button>
+        <button class="pc-btn pc-primary" id="play-btn" aria-pressed="false" aria-label="Play">[PLAY]</button>
+        <button class="pc-btn" aria-label="Stop">[STOP]</button>
+        <button class="pc-btn" aria-label="Next">[NEXT]</button>
+        <button class="pc-btn" aria-label="Repeat">[LOOP]</button>
+      </div>
+
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">VOLUME</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="68" aria-label="Volume">
+          <span class="sl-val" id="vol-v">068</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">GAIN</span>
+          <input class="rng" type="range" id="bright" min="0" max="100" value="45" aria-label="Gain">
+          <span class="sl-val" id="bright-v">045%</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">BALANCE</span>
+          <input class="rng" type="range" id="bal" min="-50" max="50" value="0" aria-label="Balance">
+          <span class="sl-val" id="bal-v">CTR</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ─────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">07</span>
+      <h2 class="sec-title" id="nav-h">Navigation Bar</h2>
+      <span class="sec-ghost" aria-hidden="true">07</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">&gt;</span>
+      <p class="spec-callout-text"><strong>[HOME] [SEARCH] [LIBRARY] [SETTINGS]</strong> — navigation as command shortcuts. Active state: amber underline at full intensity. Separator: single amber hairlines between tabs. Labels are all uppercase, all monospace. The selected tab is a pinned command, not a highlighted surface.</p>
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <div class="nd-prompt">$ session --user jane.smith</div>
+        <div class="nd-title">Good Evening, Jane</div>
+        <div class="nd-sub">TUE · 2026-05-12 · 21:39:04</div>
+        <div class="nd-search">
+          <span class="nd-search-prompt">$</span>
+          <span>search&gt; _</span>
+        </div>
+        <div class="nd-items">
+          <div class="nd-item">
+            <div class="nd-ico">[♪]</div>
+            <div><div class="nd-item-title">Weightless</div><div class="nd-item-sub">NOW PLAYING · 01:07 / 03:42</div></div>
+          </div>
+          <div class="nd-item">
+            <div class="nd-ico">[✓]</div>
+            <div><div class="nd-item-title">Today's Queue</div><div class="nd-item-sub">5 PENDING · 3 COMPLETE</div></div>
+          </div>
+          <div class="nd-item">
+            <div class="nd-ico">[~]</div>
+            <div><div class="nd-item-title">San Francisco, CA</div><div class="nd-item-sub">72°F · PARTLY CLOUDY</div></div>
+          </div>
+        </div>
+      </div>
+      <nav class="term-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Home" aria-current="page">
+          <div class="ni-icon">[⌂]</div>
+          <span class="ni-lbl">HOME</span>
+        </button>
+        <div class="nav-sep" aria-hidden="true"></div>
+        <button class="ni" aria-label="Search">
+          <div class="ni-icon">[?]</div>
+          <span class="ni-lbl">SEARCH</span>
+        </button>
+        <div class="nav-sep" aria-hidden="true"></div>
+        <button class="ni" aria-label="Library">
+          <div class="ni-icon">[#]</div>
+          <span class="ni-lbl">LIBRARY</span>
+        </button>
+        <div class="nav-sep" aria-hidden="true"></div>
+        <button class="ni" aria-label="Settings">
+          <div class="ni-icon">[*]</div>
+          <span class="ni-lbl">SETTINGS</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Sliders ──────────────────────────── */
+document.getElementById('vol').addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = String(e.target.value).padStart(3,'0');
+});
+document.getElementById('bright').addEventListener('input', e => {
+  document.getElementById('bright-v').textContent = String(e.target.value).padStart(3,'0') + '%';
+});
+document.getElementById('bal').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  document.getElementById('bal-v').textContent = v < -5 ? 'L' + String(Math.abs(v)).padStart(2,'0') : v > 5 ? 'R' + String(v).padStart(2,'0') : 'CTR';
+});
+
+/* ── ASCII progress bar ───────────────── */
+function updateProgress(val, max) {
+  const pct = val / max;
+  const totalBlocks = 30;
+  const filled = Math.round(pct * totalBlocks);
+  const empty = totalBlocks - filled;
+  const bar = '[' + '█'.repeat(filled) + '░'.repeat(empty) + ']';
+  document.getElementById('ascii-bar').textContent = bar;
+
+  const fillPct = (val / max * 100).toFixed(1) + '%';
+  document.getElementById('progress-fill').style.width = fillPct;
+  document.getElementById('progress-track').setAttribute('aria-valuenow', val);
+
+  const s = parseInt(val);
+  const mins = Math.floor(s / 60);
+  const secs = s % 60;
+  const fmt = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+  document.getElementById('curr-time').textContent = fmt;
+  document.getElementById('curr-time-disp').textContent = '00:' + fmt;
+}
+
+/* Clickable progress track */
+const progressTrack = document.getElementById('progress-track');
+let isDragging = false;
+
+function handleProgressClick(e) {
+  const rect = progressTrack.getBoundingClientRect();
+  const x = (e.clientX || e.touches?.[0]?.clientX) - rect.left;
+  const pct = Math.max(0, Math.min(1, x / rect.width));
+  const val = Math.round(pct * 222);
+  updateProgress(val, 222);
+}
+
+progressTrack.addEventListener('click', handleProgressClick);
+progressTrack.addEventListener('mousedown', () => isDragging = true);
+document.addEventListener('mousemove', e => { if (isDragging) handleProgressClick(e); });
+document.addEventListener('mouseup', () => isDragging = false);
+
+updateProgress(67, 222);
+
+/* ── Play/pause ───────────────────────── */
+const playBtn = document.getElementById('play-btn');
+let playInterval = null;
+let currentPos = 67;
+
+playBtn.addEventListener('click', () => {
+  const playing = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!playing));
+  playBtn.textContent = !playing ? '[PAUSE]' : '[PLAY]';
+
+  if (!playing) {
+    playInterval = setInterval(() => {
+      currentPos = (currentPos + 1) % 222;
+      updateProgress(currentPos, 222);
+    }, 500);
+  } else {
+    clearInterval(playInterval);
+  }
+});
+
+/* ── Bottom nav ───────────────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => {
+      n.classList.remove('ni-on');
+      n.removeAttribute('aria-current');
+    });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ── Scroll reveal ────────────────────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secKey = sections[entry.target.id];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot navigation ──────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+/* ── Live timestamp ───────────────────── */
+function updateTimestamp() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.querySelectorAll('.live-time').forEach(el => {
+    el.textContent = h + ':' + m + ':' + s;
+  });
+}
+setInterval(updateTimestamp, 1000);
+</script>
+</body>
+</html>

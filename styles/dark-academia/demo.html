@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Academia · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:        #1a1208;
+    --s1:        #211808;
+    --s2:        #2a200e;
+    --s3:        #342c1a;
+    --s4:        #3d3020;
+    --parchment: #d4b896;
+    --gold:      #c8a84b;
+    --amber:     #e8a832;
+    --t1:        #d4b896;
+    --t2:        rgba(212,184,150,0.65);
+    --t3:        rgba(212,184,150,0.35);
+    --t4:        rgba(212,184,150,0.18);
+    --ac:        #c8a84b;
+    --ac-lo:     rgba(200,168,75,0.15);
+    --rust:      #8b3a1a;
+    --border:    1px solid rgba(200,168,75,0.15);
+    --border-hi: 1px solid rgba(200,168,75,0.3);
+    --r:         4px;
+    --r-sm:      2px;
+    --r-full:    9999px;
+    --f-disp:    'Cormorant Garamond', 'Garamond', Georgia, serif;
+    --f-body:    'EB Garamond', 'Garamond', Georgia, serif;
+    --f-small:   'Libre Baskerville', Georgia, serif;
+    --ease:      cubic-bezier(0.4,0,0.2,1);
+    --spring:    cubic-bezier(0.34,1.56,0.64,1);
+    --ease-out:  cubic-bezier(0,0,0.2,1);
+    --glow-amber: 0 0 16px rgba(232,168,50,0.2), 0 0 4px rgba(232,168,50,0.3);
+    --sh-book:   0 2px 8px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
+    --sh-deep:   0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f-body);
+    background: var(--bg);
+    color: var(--t1);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    /* Subtle noise texture — aged paper feeling */
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: var(--r-sm);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     CANDLELIGHT ANIMATIONS
+  ═══════════════════════════════════════ */
+  @keyframes flicker {
+    0%, 100% { opacity: 0.85; text-shadow: 0 0 6px rgba(232,168,50,0.3); }
+    33% { opacity: 1; text-shadow: 0 0 12px rgba(232,168,50,0.5); }
+    66% { opacity: 0.9; text-shadow: 0 0 8px rgba(232,168,50,0.35); }
+  }
+
+  @keyframes reveal-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes candle-pulse {
+    0%, 100% { box-shadow: var(--glow-amber); }
+    50% { box-shadow: 0 0 24px rgba(232,168,50,0.35), 0 0 8px rgba(232,168,50,0.5); }
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(26,18,8,0.97);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+    border-bottom: var(--border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--f-small);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--t3);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .tnav-back:hover { color: var(--t2); }
+
+  .tnav-title {
+    font-family: var(--f-disp);
+    font-size: 1.125rem;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--t1);
+    letter-spacing: 0.02em;
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.45rem 1rem;
+    background: transparent;
+    border: var(--border-hi);
+    border-radius: var(--r);
+    font-family: var(--f-small);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .tnav-dl:hover {
+    background: var(--ac-lo);
+    box-shadow: var(--glow-amber);
+  }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS INDICATOR
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .prog-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(200,168,75,0.2);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    padding: 0;
+  }
+  .prog-dot:hover {
+    border-color: rgba(200,168,75,0.5);
+    transform: scale(1.5);
+  }
+  .prog-dot.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    transform: scale(1.4);
+    box-shadow: 0 0 6px rgba(200,168,75,0.5);
+  }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.75rem 7rem;
+  }
+
+  /* ── Section ─────────────────────────── */
+  .sec {
+    margin-top: 5.5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  /* Section header with Latin kicker + rule */
+  .sec-hd {
+    position: relative;
+    margin-bottom: 2.25rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .sec-hd::after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, rgba(200,168,75,0.3) 0%, rgba(200,168,75,0.08) 60%, transparent 100%);
+  }
+
+  /* Ghost mega-number */
+  .sec-ghost {
+    position: absolute;
+    right: -0.25rem;
+    top: 50%;
+    transform: translateY(-60%);
+    font-family: var(--f-disp);
+    font-size: 7rem;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1;
+    color: rgba(200,168,75,0.03);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .sec-kicker {
+    font-family: var(--f-small);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .sec-kicker::before {
+    content: '❧';
+    color: var(--gold);
+    font-size: 0.625rem;
+    opacity: 0.6;
+  }
+
+  .sec-title {
+    font-family: var(--f-disp);
+    font-size: 1.75rem;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    color: var(--t1);
+    line-height: 1.2;
+  }
+
+  /* ── Spec callout — like a scholarly footnote ── */
+  .spec-callout {
+    background: var(--s2);
+    border: var(--border);
+    border-left: 2px solid var(--gold);
+    border-radius: var(--r);
+    padding: 1rem 1.25rem 1rem 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .spec-callout::before {
+    content: attr(data-fn);
+    position: absolute;
+    top: -0.6rem;
+    left: 1.25rem;
+    font-family: var(--f-disp);
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--gold);
+    background: var(--s2);
+    padding: 0 0.25rem;
+    opacity: 0.8;
+  }
+  .spec-callout-text {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--t2);
+  }
+  .spec-callout-text strong {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--parchment);
+    font-family: var(--f-small);
+    font-size: 0.8125rem;
+  }
+
+  /* Academic marginalia */
+  .marginalia {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.8125rem;
+    color: var(--t3);
+    border-left: 1px solid rgba(200,168,75,0.15);
+    padding-left: 0.875rem;
+    margin-left: 1.5rem;
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+
+  /* ── Wax seal ─────────────────────────── */
+  .wax-seal {
+    width: 28px;
+    height: 28px;
+    background: var(--rust);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6875rem;
+    color: var(--parchment);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+    flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 4rem 0 4.5rem;
+  }
+
+  .hero-kicker {
+    font-family: var(--f-small);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+  .hero-kicker-line {
+    flex: 1;
+    max-width: 2rem;
+    height: 1px;
+    background: linear-gradient(to right, rgba(200,168,75,0.4), transparent);
+  }
+
+  .hero-h1 {
+    font-family: var(--f-disp);
+    font-size: clamp(3.5rem, 9vw, 6rem);
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    line-height: 0.95;
+    color: var(--t1);
+    margin-bottom: 2rem;
+  }
+
+  /* Drop cap on hero paragraph */
+  .hero-desc {
+    font-family: var(--f-body);
+    font-size: 1.0625rem;
+    line-height: 1.85;
+    color: var(--t2);
+    max-width: 58ch;
+    margin-bottom: 2.25rem;
+  }
+  .hero-desc::first-letter {
+    font-family: var(--f-disp);
+    font-size: 3.25em;
+    font-weight: 600;
+    float: left;
+    line-height: 0.75;
+    margin-right: 0.1em;
+    margin-top: 0.1em;
+    color: var(--gold);
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .hero-tag {
+    border: var(--border);
+    border-radius: var(--r);
+    padding: 0.3rem 0.75rem;
+    font-family: var(--f-small);
+    font-size: 0.625rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--t3);
+    letter-spacing: 0.02em;
+  }
+
+  /* Hero book panels */
+  .hero-books {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .book-panel {
+    flex: 1;
+    min-width: 200px;
+    max-width: 260px;
+    background: var(--s2);
+    border: var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    box-shadow: var(--sh-book);
+    transition: box-shadow 0.3s, border-color 0.3s;
+  }
+  .book-panel:hover {
+    box-shadow: var(--sh-deep);
+    border-color: rgba(200,168,75,0.3);
+  }
+
+  .book-spine {
+    height: 6px;
+    background: linear-gradient(to right, var(--s4), var(--s3));
+    border-bottom: 1px solid rgba(200,168,75,0.1);
+  }
+
+  .book-inner {
+    padding: 1.25rem 1.375rem;
+  }
+  .book-ornament {
+    font-family: var(--f-disp);
+    font-size: 1.25rem;
+    color: var(--gold);
+    opacity: 0.5;
+    margin-bottom: 0.625rem;
+    display: block;
+  }
+  .book-title {
+    font-family: var(--f-disp);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--t1);
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+  .book-sub {
+    font-family: var(--f-small);
+    font-size: 0.625rem;
+    color: var(--t3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+
+  .swatch {
+    background: var(--s1);
+    border: var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    box-shadow: var(--sh-book);
+    transition: box-shadow 0.25s, border-color 0.25s;
+  }
+  .swatch:hover {
+    box-shadow: var(--sh-deep);
+    border-color: rgba(200,168,75,0.25);
+  }
+  .swatch-color { height: 68px; }
+  .swatch-body  { padding: 0.75rem 0.875rem; }
+  .swatch-hex   {
+    font-family: var(--f-small);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--t1);
+    display: block;
+    margin-bottom: 0.2rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .swatch-name  {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.6875rem;
+    color: var(--t3);
+    letter-spacing: 0.02em;
+  }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    background: var(--s1);
+    border: var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    box-shadow: var(--sh-book);
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid rgba(200,168,75,0.07);
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { text-align: right; }
+  .tr-lbl {
+    font-family: var(--f-small);
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.2rem;
+    opacity: 0.8;
+  }
+  .tr-spec {
+    font-family: var(--f-small);
+    font-size: 0.5rem;
+    color: var(--t3);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+
+  .ts-disp  { font-family: var(--f-disp); font-size: 3rem;     font-weight: 700; font-style: italic; line-height: 1.1; color: var(--t1); }
+  .ts-h1    { font-family: var(--f-disp); font-size: 2.25rem;  font-weight: 600; font-style: italic; line-height: 1.15; color: var(--t1); }
+  .ts-h2    { font-family: var(--f-disp); font-size: 1.75rem;  font-weight: 600; line-height: 1.2; color: var(--t1); }
+  .ts-h3    { font-family: var(--f-disp); font-size: 1.375rem; font-weight: 500; font-style: italic; line-height: 1.3; color: var(--t1); }
+  .ts-h4    { font-family: var(--f-disp); font-size: 1.125rem; font-weight: 500; line-height: 1.35; color: var(--t1); }
+  .ts-lg    { font-family: var(--f-body); font-size: 1.0625rem; font-weight: 400; line-height: 1.8; color: var(--t1); }
+  .ts-base  { font-family: var(--f-body); font-size: 1rem;     font-weight: 400; line-height: 1.75; color: var(--t2); }
+  .ts-sm    { font-family: var(--f-body); font-size: 0.875rem; font-weight: 400; font-style: italic; line-height: 1.65; color: var(--t3); }
+  .ts-cap   {
+    font-family: var(--f-small);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--f-body);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    border-radius: var(--r);
+    transition: background 0.2s var(--ease), box-shadow 0.2s var(--ease), color 0.2s, border-color 0.2s;
+  }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* Primary */
+  .btn-p {
+    padding: 0.875rem 2rem;
+    background: rgba(200,168,75,0.1);
+    color: var(--gold);
+    border: var(--border-hi);
+  }
+  .btn-p:hover:not(:disabled) {
+    background: rgba(200,168,75,0.18);
+    box-shadow: var(--glow-amber);
+    color: var(--amber);
+  }
+  .btn-p:active:not(:disabled) {
+    background: rgba(200,168,75,0.25);
+  }
+
+  /* Secondary */
+  .btn-s {
+    padding: 0.875rem 2rem;
+    background: transparent;
+    color: var(--t2);
+    border: var(--border);
+  }
+  .btn-s:hover:not(:disabled) {
+    border-color: rgba(200,168,75,0.4);
+    color: var(--gold);
+  }
+
+  /* Dark / filled */
+  .btn-d {
+    padding: 0.875rem 2rem;
+    background: var(--s3);
+    color: var(--t1);
+    border: var(--border);
+  }
+  .btn-d:hover:not(:disabled) {
+    background: var(--s4);
+    border-color: rgba(200,168,75,0.25);
+  }
+
+  /* Small */
+  .btn-sm {
+    padding: 0.5rem 1.125rem;
+    font-size: 0.875rem;
+  }
+
+  /* Icon */
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: var(--r);
+  }
+
+  /* State previews (static) */
+  .state-p-hover { background: rgba(200,168,75,0.18) !important; box-shadow: var(--glow-amber) !important; color: var(--amber) !important; }
+  .state-p-active{ background: rgba(200,168,75,0.25) !important; }
+  .state-s-hover { border-color: rgba(200,168,75,0.4) !important; color: var(--gold) !important; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 2.25rem; }
+  .state-row-label {
+    font-family: var(--f-small);
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 1rem;
+  }
+  .state-row { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .state-lbl  {
+    font-family: var(--f-small);
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t4);
+  }
+
+  .btn-variants {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 2rem;
+    margin-top: 2rem;
+    border-top: 1px solid rgba(200,168,75,0.08);
+  }
+
+  /* Candlelit hover on primary */
+  .btn-p.candlelit:hover {
+    animation: candle-pulse 2s ease-in-out infinite;
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: var(--s1);
+    border: var(--border);
+    border-radius: var(--r);
+    padding: 2.5rem;
+    box-shadow: var(--sh-book);
+  }
+  .form-title {
+    font-family: var(--f-disp);
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--t1);
+    margin-bottom: 0.25rem;
+  }
+  .form-sub {
+    font-family: var(--f-body);
+    font-size: 0.9375rem;
+    font-style: italic;
+    color: var(--t3);
+    margin-bottom: 2.25rem;
+    line-height: 1.65;
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .fg-full   { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .label {
+    font-family: var(--f-small);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+  .hint {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.8125rem;
+    color: var(--t4);
+    margin-top: 0.25rem;
+  }
+
+  /* Underline-only input — the writing desk */
+  .inp {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(200,168,75,0.2);
+    color: var(--t1);
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 1rem;
+    padding: 0.625rem 0;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .inp::placeholder {
+    color: var(--t4);
+    font-style: italic;
+    font-family: var(--f-body);
+  }
+  .inp:focus {
+    border-color: var(--gold);
+    box-shadow: 0 1px 0 rgba(200,168,75,0.4);
+  }
+
+  .ta { resize: vertical; min-height: 96px; line-height: 1.75; }
+
+  /* Select */
+  .sel {
+    -webkit-appearance: none;
+    background: var(--s2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' stroke='%23c8a84b' stroke-width='1.2' fill='none' stroke-linecap='round' stroke-linejoin='round' opacity='0.5'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    border: var(--border);
+    border-radius: var(--r-sm);
+    padding: 0.625rem 2rem 0.625rem 0.875rem;
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--t1);
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .sel:focus { border-color: var(--gold); }
+
+  /* Checkboxes */
+  .chk-group { display: flex; flex-direction: column; gap: 1rem; }
+  .chk-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    background: var(--s2);
+    border: var(--border-hi);
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    font-size: 0.75rem;
+    color: transparent;
+  }
+  .chk-in:checked + .chk-box {
+    background: rgba(200,168,75,0.15);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .chk-in:focus-visible + .chk-box { outline: 1px solid var(--gold); outline-offset: 2px; }
+  .chk-txt {
+    font-family: var(--f-body);
+    font-size: 1rem;
+    color: var(--t2);
+  }
+
+  /* Radios */
+  .rad-box {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    background: var(--s2);
+    border: var(--border-hi);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s;
+  }
+  .rad-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0;
+    transform: scale(0.3);
+    transition: opacity 0.15s, transform 0.2s var(--spring);
+  }
+  .chk-in:checked + .rad-box { border-color: var(--gold); }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1); }
+
+  /* Toggles — rectangular, scholarly */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.125rem 0;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(200,168,75,0.07);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title {
+    font-family: var(--f-body);
+    font-size: 1rem;
+    color: var(--t1);
+    margin-bottom: 0.125rem;
+  }
+  .tgl-desc {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.875rem;
+    color: var(--t3);
+  }
+
+  .tgl { flex-shrink: 0; cursor: pointer; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 44px;
+    height: 22px;
+    background: var(--s3);
+    border: var(--border);
+    border-radius: var(--r);
+    position: relative;
+    transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+  .tgl-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--r-sm);
+    background: var(--t3);
+    transition: transform 0.28s var(--spring), background 0.25s;
+  }
+  .tgl-in:checked ~ .tgl-track {
+    border-color: rgba(200,168,75,0.4);
+    background: rgba(200,168,75,0.1);
+    box-shadow: 0 0 8px rgba(200,168,75,0.15);
+  }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb {
+    transform: translateX(22px);
+    background: var(--parchment);
+  }
+  .tgl-in:focus-visible ~ .tgl-track { outline: 1px solid var(--gold); outline-offset: 2px; }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS — book covers
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .card-dark {
+    background: var(--s1);
+    border: var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    box-shadow: var(--sh-book);
+    transition: box-shadow 0.3s, border-color 0.3s;
+  }
+  .card-dark:hover {
+    box-shadow: var(--sh-deep), 0 0 0 1px rgba(200,168,75,0.15);
+    border-color: rgba(200,168,75,0.25);
+  }
+
+  /* Book cover thumbnail */
+  .card-cover {
+    height: 136px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6) 100%);
+  }
+  .cc1 { background: linear-gradient(145deg, #1e1408 0%, #2d1e0a 60%, #1a1208 100%); }
+  .cc2 { background: linear-gradient(145deg, #120e1a 0%, #1e1428 60%, #110e14 100%); }
+  .cc3 { background: linear-gradient(145deg, #0e1614 0%, #111e18 60%, #0a120e 100%); }
+
+  .cover-ornament {
+    font-size: 2rem;
+    position: relative;
+    z-index: 1;
+    opacity: 0.7;
+  }
+  .cover-title-text {
+    font-family: var(--f-disp);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--gold);
+    position: relative;
+    z-index: 1;
+    text-align: right;
+    line-height: 1.3;
+    opacity: 0.8;
+  }
+
+  .card-in { padding: 1.25rem 1.375rem 1.5rem; }
+  .card-eye {
+    font-family: var(--f-small);
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+    opacity: 0.7;
+  }
+  .card-h {
+    font-family: var(--f-disp);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--t1);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+  .card-body-text {
+    font-family: var(--f-body);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--t2);
+    margin-bottom: 1.25rem;
+  }
+  .card-ft {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.875rem;
+    border-top: 1px solid rgba(200,168,75,0.08);
+  }
+  .card-author {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.875rem;
+    color: var(--t3);
+  }
+  .card-act {
+    font-family: var(--f-small);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    padding: 0;
+  }
+  .card-act:hover { opacity: 1; }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS — gramophone player
+  ═══════════════════════════════════════ */
+  .player {
+    background: var(--s1);
+    border: var(--border);
+    border-radius: var(--r);
+    padding: 2.25rem;
+    box-shadow: var(--sh-book);
+  }
+
+  .player-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Gramophone disc */
+  .player-art {
+    width: 68px;
+    height: 68px;
+    background: var(--s3);
+    border: var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: var(--sh-book);
+  }
+  .player-art::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--s1);
+    border: 1px solid rgba(200,168,75,0.2);
+  }
+  .player-art.playing {
+    animation: spin 8s linear infinite;
+  }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .player-title {
+    font-family: var(--f-disp);
+    font-size: 1.125rem;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--t1);
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
+  }
+  .player-artist {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.875rem;
+    color: var(--t3);
+  }
+
+  .pc-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .pc-btn {
+    background: transparent;
+    border: var(--border);
+    border-radius: var(--r);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--t3);
+    transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .pc-btn:hover {
+    border-color: rgba(200,168,75,0.35);
+    color: var(--gold);
+  }
+  .pc-sm { width: 36px; height: 36px; }
+
+  .pc-lg {
+    width: 52px;
+    height: 52px;
+    background: rgba(200,168,75,0.1);
+    border: var(--border-hi);
+    color: var(--gold);
+  }
+  .pc-lg:hover {
+    background: rgba(200,168,75,0.2);
+    box-shadow: var(--glow-amber);
+    color: var(--amber);
+  }
+  .pc-lg[aria-pressed="true"] .play-ico  { display: none; }
+  .pc-lg[aria-pressed="false"] .pause-ico { display: none; }
+
+  /* Amber progress track */
+  .progress-outer { margin: 1.75rem 0; }
+  .progress-rng {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 3px;
+    border-radius: var(--r-full);
+    background: var(--s3);
+    outline: none;
+    cursor: pointer;
+    border: none;
+  }
+  .progress-rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 6px rgba(200,168,75,0.4);
+    cursor: pointer;
+    border: 1px solid rgba(200,168,75,0.3);
+  }
+  .progress-rng::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: 1px solid rgba(200,168,75,0.3);
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+  }
+  .progress-times {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  .ptime {
+    font-family: var(--f-small);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    color: var(--t3);
+    letter-spacing: 0.06em;
+  }
+
+  /* Sliders */
+  .slider-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(200,168,75,0.07);
+  }
+  .slider-item { display: flex; align-items: center; gap: 1rem; }
+  .sl-lbl {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.9375rem;
+    color: var(--t2);
+    min-width: 5.5rem;
+  }
+  .sl-val {
+    font-family: var(--f-small);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 2.5rem;
+    text-align: right;
+  }
+
+  .rng {
+    -webkit-appearance: none;
+    flex: 1;
+    height: 3px;
+    border-radius: var(--r-full);
+    background: var(--s3);
+    outline: none;
+    cursor: pointer;
+    border: none;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 6px rgba(200,168,75,0.4);
+    cursor: pointer;
+    transition: transform 0.12s;
+    border: 1px solid rgba(200,168,75,0.4);
+  }
+  .rng::-webkit-slider-thumb:hover { transform: scale(1.18); }
+  .rng::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba(200,168,75,0.4);
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAV — book index
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: var(--s1);
+    border: var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    max-width: 420px;
+    margin: 0 auto;
+    box-shadow: var(--sh-deep);
+  }
+
+  .nd-screen { padding: 2rem 1.75rem 0; }
+  .nd-eyebrow {
+    font-family: var(--f-small);
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 0.4rem;
+  }
+  .nd-title {
+    font-family: var(--f-disp);
+    font-size: 1.75rem;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--t1);
+    margin-bottom: 0.2rem;
+    line-height: 1.2;
+  }
+  .nd-sub {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.9375rem;
+    color: var(--t3);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Tab bar navigation */
+  .nd-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(200,168,75,0.1);
+    margin-bottom: 1.5rem;
+  }
+  .nd-tab {
+    font-family: var(--f-small);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t3);
+    background: none;
+    border: none;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+  }
+  .nd-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.2s var(--ease);
+  }
+  .nd-tab.active { color: var(--gold); }
+  .nd-tab.active::after { transform: scaleX(1); }
+  .nd-sep {
+    font-size: 0.5rem;
+    color: var(--t4);
+    align-self: center;
+    padding: 0 0.125rem;
+  }
+
+  .nd-entries { display: flex; flex-direction: column; gap: 0; margin-bottom: 0; }
+  .nd-entry {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.875rem 1.75rem;
+    border-bottom: 1px solid rgba(200,168,75,0.05);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .nd-entry:hover { background: rgba(200,168,75,0.04); }
+  .nd-entry:last-child { border-bottom: none; }
+  .nd-ico-wrap {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    background: var(--s2);
+    border: var(--border);
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9375rem;
+  }
+  .nd-entry-title {
+    font-family: var(--f-body);
+    font-size: 1rem;
+    color: var(--t1);
+  }
+  .nd-entry-sub {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.8125rem;
+    color: var(--t3);
+    margin-top: 0.05rem;
+  }
+
+  /* Bottom nav bar */
+  .dark-navbar {
+    background: var(--s2);
+    border-top: var(--border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.875rem 0.5rem;
+  }
+
+  .ni {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--f-small);
+    padding: 0;
+    flex: 1;
+    transition: opacity 0.15s;
+  }
+  .ni-lbl {
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t3);
+    transition: color 0.15s;
+  }
+  .ni-on .ni-lbl { color: var(--gold); }
+
+  /* ═══════════════════════════════════════
+     UTILITY
+  ═══════════════════════════════════════ */
+  .gold-rule {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, rgba(200,168,75,0.25) 0%, rgba(200,168,75,0.06) 60%, transparent 100%);
+    margin: 2rem 0;
+  }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .tr { grid-template-columns: 72px 1fr; gap: 0.75rem; padding: 1rem 1.25rem; }
+    .ts-disp { font-size: 2.25rem; }
+    .ts-h1   { font-size: 1.75rem; }
+    .hero-h1 { font-size: clamp(2.75rem, 12vw, 6rem); }
+    .player-top { grid-template-columns: auto 1fr; }
+    .pc-row { grid-column: 1 / -1; justify-content: center; }
+    .palette-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+    .hero-books { flex-direction: column; }
+    .book-panel { max-width: 100%; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Gallery
+  </a>
+  <span class="tnav-title">Dark Academia</span>
+  <a class="tnav-dl" href="style-guide.md" download="dark-academia-style-guide.md">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M6 1.5v7M3.5 6l2.5 2.5L8.5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M1.5 10.5h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress dots ────────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"    aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"      aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"  aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"     aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Form Inputs" aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"       aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"    aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"  aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ──────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <div class="hero-kicker">
+      <span class="hero-kicker-line"></span>
+      ¹ Oxoniensi Schola · Est. MDCCCXCV
+      <span class="hero-kicker-line" style="background: linear-gradient(to left, rgba(200,168,75,0.4), transparent);"></span>
+    </div>
+    <h1 class="hero-h1">Dark Academia</h1>
+    <p class="hero-desc">The scholar's candlelit study, translated to the screen. Dark oak paneling and parchment, tarnished gold and aged leather — the aesthetic of Oxford libraries and Victorian common rooms. Every element bears the patina of centuries.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Cormorant Garamond · humanist italic</span>
+      <span class="hero-tag">EB Garamond · the scholar's text face</span>
+      <span class="hero-tag">Candlelight warmth system</span>
+      <span class="hero-tag">Oxford oak · parchment · tarnished gold</span>
+    </div>
+    <div class="hero-books">
+      <div class="book-panel">
+        <div class="book-spine"></div>
+        <div class="book-inner">
+          <span class="book-ornament">⸻</span>
+          <div class="book-title">De Arte Designandi</div>
+          <div class="book-sub">On the craft of visual form · Vol. I</div>
+        </div>
+      </div>
+      <div class="book-panel">
+        <div class="book-spine" style="background: linear-gradient(to right, #2a1e14, #3d2c1a);"></div>
+        <div class="book-inner">
+          <span class="book-ornament">✦</span>
+          <div class="book-title">Typographia Vetus</div>
+          <div class="book-sub">The old typefaces · their origins</div>
+        </div>
+      </div>
+      <div class="book-panel">
+        <div class="book-spine" style="background: linear-gradient(to right, #1a1220, #261830);"></div>
+        <div class="book-inner">
+          <span class="book-ornament">◆</span>
+          <div class="book-title">In Tenebris Lucet</div>
+          <div class="book-sub">Light in darkness · colour theory</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ──────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <div class="sec-kicker">De Coloribus Pulchritudinem · I</div>
+      <h2 class="sec-title" id="colors-h">The Dark Academia Palette</h2>
+      <span class="sec-ghost" aria-hidden="true">I</span>
+    </div>
+    <div class="spec-callout" data-fn="¹ Nota bene">
+      <p class="spec-callout-text">Dark oak, tarnished gold, and parchment. The palette is <strong>material</strong> — the colour of old wood, old gold, and old paper. No cold greys. No pure blacks. Every shadow has a warm undertone. As Cicero noted, all beauty begins with honest material.</p>
+    </div>
+    <div class="palette-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#1a1208"></div><div class="swatch-body"><span class="swatch-hex">#1a1208</span><span class="swatch-name">--bg · dark oak</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#211808"></div><div class="swatch-body"><span class="swatch-hex">#211808</span><span class="swatch-name">--s1 · mahogany</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#2a200e"></div><div class="swatch-body"><span class="swatch-hex">#2a200e</span><span class="swatch-name">--s2 · aged walnut</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#342c1a"></div><div class="swatch-body"><span class="swatch-hex">#342c1a</span><span class="swatch-name">--s3 · leather</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#3d3020"></div><div class="swatch-body"><span class="swatch-hex">#3d3020</span><span class="swatch-name">--s4 · worn cloth</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#d4b896"></div><div class="swatch-body"><span class="swatch-hex">#d4b896</span><span class="swatch-name">--parchment · text</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#c8a84b"></div><div class="swatch-body"><span class="swatch-hex">#c8a84b</span><span class="swatch-name">--gold · tarnished</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#e8a832"></div><div class="swatch-body"><span class="swatch-hex">#e8a832</span><span class="swatch-name">--amber · candle</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#8b3a1a"></div><div class="swatch-body"><span class="swatch-hex">#8b3a1a</span><span class="swatch-name">--rust · old ink</span></div></div>
+    </div>
+    <p class="marginalia">Per Vitruvius, colour should arise from the nature of the material itself — never imposed from without. The Dark Academia palette obeys this ancient principle.</p>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ──────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <div class="sec-kicker">De Typographia · II</div>
+      <h2 class="sec-title" id="type-h">The Scholar's Type Scale</h2>
+      <span class="sec-ghost" aria-hidden="true">II</span>
+    </div>
+    <div class="spec-callout" data-fn="² Cf. Aldus Manutius">
+      <p class="spec-callout-text"><strong>EB Garamond</strong> for body text — the typeface of old books, cut by Claude Garamond in 1530 and digitised with scholarly care by Georg Duffner. <strong>Cormorant Garamond</strong> for display — the humanist Renaissance script made digital by Christian Thalmann. Both are ancient. Both are correct.</p>
+    </div>
+    <div class="typescale">
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Display</span><span class="tr-spec">Cormorant 700i<br>48px / lh 1.1</span></div><div class="ts-disp">Cormorant</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H1</span><span class="tr-spec">Cormorant 600i<br>36px</span></div><div class="ts-h1">The Scholar's Heading</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H2</span><span class="tr-spec">Cormorant 600<br>28px</span></div><div class="ts-h2">Chapter Heading</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H3</span><span class="tr-spec">Cormorant 500i<br>22px</span></div><div class="ts-h3">Section sub-heading</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">H4</span><span class="tr-spec">Cormorant 500<br>18px</span></div><div class="ts-h4">Minor heading, lecture note</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body Lg</span><span class="tr-spec">EB Garamond 400<br>17px / lh 1.85</span></div><div class="ts-lg">As Cicero noted in <em>De Oratore</em>, the finest prose reads with the ease of a clear stream over ancient stone.</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Body</span><span class="tr-spec">EB Garamond 400<br>16px / lh 1.75</span></div><div class="ts-base">The quick brown fox jumps over the lazy dog — a sentence of no meaning, but of great utility to the typographer.</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Caption</span><span class="tr-spec">EB Garamond 400i<br>14px / lh 1.65</span></div><div class="ts-sm">A marginal note. A footnote. An aside in the manner of a scholar who has much to say and little margin in which to say it.</div></div>
+      <div class="tr"><div class="tr-meta"><span class="tr-lbl">Label</span><span class="tr-spec">Libre Baskerville 700<br>9px / +0.1em UC</span></div><div class="ts-cap">Label · Reference · Annotation · Vol. III</div></div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ─────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <div class="sec-kicker">De Actionibus · III</div>
+      <h2 class="sec-title" id="btn-h">Scholarly Buttons</h2>
+      <span class="sec-ghost" aria-hidden="true">III</span>
+    </div>
+    <div class="spec-callout" data-fn="³ Quod erat faciendum">
+      <p class="spec-callout-text">Subtle, scholarly buttons. <strong>Gold borders, not fills.</strong> The hover reveals an amber candlelight — a flame that rises without aggression. Nothing is loud here. A scholar is polite. Primary: gold border with warm fill. Secondary: line only. Dark: the leather-bound option.</p>
+    </div>
+    <div class="btn-states">
+      <div>
+        <p class="state-row-label">Primary — candlelight gold</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-p candlelit">Respond</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-p-hover" tabindex="-1" aria-hidden="true">Respond</button><span class="state-lbl">Hover</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-p-active" tabindex="-1" aria-hidden="true">Respond</button><span class="state-lbl">Pressed</span></div>
+          <div class="state-wrap"><button class="btn btn-p" disabled>Respond</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Secondary — ghost line</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-s">Inquire</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-s state-s-hover" tabindex="-1" aria-hidden="true">Inquire</button><span class="state-lbl">Hover</span></div>
+          <div class="state-wrap"><button class="btn btn-s" disabled>Inquire</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Dark — leather bound</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-d">Examine</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-d" style="background:var(--s4);border-color:rgba(200,168,75,0.25)" tabindex="-1" aria-hidden="true">Examine</button><span class="state-lbl">Hover</span></div>
+        </div>
+      </div>
+      <div class="btn-variants">
+        <button class="btn btn-p btn-sm">Small</button>
+        <button class="btn btn-s btn-sm">Small Ghost</button>
+        <button class="btn btn-icon btn-p" aria-label="Add note">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2.5v11M2.5 8h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <button class="btn btn-icon btn-s" aria-label="Bookmark">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 2.5h9v11l-4.5-3-4.5 3V2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="btn btn-icon btn-d" aria-label="More options">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="4" r="1" fill="currentColor" opacity="0.6"/><circle cx="8" cy="8" r="1" fill="currentColor" opacity="0.6"/><circle cx="8" cy="12" r="1" fill="currentColor" opacity="0.6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ─────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <div class="sec-kicker">De Scriptura · IV</div>
+      <h2 class="sec-title" id="inputs-h">The Writing Desk</h2>
+      <span class="sec-ghost" aria-hidden="true">IV</span>
+    </div>
+    <div class="spec-callout" data-fn="⁴ Per palimpsestum">
+      <p class="spec-callout-text"><strong>Italic placeholder text.</strong> A gold focus underline — the light of a candle falling on the page as you write. The form field is a writing desk: a place for thoughtful inscription. No hard borders. No clinical boxes. Only the clean line of a quill's path.</p>
+    </div>
+    <div class="form-panel">
+      <div class="form-title">A Letter of Introduction</div>
+      <p class="form-sub">Six form types, as one would find them in an Oxford register — all in their scholarly form.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">Full name</label>
+          <input class="inp" type="text" id="fi-name" placeholder="Your name, as inscribed in the register" autocomplete="name">
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">Correspondence</label>
+          <input class="inp" type="email" id="fi-email" placeholder="Where letters may be directed" autocomplete="email">
+        </div>
+        <div class="field">
+          <label class="label" for="fi-college">College</label>
+          <select class="sel" id="fi-college">
+            <option value="">Select your college…</option>
+            <option>Balliol College</option>
+            <option>Christ Church</option>
+            <option>Magdalen College</option>
+            <option>New College</option>
+            <option>Merton College</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-year">Year of Study</label>
+          <input class="inp" type="text" id="fi-year" placeholder="e.g. Second year, Michaelmas">
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-thesis">Thesis Statement</label>
+          <textarea class="inp ta" id="fi-thesis" placeholder="State the subject of your inquiry, in no more than a few measured sentences…" rows="3"></textarea>
+          <span class="hint">The examiners recommend brevity. Cf. Pascal: "I have made this longer only because I have not had the time to make it shorter."</span>
+        </div>
+        <div class="field">
+          <span class="label" id="disc-lbl">Disciplines</span>
+          <div class="chk-group" role="group" aria-labelledby="disc-lbl">
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box">✓</span><span class="chk-txt">Classical Literature</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox"><span class="chk-box">✓</span><span class="chk-txt">Natural Philosophy</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box">✓</span><span class="chk-txt">History of Art</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="term-lbl">Term</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="term-lbl">
+            <label class="chk-row"><input class="chk-in" type="radio" name="term" value="mt"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">Michaelmas</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="term" value="ht" checked><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">Hilary</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="term" value="tt"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">Trinity</span></label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">Study Preferences</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Late-evening reading hours</div>
+                <div class="tgl-desc">Candlelight study from 9 pm to midnight</div>
+              </div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Late-evening reading"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Library silence protocol</div>
+                <div class="tgl-desc">No speech above a whisper in the reading room</div>
+              </div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Silence protocol"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info">
+                <div class="tgl-title">Marginalia permitted</div>
+                <div class="tgl-desc">Annotations in pencil only; ink is forbidden</div>
+              </div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" aria-label="Marginalia"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ───────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <div class="sec-kicker">De Voluminibus · V</div>
+      <h2 class="sec-title" id="cards-h">The Library Catalogue</h2>
+      <span class="sec-ghost" aria-hidden="true">V</span>
+    </div>
+    <div class="spec-callout" data-fn="⁵ Ex libris">
+      <p class="spec-callout-text">Each card is the <strong>spine and cover of a scholarly volume</strong> — dark cloth binding, gold lettering. The thumbnail is the cover: a darkness containing a title in Cormorant italic and a tarnished gold ornament. Hover to deepen the shadow.</p>
+    </div>
+    <div class="cards-row">
+      <article class="card-dark">
+        <div class="card-cover cc1">
+          <span class="cover-ornament">⚜</span>
+          <span class="cover-title-text">De Arte<br>Rhetoricæ</span>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">Classical Studies</p>
+          <h3 class="card-h">The Art of Persuasion</h3>
+          <p class="card-body-text">As Aristotle observed in the <em>Rhetoric</em>, all persuasion rests on three pillars: logos, ethos, and pathos. The modern designer would do well to study them.</p>
+          <div class="card-ft">
+            <span class="card-author">Dr. H. Blackwood</span>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-dark">
+        <div class="card-cover cc2">
+          <span class="cover-ornament">✦</span>
+          <span class="cover-title-text">Nocturnal<br>Philosophy</span>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">Natural Philosophy</p>
+          <h3 class="card-h">In Tenebris Lucet</h3>
+          <p class="card-body-text">That which shines in darkness must be of finer substance than ordinary light. The candle, small as it is, outshines the sun at midnight.</p>
+          <div class="card-ft">
+            <span class="card-author">Prof. E. Voss</span>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-dark">
+        <div class="card-cover cc3">
+          <span class="cover-ornament">◆</span>
+          <span class="cover-title-text">Historia<br>Typographiæ</span>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">History of the Book</p>
+          <h3 class="card-h">Garamond & His Legacy</h3>
+          <p class="card-body-text">Claude Garamond's punches of 1540 set the standard for five centuries. The type you are reading now is his inheritance, filtered through digital care.</p>
+          <div class="card-ft">
+            <span class="card-author">A. Pemberton, MA</span>
+            <button class="card-act">Read →</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ────────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <div class="sec-kicker">De Musica Mechanica · VI</div>
+      <h2 class="sec-title" id="ctrl-h">The Gramophone</h2>
+      <span class="sec-ghost" aria-hidden="true">VI</span>
+    </div>
+    <div class="spec-callout" data-fn="⁶ Ex machina">
+      <p class="spec-callout-text">The player is a <strong>gramophone in a Victorian parlour</strong> — gold needle, amber glow on play, Cormorant track title. The disc spins when playing. Controls are restrained: gold borders, no heavy fills. Sliders use an amber-gold thumb on a parchment groove.</p>
+    </div>
+    <div class="player">
+      <div class="player-top">
+        <div class="player-art" id="disc">🎵</div>
+        <div>
+          <div class="player-title">Études · Frédéric Chopin</div>
+          <div class="player-artist">Op. 10, No. 3 — <em>Tristesse</em></div>
+        </div>
+        <div class="pc-row">
+          <button class="pc-btn pc-sm" aria-label="Shuffle">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4.5h2.5l7 7H14M11.5 4.5H14v2.5M14 11.5h-2.5v-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11.5h2.5l2-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Previous">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 3.5L6.5 8 12 12.5V3.5ZM4 3.5v9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="pc-btn pc-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+            <svg class="play-ico" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 4l10 6-10 6V4Z" fill="currentColor"/></svg>
+            <svg class="pause-ico" width="20" height="20" viewBox="0 0 20 20" fill="none" style="display:none"><path d="M6 3.5h3v13H6V3.5ZM12 3.5h3v13h-3V3.5Z" fill="currentColor"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Next">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 3.5l5.5 4.5L4 12.5V3.5ZM12 3.5v9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Repeat">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 10.5V7a4 4 0 0 1 4-4h6M10 3.5l2-2.5 2 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5.5v4a4 4 0 0 1-4 4H4M6 12.5l-2 2.5-2-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-outer">
+        <input class="progress-rng" type="range" id="progress" min="0" max="198" value="52" aria-label="Track progress">
+        <div class="progress-times">
+          <span class="ptime" id="curr-time">0:52</span>
+          <span class="ptime">3:18</span>
+        </div>
+      </div>
+
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">Volume</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="72" aria-label="Volume">
+          <span class="sl-val" id="vol-v">72</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Reverb</span>
+          <input class="rng" type="range" id="reverb" min="0" max="100" value="38" aria-label="Reverb — the hall acoustics">
+          <span class="sl-val" id="rev-v">38%</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">Tempo</span>
+          <input class="rng" type="range" id="tempo" min="-50" max="50" value="0" aria-label="Tempo rubato — left slower, right faster">
+          <span class="sl-val" id="tempo-v">—</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ──────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <div class="sec-kicker">De Navigatione · VII</div>
+      <h2 class="sec-title" id="nav-h">The Book's Index</h2>
+      <span class="sec-ghost" aria-hidden="true">VII</span>
+    </div>
+    <div class="spec-callout" data-fn="⁷ Tabula rerum">
+      <p class="spec-callout-text">Navigation is the <strong>index of a book</strong>. Gold underlines the chapter you are currently reading. Latin abbreviations welcome. Dots between tabs (·) as separators — the typographic convention of the nineteenth-century index page.</p>
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <div class="nd-eyebrow">Bodleian Reading Room</div>
+        <div class="nd-title">Lectures & Readings</div>
+        <div class="nd-sub">Michaelmas Term, MMXXVI</div>
+        <nav class="nd-tabs" aria-label="Library catalogue tabs">
+          <button class="nd-tab active" id="tab-all" aria-selected="true">All</button>
+          <span class="nd-sep" aria-hidden="true">·</span>
+          <button class="nd-tab" id="tab-lectures" aria-selected="false">Lectures</button>
+          <span class="nd-sep" aria-hidden="true">·</span>
+          <button class="nd-tab" id="tab-seminars" aria-selected="false">Seminars</button>
+          <span class="nd-sep" aria-hidden="true">·</span>
+          <button class="nd-tab" id="tab-reading" aria-selected="false">Reading</button>
+        </nav>
+        <div class="nd-entries">
+          <div class="nd-entry">
+            <div class="nd-ico-wrap">📜</div>
+            <div>
+              <div class="nd-entry-title">Classical Rhetoric</div>
+              <div class="nd-entry-sub">Prof. Ashton · Tues. 10h · Hall VII</div>
+            </div>
+          </div>
+          <div class="nd-entry">
+            <div class="nd-ico-wrap">🕯</div>
+            <div>
+              <div class="nd-entry-title">History of the Book</div>
+              <div class="nd-entry-sub">Dr. Pemberton · Weds. 14h · Library</div>
+            </div>
+          </div>
+          <div class="nd-entry">
+            <div class="nd-ico-wrap">🔭</div>
+            <div>
+              <div class="nd-entry-title">Natural Philosophy Seminar</div>
+              <div class="nd-entry-sub">Prof. Voss · Thurs. 16h · Museum</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <nav class="dark-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Library" aria-current="page">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M3 17V5.5L10 3l7 2.5V17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+            <rect x="7" y="9" width="6" height="8" rx="0.5" stroke="currentColor" stroke-width="1.4" fill="rgba(200,168,75,0.12)"/>
+          </svg>
+          <span class="ni-lbl">Library</span>
+        </button>
+        <button class="ni" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="9" cy="9" r="5" stroke="currentColor" stroke-width="1.4" opacity="0.4"/>
+            <path d="M13 13l3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+          <span class="ni-lbl">Search</span>
+        </button>
+        <button class="ni" aria-label="Notes">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M5 3.5h10a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4" opacity="0.4"/>
+            <path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+          <span class="ni-lbl">Notes</span>
+        </button>
+        <button class="ni" aria-label="Calendar">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="3" y="5" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4" opacity="0.4"/>
+            <path d="M7 3v4M13 3v4M3 9h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+          <span class="ni-lbl">Term</span>
+        </button>
+        <button class="ni" aria-label="Profile">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4" opacity="0.4"/>
+            <path d="M4 18c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+          <span class="ni-lbl">Profile</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Sliders ──────────────────────────────────── */
+document.getElementById('vol').addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = e.target.value;
+});
+document.getElementById('reverb').addEventListener('input', e => {
+  document.getElementById('rev-v').textContent = e.target.value + '%';
+});
+document.getElementById('tempo').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  document.getElementById('tempo-v').textContent = v < -5 ? '−' + Math.abs(v) : v > 5 ? '+' + v : '—';
+});
+document.getElementById('progress').addEventListener('input', e => {
+  const s = parseInt(e.target.value);
+  document.getElementById('curr-time').textContent =
+    `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+});
+
+/* ── Range track fill (amber gradient) ──────── */
+function updateRangeFill(input) {
+  const pct = (input.value - input.min) / (input.max - input.min) * 100;
+  input.style.background = `linear-gradient(to right, rgba(200,168,75,0.6) 0%, rgba(200,168,75,0.6) ${pct}%, var(--s3) ${pct}%)`;
+}
+document.querySelectorAll('.rng, .progress-rng').forEach(r => {
+  updateRangeFill(r);
+  r.addEventListener('input', () => updateRangeFill(r));
+});
+
+/* ── Play / pause ────────────────────────────── */
+const playBtn = document.getElementById('play-btn');
+const disc    = document.getElementById('disc');
+playBtn.addEventListener('click', () => {
+  const p = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!p));
+  playBtn.querySelector('.play-ico').style.display  = !p ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = !p ? ''     : 'none';
+  disc.classList.toggle('playing', !p);
+});
+
+/* ── Bottom nav ──────────────────────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => {
+      n.classList.remove('ni-on');
+      n.removeAttribute('aria-current');
+    });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ── Tab nav ─────────────────────────────────── */
+document.querySelectorAll('.nd-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nd-tab').forEach(t => {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected', 'false');
+    });
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected', 'true');
+  });
+});
+
+/* ── Scroll reveal + progress dots ──────────── */
+const sectionMap = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const key = sectionMap[entry.target.id];
+      if (key) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${key}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Dot click navigation ────────────────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const key   = dot.dataset.sec;
+    const secId = Object.entries(sectionMap).find(([, v]) => v === key)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

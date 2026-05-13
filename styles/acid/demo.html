@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acid Graphics · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:      #000000;
+    --s1:      #080808;
+    --s2:      #111111;
+    --green:   #00ff41;
+    --magenta: #ff00ff;
+    --yellow:  #ffff00;
+    --cyan:    #00ffff;
+    --red:     #ff0000;
+    --white:   #ffffff;
+    --ac:      #00ff41;
+    --ac2:     #ff00ff;
+    --ac3:     #ffff00;
+    --t1:      #00ff41;
+    --t2:      rgba(0,255,65,0.65);
+    --t3:      rgba(0,255,65,0.35);
+    --r:       0px;
+    --f:       'Share Tech Mono', 'JetBrains Mono', 'Courier New', monospace;
+    --f-disp:  'Impact', 'Arial Black', sans-serif;
+    --ease:    cubic-bezier(0.4,0,0.2,1);
+    --glow-g:  0 0 8px #00ff41, 0 0 20px rgba(0,255,65,0.5);
+    --glow-m:  0 0 8px #ff00ff, 0 0 20px rgba(255,0,255,0.5);
+    --glow-y:  0 0 8px #ffff00, 0 0 20px rgba(255,255,0,0.5);
+    --glow-c:  0 0 8px #00ffff, 0 0 20px rgba(0,255,255,0.5);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f);
+    background: var(--bg);
+    color: var(--t1);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--green);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     SCANLINE OVERLAY
+  ═══════════════════════════════════════ */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,255,65,0.015) 2px,
+      rgba(0,255,65,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(0,0,0,0.95);
+    border-bottom: 1px solid rgba(0,255,65,0.3);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    font-family: var(--f);
+    color: var(--t2);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.15s, text-shadow 0.15s;
+  }
+  .tnav-back:hover {
+    color: var(--green);
+    text-shadow: var(--glow-g);
+  }
+
+  .tnav-title {
+    font-family: var(--f-disp);
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green);
+    text-shadow: var(--glow-g);
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.45rem 1rem;
+    background: transparent;
+    border: 1px solid #00ff41;
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    color: #00ff41;
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow: var(--glow-g);
+    text-shadow: var(--glow-g);
+    transition: background 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .tnav-dl:hover {
+    background: rgba(0,255,65,0.08);
+    box-shadow: 0 0 16px #00ff41, 0 0 32px rgba(0,255,65,0.4);
+  }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS INDICATOR
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .prog-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 0;
+    background: transparent;
+    border: 1px solid rgba(0,255,65,0.4);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    padding: 0;
+  }
+  .prog-dot:hover {
+    background: rgba(0,255,65,0.4);
+    box-shadow: var(--glow-g);
+  }
+  .prog-dot.active {
+    background: var(--green);
+    box-shadow: var(--glow-g);
+    border-color: var(--green);
+  }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.75rem 7rem;
+  }
+
+  /* ── Section ─────────────────────────── */
+  .sec {
+    margin-top: 5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  .sec-hd {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(0,255,65,0.15);
+  }
+
+  .sec-ghost {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    font-family: var(--f-disp);
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(0,255,65,0.04);
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+
+  .sec-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.5625rem;
+    font-family: var(--f);
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green);
+    border: 1px solid rgba(0,255,65,0.4);
+    padding: 0.2rem 0.5rem;
+    flex-shrink: 0;
+    text-shadow: var(--glow-g);
+  }
+
+  .sec-title {
+    font-family: var(--f-disp);
+    font-size: 1.375rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--green);
+    text-shadow: var(--glow-g);
+  }
+
+  /* ── Spec callout ────────────────────── */
+  .spec-callout {
+    border: 1px solid rgba(0,255,65,0.2);
+    border-left: 3px solid var(--green);
+    background: rgba(0,255,65,0.04);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.875rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+  .spec-callout-ico {
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    color: var(--green);
+    text-shadow: var(--glow-g);
+  }
+  .spec-callout-text {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--t2);
+    font-family: var(--f);
+  }
+  .spec-callout-text strong {
+    color: var(--green);
+    text-shadow: var(--glow-g);
+    font-weight: 400;
+  }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 3.5rem 0 4rem;
+  }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.625rem;
+    font-family: var(--f);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--t2);
+    border: 1px solid rgba(0,255,65,0.25);
+    padding: 0.3rem 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+  .hero-kicker-dot {
+    width: 5px; height: 5px;
+    background: var(--green);
+    box-shadow: var(--glow-g);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero-h1 {
+    font-family: var(--f-disp);
+    font-size: clamp(3.5rem, 10vw, 6.5rem);
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    line-height: 0.92;
+    color: var(--green);
+    text-shadow: var(--glow-g), 0 0 60px rgba(0,255,65,0.3);
+    margin-bottom: 1.25rem;
+    text-transform: uppercase;
+  }
+
+  .hero-desc {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--t2);
+    max-width: 55ch;
+    margin-bottom: 2rem;
+    font-family: var(--f);
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+  .hero-tag {
+    border: 1px solid rgba(0,255,65,0.25);
+    padding: 0.3rem 0.75rem;
+    font-family: var(--f);
+    font-size: 0.75rem;
+    color: var(--t3);
+    letter-spacing: 0.05em;
+  }
+
+  /* Hero terminal widgets */
+  .hero-widget {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-terminal {
+    background: var(--s1);
+    border: 1px solid rgba(0,255,65,0.2);
+    padding: 1rem 1.25rem;
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+  }
+  .ht-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.625rem;
+    border-bottom: 1px solid rgba(0,255,65,0.15);
+  }
+  .ht-dot { width: 6px; height: 6px; background: var(--green); box-shadow: var(--glow-g); }
+  .ht-title {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+  .ht-line {
+    font-family: var(--f);
+    font-size: 0.75rem;
+    color: var(--t2);
+    line-height: 1.8;
+  }
+  .ht-line .hl { color: var(--green); text-shadow: var(--glow-g); }
+  .ht-line .hm { color: var(--magenta); text-shadow: var(--glow-m); }
+  .ht-line .hy { color: var(--yellow); text-shadow: var(--glow-y); }
+  .ht-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--green);
+    box-shadow: var(--glow-g);
+    vertical-align: text-bottom;
+    animation: blink 1.1s step-end infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(126px, 1fr));
+    gap: 1px;
+    background: rgba(0,255,65,0.1);
+    border: 1px solid rgba(0,255,65,0.1);
+  }
+
+  .swatch {
+    background: var(--bg);
+    overflow: hidden;
+    transition: box-shadow 0.25s var(--ease);
+  }
+  .swatch:hover { box-shadow: inset 0 0 0 1px var(--green); }
+  .swatch-color { height: 72px; position: relative; }
+  .swatch-glow-demo {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .swatch-body  { padding: 0.75rem; background: var(--s1); }
+  .swatch-hex   {
+    font-family: var(--f);
+    font-size: 0.75rem;
+    color: var(--t1);
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+  .swatch-name  {
+    font-family: var(--f);
+    font-size: 0.5rem;
+    color: var(--t3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    background: var(--s1);
+    border: 1px solid rgba(0,255,65,0.15);
+    overflow: hidden;
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.125rem 1.75rem;
+    border-bottom: 1px solid rgba(0,255,65,0.08);
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { text-align: right; }
+  .tr-lbl  {
+    font-family: var(--f);
+    font-size: 0.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green);
+    text-shadow: var(--glow-g);
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+  .tr-spec {
+    font-family: var(--f);
+    font-size: 0.5rem;
+    color: var(--t3);
+    line-height: 1.5;
+  }
+
+  .ts-disp  { font-family: var(--f-disp); font-size: 3rem;     font-weight: 900; letter-spacing: 0.04em; line-height: 1.05; color: var(--green); text-shadow: var(--glow-g); text-transform: uppercase; }
+  .ts-h1    { font-family: var(--f-disp); font-size: 2.25rem;  font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,0.6); }
+  .ts-h2    { font-family: var(--f-disp); font-size: 1.75rem;  font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; color: var(--green); text-shadow: 0 0 6px rgba(0,255,65,0.5); }
+  .ts-h3    { font-family: var(--f-disp); font-size: 1.375rem; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; color: var(--t2); }
+  .ts-lg    { font-family: var(--f);      font-size: 1rem;     line-height: 1.7; color: var(--t1); }
+  .ts-base  { font-family: var(--f);      font-size: 0.9375rem;line-height: 1.65; color: var(--t2); }
+  .ts-sm    { font-family: var(--f);      font-size: 0.8125rem;line-height: 1.6;  color: var(--t3); }
+  .ts-cap   {
+    font-family: var(--f);
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    background: transparent;
+    border: 1px solid rgba(0,255,65,0.35);
+    padding: 0.75rem 1.75rem;
+    font-family: var(--f);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--t2);
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease), box-shadow 0.2s var(--ease), text-shadow 0.2s var(--ease);
+  }
+  .btn:hover:not(:disabled) {
+    border-color: rgba(0,255,65,0.6);
+    color: var(--green);
+    background: rgba(0,255,65,0.05);
+    box-shadow: 0 0 12px rgba(0,255,65,0.2);
+    text-shadow: var(--glow-g);
+  }
+  .btn:active:not(:disabled) {
+    background: rgba(0,255,65,0.1);
+  }
+
+  .btn-p {
+    border: 1px solid #00ff41;
+    color: #00ff41;
+    background: rgba(0,255,65,0.05);
+    box-shadow: var(--glow-g);
+    text-shadow: var(--glow-g);
+  }
+  .btn-p:hover:not(:disabled) {
+    background: rgba(0,255,65,0.12);
+    box-shadow: 0 0 16px #00ff41, 0 0 32px rgba(0,255,65,0.4);
+    text-shadow: 0 0 12px #00ff41, 0 0 24px rgba(0,255,65,0.7);
+    color: #00ff41;
+    border-color: #00ff41;
+  }
+  .btn-p:active:not(:disabled) {
+    background: rgba(0,255,65,0.2);
+  }
+
+  .btn-m {
+    border: 1px solid #ff00ff;
+    color: #ff00ff;
+    background: rgba(255,0,255,0.05);
+    box-shadow: var(--glow-m);
+    text-shadow: var(--glow-m);
+  }
+  .btn-m:hover:not(:disabled) {
+    background: rgba(255,0,255,0.12);
+    box-shadow: 0 0 16px #ff00ff, 0 0 32px rgba(255,0,255,0.4);
+    color: #ff00ff;
+    border-color: #ff00ff;
+  }
+
+  .btn-y {
+    border: 1px solid #ffff00;
+    color: #ffff00;
+    background: rgba(255,255,0,0.05);
+    box-shadow: var(--glow-y);
+    text-shadow: var(--glow-y);
+  }
+  .btn-y:hover:not(:disabled) {
+    background: rgba(255,255,0,0.1);
+    box-shadow: 0 0 16px #ffff00, 0 0 32px rgba(255,255,0,0.4);
+    color: #ffff00;
+    border-color: #ffff00;
+  }
+
+  .btn-inject {
+    padding: 0.75rem 3rem;
+    letter-spacing: 0.2em;
+    font-size: 0.9375rem;
+  }
+
+  .btn:disabled { opacity: 0.2; cursor: not-allowed; box-shadow: none; text-shadow: none; }
+
+  /* State previews */
+  .state-p-hover {
+    background: rgba(0,255,65,0.12) !important;
+    box-shadow: 0 0 16px #00ff41, 0 0 32px rgba(0,255,65,0.4) !important;
+    text-shadow: 0 0 12px #00ff41 !important;
+  }
+  .state-p-active { background: rgba(0,255,65,0.2) !important; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 2rem; }
+  .state-row-label {
+    font-family: var(--f);
+    font-size: 0.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 1rem;
+  }
+  .state-row { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .state-lbl  {
+    font-family: var(--f);
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+
+  .btn-variants {
+    display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+    padding-top: 2rem; margin-top: 2rem;
+    border-top: 1px solid rgba(0,255,65,0.1);
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: var(--s1);
+    border: 1px solid rgba(0,255,65,0.15);
+    padding: 2.25rem;
+  }
+  .form-title {
+    font-family: var(--f-disp);
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green);
+    text-shadow: var(--glow-g);
+    margin-bottom: 0.25rem;
+  }
+  .form-sub {
+    font-family: var(--f);
+    font-size: 0.75rem;
+    color: var(--t3);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.375rem; }
+  .fg-full   { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .label {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    color: var(--t2);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .hint  {
+    font-family: var(--f);
+    font-size: 0.625rem;
+    color: var(--t3);
+    margin-top: 0.15rem;
+    letter-spacing: 0.04em;
+  }
+
+  .inp {
+    background: rgba(0,255,65,0.03);
+    border: 1px solid rgba(0,255,65,0.2);
+    color: #00ff41;
+    font-family: var(--f);
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+    caret-color: #00ff41;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .inp::placeholder { color: rgba(0,255,65,0.2); }
+  .inp:focus {
+    border-color: #00ff41;
+    box-shadow: 0 0 12px rgba(0,255,65,0.25);
+    background: rgba(0,255,65,0.04);
+  }
+
+  .inp-wrap { position: relative; }
+  .inp-ico  {
+    position: absolute;
+    right: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--t3);
+    pointer-events: none;
+  }
+  .inp.has-ico { padding-right: 2.5rem; }
+
+  .sel {
+    -webkit-appearance: none;
+    background: rgba(0,255,65,0.03) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%2300ff41' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.875rem center;
+    border: 1px solid rgba(0,255,65,0.2);
+    color: #00ff41;
+    font-family: var(--f);
+    font-size: 0.875rem;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+    caret-color: #00ff41;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .sel:focus {
+    border-color: #00ff41;
+    box-shadow: 0 0 12px rgba(0,255,65,0.25);
+  }
+  .sel option { background: #000; color: #00ff41; }
+
+  .ta { resize: vertical; min-height: 96px; line-height: 1.6; }
+
+  /* Checkboxes */
+  .chk-group { display: flex; flex-direction: column; gap: 0.875rem; }
+  .chk-row {
+    display: flex; align-items: center; gap: 0.875rem;
+    cursor: pointer; user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 18px; height: 18px; flex-shrink: 0;
+    background: transparent;
+    border: 1px solid rgba(0,255,65,0.4);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+  .chk-mark  { opacity: 0; color: var(--green); transition: opacity 0.12s; }
+  .chk-in:checked + .chk-box {
+    border-color: #00ff41;
+    background: rgba(0,255,65,0.15);
+    box-shadow: var(--glow-g);
+  }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-in:focus-visible + .chk-box { outline: 1px solid var(--green); outline-offset: 2px; }
+  .chk-txt {
+    font-family: var(--f);
+    font-size: 0.8125rem;
+    color: var(--t2);
+  }
+
+  /* Radios (square) */
+  .rad-box {
+    width: 18px; height: 18px; flex-shrink: 0;
+    background: transparent;
+    border: 1px solid rgba(0,255,65,0.4);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+  .rad-dot {
+    width: 6px; height: 6px;
+    background: var(--green);
+    box-shadow: var(--glow-g);
+    opacity: 0; transform: scale(0.4);
+    transition: opacity 0.15s, transform 0.2s var(--ease);
+  }
+  .chk-in:checked + .rad-box {
+    border-color: #00ff41;
+    background: rgba(0,255,65,0.08);
+    box-shadow: var(--glow-g);
+  }
+  .chk-in:checked + .rad-box .rad-dot { opacity: 1; transform: scale(1); }
+  .chk-in:focus-visible + .rad-box { outline: 1px solid var(--green); outline-offset: 2px; }
+
+  /* Toggles */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 0; gap: 1rem;
+    border-bottom: 1px solid rgba(0,255,65,0.08);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title {
+    font-family: var(--f);
+    font-size: 0.8125rem;
+    color: var(--t2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .tgl-desc  {
+    font-family: var(--f);
+    font-size: 0.625rem;
+    color: var(--t3);
+    margin-top: 0.15rem;
+    letter-spacing: 0.04em;
+  }
+
+  .tgl { flex-shrink: 0; cursor: pointer; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 48px; height: 22px;
+    background: rgba(0,0,0,0.8);
+    border: 1px solid rgba(0,255,65,0.3);
+    position: relative;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .tgl-thumb {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 14px; height: 14px;
+    background: rgba(0,255,65,0.3);
+    transition: transform 0.25s var(--ease), background 0.25s, box-shadow 0.25s;
+  }
+  .tgl-in:checked ~ .tgl-track {
+    border-color: #00ff41;
+    box-shadow: var(--glow-g);
+  }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb {
+    transform: translateX(26px);
+    background: #00ff41;
+    box-shadow: var(--glow-g);
+  }
+  .tgl-in:focus-visible ~ .tgl-track { outline: 1px solid var(--green); outline-offset: 2px; }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1px;
+    background: rgba(0,255,65,0.08);
+  }
+
+  .card-neu {
+    background: var(--s1);
+    border: 1px solid rgba(0,255,65,0.15);
+    overflow: hidden;
+    transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    margin: -1px;
+  }
+  .card-neu:hover {
+    border-color: #00ff41;
+    box-shadow: var(--glow-g);
+    z-index: 1;
+    position: relative;
+  }
+
+  .card-thumb {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid rgba(0,255,65,0.1);
+    background: #050505;
+    color: rgba(0,255,65,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  .card-thumb-ascii {
+    font-family: var(--f);
+    font-size: 0.625rem;
+    line-height: 1.2;
+    white-space: pre;
+    color: rgba(0,255,65,0.25);
+    text-shadow: 0 0 4px rgba(0,255,65,0.4);
+    user-select: none;
+  }
+  .card-thumb-sym {
+    font-size: 2.5rem;
+    text-shadow: var(--glow-g);
+  }
+  .ct-m .card-thumb-sym { color: var(--magenta); text-shadow: var(--glow-m); }
+  .ct-y .card-thumb-sym { color: var(--yellow); text-shadow: var(--glow-y); }
+
+  .card-in { padding: 1.125rem 1.25rem 1.5rem; }
+  .card-eye {
+    font-family: var(--f);
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 0.375rem;
+  }
+  .card-h {
+    font-family: var(--f-disp);
+    font-size: 0.9375rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--green);
+    text-shadow: var(--glow-g);
+    margin-bottom: 0.5rem;
+  }
+  .card-body-text {
+    font-family: var(--f);
+    font-size: 0.75rem;
+    line-height: 1.65;
+    color: var(--t2);
+    margin-bottom: 1.125rem;
+  }
+  .card-ft {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.875rem;
+    border-top: 1px solid rgba(0,255,65,0.1);
+  }
+  .card-stat {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    color: var(--t3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .card-act {
+    background: transparent;
+    border: 1px solid rgba(0,255,65,0.3);
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    color: var(--green);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.3rem 0.625rem;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    text-shadow: var(--glow-g);
+  }
+  .card-act:hover {
+    border-color: var(--green);
+    box-shadow: var(--glow-g);
+    background: rgba(0,255,65,0.08);
+  }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS / PLAYER
+  ═══════════════════════════════════════ */
+  .player {
+    background: var(--s1);
+    border: 1px solid rgba(0,255,65,0.15);
+    padding: 2rem;
+  }
+
+  .player-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .player-art {
+    width: 72px; height: 72px;
+    background: var(--bg);
+    border: 1px solid rgba(0,255,65,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--f);
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
+    color: var(--t3);
+    text-align: center;
+    line-height: 1.8;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .player-title {
+    font-family: var(--f-disp);
+    font-size: 0.9375rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--green);
+    text-shadow: var(--glow-g);
+    margin-bottom: 0.2rem;
+  }
+  .player-artist {
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    color: var(--t3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .pc-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+  }
+  .pc-btn {
+    background: transparent;
+    border: 1px solid rgba(0,255,65,0.25);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--t2);
+    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+  }
+  .pc-btn:hover {
+    border-color: rgba(0,255,65,0.6);
+    color: var(--green);
+    box-shadow: 0 0 8px rgba(0,255,65,0.3);
+  }
+  .pc-sm { width: 36px; height: 36px; }
+  .pc-lg {
+    width: 52px; height: 52px;
+    border: 1px solid #00ff41;
+    color: var(--green);
+    box-shadow: var(--glow-g);
+  }
+  .pc-lg:hover {
+    background: rgba(0,255,65,0.1);
+    box-shadow: 0 0 16px #00ff41, 0 0 32px rgba(0,255,65,0.4);
+  }
+  .pc-lg[aria-pressed="true"] .play-ico  { display: none; }
+  .pc-lg[aria-pressed="false"] .pause-ico { display: none; }
+
+  .progress-outer { margin: 1.75rem 0; }
+  .progress-track {
+    width: 100%;
+    height: 3px;
+    background: rgba(0,255,65,0.12);
+    position: relative;
+    border: 1px solid rgba(0,255,65,0.15);
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #00ff41;
+    box-shadow: var(--glow-g);
+    width: 30%;
+    position: relative;
+    transition: width 0.1s;
+  }
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 9px; height: 9px;
+    background: var(--green);
+    box-shadow: var(--glow-g);
+  }
+
+  .progress-rng {
+    -webkit-appearance: none;
+    width: 100%; height: 3px;
+    background: rgba(0,255,65,0.12);
+    border: 1px solid rgba(0,255,65,0.2);
+    outline: none;
+    cursor: pointer;
+    --pct: 30%;
+    background: linear-gradient(to right, #00ff41 var(--pct), rgba(0,255,65,0.12) var(--pct));
+  }
+  .progress-rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 10px;
+    background: #00ff41;
+    box-shadow: var(--glow-g);
+    cursor: pointer;
+  }
+  .progress-rng::-moz-range-thumb {
+    width: 10px; height: 10px;
+    border: none;
+    background: #00ff41;
+    box-shadow: var(--glow-g);
+    cursor: pointer;
+  }
+  .progress-times {
+    display: flex; justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  .ptime {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    color: var(--t3);
+    letter-spacing: 0.1em;
+  }
+
+  .slider-list { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(0,255,65,0.08); }
+  .slider-item { display: flex; align-items: center; gap: 1rem; }
+  .sl-lbl {
+    font-family: var(--f);
+    font-size: 0.625rem;
+    color: var(--t2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    min-width: 5rem;
+  }
+  .sl-val {
+    font-family: var(--f);
+    font-size: 0.625rem;
+    color: var(--green);
+    text-shadow: var(--glow-g);
+    min-width: 2.5rem;
+    text-align: right;
+    letter-spacing: 0.08em;
+  }
+
+  .rng {
+    -webkit-appearance: none;
+    flex: 1; height: 3px;
+    background: rgba(0,255,65,0.12);
+    border: 1px solid rgba(0,255,65,0.2);
+    outline: none;
+    cursor: pointer;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    background: var(--green);
+    box-shadow: var(--glow-g);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .rng::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .rng::-moz-range-thumb {
+    width: 12px; height: 12px;
+    border: none;
+    background: var(--green);
+    box-shadow: var(--glow-g);
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAV BAR
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: var(--s1);
+    border: 1px solid rgba(0,255,65,0.15);
+    overflow: hidden;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+
+  .nd-screen { padding: 1.5rem 1.5rem 0; }
+  .nd-title  {
+    font-family: var(--f-disp);
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--green);
+    text-shadow: var(--glow-g);
+    margin-bottom: 0.15rem;
+  }
+  .nd-sub    {
+    font-family: var(--f);
+    font-size: 0.625rem;
+    color: var(--t3);
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .nd-search {
+    background: rgba(0,255,65,0.03);
+    border: 1px solid rgba(0,255,65,0.15);
+    padding: 0.5rem 0.875rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    color: var(--t3);
+    font-family: var(--f);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+  }
+
+  .nd-items { display: flex; flex-direction: column; gap: 1px; margin-bottom: 1.25rem; }
+  .nd-item {
+    background: rgba(0,255,65,0.02);
+    border: 1px solid rgba(0,255,65,0.08);
+    padding: 0.75rem 0.875rem;
+    display: flex; align-items: center; gap: 0.875rem;
+  }
+  .nd-ico {
+    width: 32px; height: 32px; flex-shrink: 0;
+    background: transparent;
+    border: 1px solid rgba(0,255,65,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.875rem;
+  }
+  .nd-item-title {
+    font-family: var(--f);
+    font-size: 0.75rem;
+    color: var(--t1);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .nd-item-sub   {
+    font-family: var(--f);
+    font-size: 0.5625rem;
+    color: var(--t3);
+    letter-spacing: 0.06em;
+  }
+
+  .acid-navbar {
+    background: rgba(0,0,0,0.95);
+    border-top: 1px solid rgba(0,255,65,0.2);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 0 0.5rem;
+    height: 56px;
+  }
+
+  .ni {
+    display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--f); padding: 0 0.5rem; flex: 1;
+    height: 100%;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .ni:not(.ni-on):hover { background: rgba(0,255,65,0.03); }
+  .ni-on { background: rgba(0,255,65,0.06); }
+
+  .ni-wrap {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .ni-lbl {
+    font-family: var(--f);
+    font-size: 0.4375rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t3);
+    transition: color 0.15s, text-shadow 0.15s;
+  }
+  .ni-on .ni-lbl {
+    color: var(--green);
+    text-shadow: var(--glow-g);
+  }
+  .ni-badge {
+    position: absolute;
+    top: -1px; right: -1px;
+    width: 6px; height: 6px;
+    background: var(--red);
+    box-shadow: 0 0 6px var(--red), 0 0 12px rgba(255,0,0,0.5);
+  }
+  .ni-ico-wrap { position: relative; }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .tr { grid-template-columns: 72px 1fr; gap: 0.75rem; padding: 0.875rem 1.25rem; }
+    .ts-disp { font-size: 2rem; }
+    .ts-h1 { font-size: 1.5rem; }
+    .hero-h1 { font-size: 3rem; }
+    .player-top { grid-template-columns: auto 1fr; }
+    .pc-row { grid-column: 1 / -1; margin-top: 0.75rem; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 2.5L4.5 7 9 11.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Gallery
+  </a>
+  <span class="tnav-title">Acid Graphics</span>
+  <a class="tnav-dl" href="style-guide.md" download="acid-graphics-style-guide.md">
+    <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 2v7.5M4.5 7l2.5 2.5 2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress squares ─────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"     aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"       aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"   aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"      aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Form Inputs"  aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"        aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"     aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"   aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ──────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <div class="hero-kicker"><span class="hero-kicker-dot"></span>Psychedelic · Rave Culture</div>
+    <h1 class="hero-h1">Acid<br>Graphics</h1>
+    <p class="hero-desc">Maximum sensory overload. Neon on black. Every element is a signal of light against darkness — borders that glow, text that burns, controls that feel like live circuitry. There is no softness here.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Share Tech Mono · monospace</span>
+      <span class="hero-tag">Neon-on-black</span>
+      <span class="hero-tag">Maximum saturation</span>
+      <span class="hero-tag">Glitch aesthetics</span>
+    </div>
+    <div class="hero-widget">
+      <div class="hero-terminal">
+        <div class="ht-header">
+          <span class="ht-dot"></span>
+          <span class="ht-title">SYS // STATUS</span>
+        </div>
+        <div class="ht-line"><span class="hl">CONNECTED</span> 127.0.0.1</div>
+        <div class="ht-line">UPTIME <span class="hl">99.97%</span></div>
+        <div class="ht-line">FREQ <span class="hm">303.0 Hz</span></div>
+        <div class="ht-line">PWR <span class="hy">████████░░ 82%</span></div>
+        <div class="ht-line">_<span class="ht-cursor"></span></div>
+      </div>
+      <div class="hero-terminal">
+        <div class="ht-header">
+          <span class="ht-dot" style="background:var(--magenta);box-shadow:var(--glow-m)"></span>
+          <span class="ht-title">SIGNAL // TRACE</span>
+        </div>
+        <div class="ht-line">ACID <span class="hm">██████████</span> 100</div>
+        <div class="ht-line">BASS <span class="hl">████████░░</span> 80</div>
+        <div class="ht-line">HI   <span class="hy">██████░░░░</span> 60</div>
+        <div class="ht-line">MID  <span class="hl">█████░░░░░</span> 50</div>
+        <div class="ht-line">GAIN <span class="hm">+12.4 dB</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ──────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">01</span>
+      <h2 class="sec-title" id="colors-h">Color Palette</h2>
+      <span class="sec-ghost" aria-hidden="true">01</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">◈</span>
+      <p class="spec-callout-text">Acid uses exactly <strong>4 colors: matrix green, magenta, yellow, and black.</strong> Every color glows. If it doesn't glow, it doesn't exist. Cyan and red are available as signal colors. White is used rarely — only for maximum contrast moments.</p>
+    </div>
+    <div class="palette-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#000000">
+          <div class="swatch-glow-demo" style="color:rgba(0,255,65,0.15);font-size:0.5rem;letter-spacing:0.1em">VOID</div>
+        </div>
+        <div class="swatch-body"><span class="swatch-hex" style="color:var(--t2)">#000000</span><span class="swatch-name">--bg · void</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#080808">
+          <div class="swatch-glow-demo" style="color:rgba(0,255,65,0.2);font-size:0.5rem;letter-spacing:0.1em">NEAR</div>
+        </div>
+        <div class="swatch-body"><span class="swatch-hex" style="color:var(--t2)">#080808</span><span class="swatch-name">--s1 · near-black</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#000;display:flex;align-items:center;justify-content:center">
+          <span style="color:#00ff41;text-shadow:0 0 8px #00ff41,0 0 20px rgba(0,255,65,0.5),0 0 40px rgba(0,255,65,0.3);font-family:var(--f);font-size:1.25rem;letter-spacing:0.1em">GLOW</span>
+        </div>
+        <div class="swatch-body"><span class="swatch-hex" style="color:#00ff41;text-shadow:0 0 6px rgba(0,255,65,0.6)">#00FF41</span><span class="swatch-name">--green · matrix</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#000;display:flex;align-items:center;justify-content:center">
+          <span style="color:#ff00ff;text-shadow:0 0 8px #ff00ff,0 0 20px rgba(255,0,255,0.5),0 0 40px rgba(255,0,255,0.3);font-family:var(--f);font-size:1.25rem;letter-spacing:0.1em">GLOW</span>
+        </div>
+        <div class="swatch-body"><span class="swatch-hex" style="color:#ff00ff;text-shadow:0 0 6px rgba(255,0,255,0.6)">#FF00FF</span><span class="swatch-name">--magenta · rave</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#000;display:flex;align-items:center;justify-content:center">
+          <span style="color:#ffff00;text-shadow:0 0 8px #ffff00,0 0 20px rgba(255,255,0,0.5),0 0 40px rgba(255,255,0,0.3);font-family:var(--f);font-size:1.25rem;letter-spacing:0.1em">GLOW</span>
+        </div>
+        <div class="swatch-body"><span class="swatch-hex" style="color:#ffff00;text-shadow:0 0 6px rgba(255,255,0,0.6)">#FFFF00</span><span class="swatch-name">--yellow · caution</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#000;display:flex;align-items:center;justify-content:center">
+          <span style="color:#00ffff;text-shadow:0 0 8px #00ffff,0 0 20px rgba(0,255,255,0.5);font-family:var(--f);font-size:1.25rem;letter-spacing:0.1em">GLOW</span>
+        </div>
+        <div class="swatch-body"><span class="swatch-hex" style="color:#00ffff;text-shadow:0 0 6px rgba(0,255,255,0.6)">#00FFFF</span><span class="swatch-name">--cyan · signal</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#000;display:flex;align-items:center;justify-content:center">
+          <span style="color:#ff0000;text-shadow:0 0 8px #ff0000,0 0 20px rgba(255,0,0,0.5);font-family:var(--f);font-size:1.25rem;letter-spacing:0.1em">GLOW</span>
+        </div>
+        <div class="swatch-body"><span class="swatch-hex" style="color:#ff0000;text-shadow:0 0 6px rgba(255,0,0,0.6)">#FF0000</span><span class="swatch-name">--red · alarm</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#000;display:flex;align-items:center;justify-content:center">
+          <span style="color:#ffffff;text-shadow:0 0 8px #fff,0 0 20px rgba(255,255,255,0.4);font-family:var(--f);font-size:1.25rem;letter-spacing:0.1em">RARE</span>
+        </div>
+        <div class="swatch-body"><span class="swatch-hex" style="color:rgba(255,255,255,0.7)">#FFFFFF</span><span class="swatch-name">--white · rare</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ──────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">02</span>
+      <h2 class="sec-title" id="type-h">Typography Scale</h2>
+      <span class="sec-ghost" aria-hidden="true">02</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">▶</span>
+      <p class="spec-callout-text">Two faces: <strong>Impact</strong> for display — maximum visual weight, minimum space. <strong>Share Tech Mono</strong> for body — every character is a data point. Never use a serif. Never use a rounded sans. The letterform is a machine component.</p>
+    </div>
+    <div class="typescale">
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">Display</span><span class="tr-spec">Impact<br>48px / 900<br>+0.04em UC</span></div>
+        <div class="ts-disp">ACID</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">H1</span><span class="tr-spec">Impact<br>36px / 900<br>+0.04em UC</span></div>
+        <div class="ts-h1">System Override</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">H2</span><span class="tr-spec">Impact<br>28px / 900<br>+0.04em UC</span></div>
+        <div class="ts-h2">Neural Link</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">H3</span><span class="tr-spec">Impact<br>22px / 900<br>+0.04em UC</span></div>
+        <div class="ts-h3">Data Stream</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">Body Lg</span><span class="tr-spec">Mono<br>16px<br>lh 1.7</span></div>
+        <div class="ts-lg">The quick brown fox jumps over the lazy dog</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">Body</span><span class="tr-spec">Mono<br>15px<br>lh 1.65</span></div>
+        <div class="ts-base">The quick brown fox jumps over the lazy dog</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">Body Sm</span><span class="tr-spec">Mono<br>13px<br>lh 1.6</span></div>
+        <div class="ts-sm">The quick brown fox jumps over the lazy dog</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-lbl">Label</span><span class="tr-spec">Mono<br>10px<br>+0.2em UC</span></div>
+        <div class="ts-cap">System label · metadata · status code</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ─────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">03</span>
+      <h2 class="sec-title" id="btn-h">Buttons</h2>
+      <span class="sec-ghost" aria-hidden="true">03</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">⚡</span>
+      <p class="spec-callout-text">Acid buttons glow. <strong>The border is a filament of light.</strong> Hover charges the glow. Colors signal function: <strong>green = execute</strong>, <strong>magenta = warning</strong>, <strong>yellow = attention</strong>. No fill at rest — the button is an outline waiting to be activated.</p>
+    </div>
+    <div class="btn-states">
+      <div>
+        <p class="state-row-label">Green · Execute</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-p">Execute</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-p-hover" tabindex="-1" aria-hidden="true">Execute</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-p state-p-active" tabindex="-1" aria-hidden="true">Execute</button><span class="state-lbl">Pressed</span></div>
+          <div class="state-wrap"><button class="btn btn-p" disabled>Execute</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Magenta · Warning</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-m">Override</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-m" style="background:rgba(255,0,255,0.12);box-shadow:0 0 16px #ff00ff,0 0 32px rgba(255,0,255,0.4)" tabindex="-1" aria-hidden="true">Override</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-m" disabled>Override</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="state-row-label">Yellow · Attention</p>
+        <div class="state-row">
+          <div class="state-wrap"><button class="btn btn-y">Caution</button><span class="state-lbl">Default</span></div>
+          <div class="state-wrap"><button class="btn btn-y" style="background:rgba(255,255,0,0.1);box-shadow:0 0 16px #ffff00,0 0 32px rgba(255,255,0,0.4)" tabindex="-1" aria-hidden="true">Caution</button><span class="state-lbl">Hover ↑</span></div>
+          <div class="state-wrap"><button class="btn btn-y" disabled>Caution</button><span class="state-lbl">Disabled</span></div>
+        </div>
+      </div>
+      <div class="btn-variants">
+        <button class="btn btn-p">Run Scan</button>
+        <button class="btn btn-m">Override</button>
+        <button class="btn btn-y">Alert</button>
+        <button class="btn btn-p btn-inject">Inject</button>
+        <button class="btn" style="border-color:rgba(0,255,255,0.4);color:#00ffff;box-shadow:0 0 8px #00ffff,0 0 20px rgba(0,255,255,0.5);text-shadow:0 0 8px #00ffff">Ping</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ─────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">04</span>
+      <h2 class="sec-title" id="inputs-h">Form Inputs</h2>
+      <span class="sec-ghost" aria-hidden="true">04</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">⊞</span>
+      <p class="spec-callout-text">Input terminal: dark panel, glowing cursor, green text. <strong>The form is a data entry terminal.</strong> Labels are system codes — uppercase, sparse, monospace. Focus activates the border glow. Every field is an open channel.</p>
+    </div>
+    <div class="form-panel">
+      <div class="form-title">Access Terminal</div>
+      <p class="form-sub">// Authenticate to proceed. All input logged. Connection encrypted.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="fi-name">// Operator ID</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="text" id="fi-name" placeholder="GHOST_01" autocomplete="name">
+            <svg class="inp-ico" width="13" height="13" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="5" r="2.75" stroke="#00ff41" stroke-width="1.3"/><path d="M2.5 13c0-2.76 2.24-4.5 5-4.5s5 1.74 5 4.5" stroke="#00ff41" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-email">// Node Address</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="email" id="fi-email" placeholder="node@grid.net" autocomplete="email">
+            <svg class="inp-ico" width="13" height="13" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="3.5" width="12" height="8" rx="0" stroke="#00ff41" stroke-width="1.3"/><path d="M1.5 5.5l6 4 6-4" stroke="#00ff41" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-role">// Access Level</label>
+          <select class="inp sel" id="fi-role">
+            <option value="">Select level…</option>
+            <option>ROOT</option>
+            <option>ADMIN</option>
+            <option>OPERATOR</option>
+            <option>GUEST</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fi-pass">// Auth Key</label>
+          <div class="inp-wrap">
+            <input class="inp has-ico" type="password" id="fi-pass" placeholder="••••••••••••">
+            <svg class="inp-ico" width="13" height="13" viewBox="0 0 15 15" fill="none"><rect x="3.5" y="6.5" width="8" height="6.5" rx="0" stroke="#00ff41" stroke-width="1.3"/><path d="M5.5 6.5V4.5a2 2 0 0 1 4 0v2" stroke="#00ff41" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <label class="label" for="fi-bio">// Operator Notes</label>
+          <textarea class="inp ta" id="fi-bio" placeholder="// Enter mission parameters…" rows="3"></textarea>
+          <span class="hint">Max 280 chars. Encrypted and logged to mainframe.</span>
+        </div>
+        <div class="field">
+          <span class="label" id="chk-lbl">// Modules</span>
+          <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><svg class="chk-mark" width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="#00ff41" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Neural Link</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox"><span class="chk-box"><svg class="chk-mark" width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="#00ff41" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Signal Trace</span></label>
+            <label class="chk-row"><input class="chk-in" type="checkbox" checked><span class="chk-box"><svg class="chk-mark" width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="#00ff41" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="chk-txt">Acid Injector</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="rad-lbl">// Protocol</span>
+          <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+            <label class="chk-row"><input class="chk-in" type="radio" name="proto" value="a"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">TB-303 Mode</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="proto" value="b" checked><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">TR-808 Mode</span></label>
+            <label class="chk-row"><input class="chk-in" type="radio" name="proto" value="c"><span class="rad-box"><span class="rad-dot"></span></span><span class="chk-txt">TR-909 Mode</span></label>
+          </div>
+        </div>
+        <div class="field fg-full">
+          <span class="label">// System Toggles</span>
+          <div class="tgl-rows" style="margin-top:0.5rem">
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Acid Loop</div><div class="tgl-desc">// Continuous recursive signal injection</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Acid Loop"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Glitch Layer</div><div class="tgl-desc">// Apply chromatic aberration to output</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" aria-label="Glitch Layer"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+            <div class="tgl-row">
+              <div class="tgl-info"><div class="tgl-title">Glow Amplifier</div><div class="tgl-desc">// Boost neon output by 2x</div></div>
+              <label class="tgl"><input class="tgl-in" type="checkbox" role="switch" checked aria-label="Glow Amplifier"><span class="tgl-track"><span class="tgl-thumb"></span></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ───────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">05</span>
+      <h2 class="sec-title" id="cards-h">Cards</h2>
+      <span class="sec-ghost" aria-hidden="true">05</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">▣</span>
+      <p class="spec-callout-text">Cards are <strong>system panels displaying data.</strong> Green text on near-black. Borders glow at low intensity at rest, full intensity on hover. The thumbnail is a dark field with a neon symbol — there are no decorative images in acid graphics.</p>
+    </div>
+    <div class="cards-row">
+      <article class="card-neu">
+        <div class="card-thumb">
+          <pre class="card-thumb-ascii">┌──────────────┐
+│  ▓▒░  ░▒▓   │
+│ ░ 303 ░ ░ ░ │
+│  ░▒▓▒░░▒▓░  │
+└──────────────┘</pre>
+        </div>
+        <div class="card-in">
+          <p class="card-eye">// System.log</p>
+          <h3 class="card-h">TB-303 Signal</h3>
+          <p class="card-body-text">Resonant filter sweep at 303 Hz. Acid baseline loop active. Cutoff at 80%, emphasis at max.</p>
+          <div class="card-ft">
+            <span class="card-stat">FREQ 303.0 Hz</span>
+            <button class="card-act">Load →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-neu ct-m">
+        <div class="card-thumb" style="border-bottom-color:rgba(255,0,255,0.15)">
+          <span class="card-thumb-sym" style="color:var(--magenta);text-shadow:var(--glow-m)">◈</span>
+        </div>
+        <div class="card-in">
+          <p class="card-eye" style="color:rgba(255,0,255,0.5)">// Warning.sys</p>
+          <h3 class="card-h" style="color:var(--magenta);text-shadow:var(--glow-m)">Override Protocol</h3>
+          <p class="card-body-text">System override requested. Mainframe integrity check pending. Authorization token required.</p>
+          <div class="card-ft" style="border-top-color:rgba(255,0,255,0.15)">
+            <span class="card-stat" style="color:rgba(255,0,255,0.4)">STATUS ALERT</span>
+            <button class="card-act" style="border-color:rgba(255,0,255,0.4);color:var(--magenta);text-shadow:var(--glow-m)">Auth →</button>
+          </div>
+        </div>
+      </article>
+      <article class="card-neu ct-y">
+        <div class="card-thumb" style="border-bottom-color:rgba(255,255,0,0.15)">
+          <span class="card-thumb-sym" style="color:var(--yellow);text-shadow:var(--glow-y)">▲</span>
+        </div>
+        <div class="card-in">
+          <p class="card-eye" style="color:rgba(255,255,0,0.5)">// Caution.log</p>
+          <h3 class="card-h" style="color:var(--yellow);text-shadow:var(--glow-y)">Power Surge</h3>
+          <p class="card-body-text">Voltage spike detected at node 7. Capacitors at 94%. Recommend immediate discharge cycle.</p>
+          <div class="card-ft" style="border-top-color:rgba(255,255,0,0.15)">
+            <span class="card-stat" style="color:rgba(255,255,0,0.4)">94% CAPACITY</span>
+            <button class="card-act" style="border-color:rgba(255,255,0,0.4);color:var(--yellow);text-shadow:var(--glow-y)">Fix →</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ────────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">06</span>
+      <h2 class="sec-title" id="ctrl-h">Controls · Sliders</h2>
+      <span class="sec-ghost" aria-hidden="true">06</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">◎</span>
+      <p class="spec-callout-text">The player is a <strong>data console.</strong> Progress is a scanning line of light. Volume is a power level readout. The slider thumb is a square — sharp, mechanical, precise. There are no circles here.</p>
+    </div>
+    <div class="player">
+      <div class="player-top">
+        <div class="player-art">ACID<br>TRACK<br>001</div>
+        <div>
+          <div class="player-title">Acid Rain · TB-303</div>
+          <div class="player-artist">// Chicago House · 1987</div>
+        </div>
+        <div class="pc-row">
+          <button class="pc-btn pc-sm" aria-label="Shuffle">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M2 5h3l8 8h3M14 5h2v2M14 13h2v-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13h3l2.5-2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Previous">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M13.5 4.5L7 9l6.5 4.5V4.5ZM4.5 4.5v9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="pc-btn pc-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+            <svg class="play-ico" width="20" height="20" viewBox="0 0 22 22" fill="none"><path d="M7 4.5l11 6.5L7 17.5V4.5Z" fill="currentColor"/></svg>
+            <svg class="pause-ico" width="20" height="20" viewBox="0 0 22 22" fill="none" style="display:none"><path d="M7 4h3v14H7V4ZM13 4h3v14h-3V4Z" fill="currentColor"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Next">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M4.5 4.5L11 9l-6.5 4.5V4.5ZM13.5 4.5v9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="pc-btn pc-sm" aria-label="Repeat">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M2 12V7a4 4 0 0 1 4-4h8M14 6l2-3-2-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 6v5a4 4 0 0 1-4 4H4M6 12l-2 3 2 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-outer">
+        <input class="progress-rng" type="range" id="progress" min="0" max="222" value="67" aria-label="Track progress">
+        <div class="progress-times">
+          <span class="ptime" id="curr-time">1:07</span>
+          <span class="ptime">3:42</span>
+        </div>
+      </div>
+
+      <div class="slider-list">
+        <div class="slider-item">
+          <span class="sl-lbl">// Level</span>
+          <input class="rng" type="range" id="vol" min="0" max="100" value="68" aria-label="Volume">
+          <span class="sl-val" id="vol-v">068</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">// Cutoff</span>
+          <input class="rng" type="range" id="bright" min="0" max="100" value="45" aria-label="Filter cutoff">
+          <span class="sl-val" id="bright-v">045</span>
+        </div>
+        <div class="slider-item">
+          <span class="sl-lbl">// Balance</span>
+          <input class="rng" type="range" id="bal" min="-50" max="50" value="0" aria-label="Left-right balance">
+          <span class="sl-val" id="bal-v">CTR</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ──────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">07</span>
+      <h2 class="sec-title" id="nav-h">Navigation Bar</h2>
+      <span class="sec-ghost" aria-hidden="true">07</span>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">◻</span>
+      <p class="spec-callout-text">Navigation tabs are <strong>system selectors.</strong> Active tab activates — border glows, text glows, background charges with a green tint. Inactive: dark, minimal, waiting. The transition is a switch thrown on a circuit board.</p>
+    </div>
+    <div class="navdemo">
+      <div class="nd-screen">
+        <div class="nd-title">Grid Online</div>
+        <div class="nd-sub">// 2026.05.12 · SYS READY</div>
+        <div class="nd-search">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="#00ff41" stroke-width="1.4"/><path d="M9.5 9.5L12 12" stroke="#00ff41" stroke-width="1.4" stroke-linecap="round"/></svg>
+          Search the grid…
+        </div>
+        <div class="nd-items">
+          <div class="nd-item"><div class="nd-ico">▶</div><div><div class="nd-item-title">Acid Rain</div><div class="nd-item-sub">// Now playing · 1:07 / 3:42</div></div></div>
+          <div class="nd-item"><div class="nd-ico">▣</div><div><div class="nd-item-title">System Tasks</div><div class="nd-item-sub">// 5 pending · 3 complete</div></div></div>
+          <div class="nd-item"><div class="nd-ico">◈</div><div><div class="nd-item-title">Node Status</div><div class="nd-item-sub">// 99.97% uptime · all green</div></div></div>
+        </div>
+      </div>
+      <nav class="acid-navbar" aria-label="App navigation">
+        <button class="ni ni-on" aria-label="Home" aria-current="page">
+          <div class="ni-wrap">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+              <path d="M3 8.5 10 3l7 5.5V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5Z" stroke="#00ff41" stroke-width="1.5" fill="rgba(0,255,65,0.1)" style="filter:drop-shadow(0 0 4px #00ff41)"/>
+            </svg>
+          </div>
+          <span class="ni-lbl">Home</span>
+        </button>
+        <button class="ni" aria-label="Search">
+          <div class="ni-wrap">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="5.5" stroke="rgba(0,255,65,0.35)" stroke-width="1.5"/><path d="M13 13l3.5 3.5" stroke="rgba(0,255,65,0.35)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="ni-lbl">Search</span>
+        </button>
+        <button class="ni" aria-label="Inject">
+          <div class="ni-wrap">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+              <rect x="9" y="2" width="2" height="16" fill="rgba(0,255,65,0.35)" rx="0"/>
+              <rect x="2" y="9" width="16" height="2" fill="rgba(0,255,65,0.35)" rx="0"/>
+            </svg>
+          </div>
+          <span class="ni-lbl">Inject</span>
+        </button>
+        <button class="ni" aria-label="Alerts, 3 unread">
+          <div class="ni-wrap">
+            <div class="ni-ico-wrap">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 0 0-6 6v3.5L2.5 14h15L16 11.5V8a6 6 0 0 0-6-6Z" stroke="rgba(0,255,65,0.35)" stroke-width="1.5"/><path d="M8.5 17.5a1.5 1.5 0 0 0 3 0" stroke="rgba(0,255,65,0.35)" stroke-width="1.5"/></svg>
+              <span class="ni-badge"></span>
+            </div>
+          </div>
+          <span class="ni-lbl">Alerts</span>
+        </button>
+        <button class="ni" aria-label="Profile">
+          <div class="ni-wrap">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3.5" stroke="rgba(0,255,65,0.35)" stroke-width="1.5"/><path d="M4 18c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" stroke="rgba(0,255,65,0.35)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="ni-lbl">Profile</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Update range fill ─────────────────── */
+function updateRangeFill(el) {
+  const min = parseInt(el.min) || 0;
+  const max = parseInt(el.max) || 100;
+  const val = parseInt(el.value);
+  const pct = ((val - min) / (max - min)) * 100;
+  el.style.background = `linear-gradient(to right, #00ff41 ${pct}%, rgba(0,255,65,0.12) ${pct}%)`;
+}
+
+/* ── Sliders ──────────────────────────── */
+const vol = document.getElementById('vol');
+const bright = document.getElementById('bright');
+const bal = document.getElementById('bal');
+const progress = document.getElementById('progress');
+
+[vol, bright, bal, progress].forEach(updateRangeFill);
+
+vol.addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = String(parseInt(e.target.value)).padStart(3, '0');
+  updateRangeFill(e.target);
+});
+bright.addEventListener('input', e => {
+  document.getElementById('bright-v').textContent = String(parseInt(e.target.value)).padStart(3, '0');
+  updateRangeFill(e.target);
+});
+bal.addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  document.getElementById('bal-v').textContent = v < -5 ? 'L' + String(Math.abs(v)).padStart(2,'0') : v > 5 ? 'R' + String(v).padStart(2,'0') : 'CTR';
+  updateRangeFill(e.target);
+});
+progress.addEventListener('input', e => {
+  const s = parseInt(e.target.value);
+  document.getElementById('curr-time').textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  updateRangeFill(e.target);
+});
+
+/* ── Play/pause ───────────────────────── */
+const playBtn = document.getElementById('play-btn');
+playBtn.addEventListener('click', () => {
+  const p = playBtn.getAttribute('aria-pressed') === 'true';
+  playBtn.setAttribute('aria-pressed', String(!p));
+  playBtn.querySelector('.play-ico').style.display  = !p ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = !p ? '' : 'none';
+});
+
+/* ── Bottom nav ───────────────────────── */
+document.querySelectorAll('.ni').forEach(ni => {
+  ni.addEventListener('click', () => {
+    document.querySelectorAll('.ni').forEach(n => {
+      n.classList.remove('ni-on');
+      n.removeAttribute('aria-current');
+    });
+    ni.classList.add('ni-on');
+    ni.setAttribute('aria-current', 'page');
+    /* Swap SVG stroke to active */
+    ni.querySelectorAll('svg path, svg circle, svg rect').forEach(el => {
+      if (!el.closest('.ni-badge')) {
+        el.style.stroke = ni === ni ? '#00ff41' : 'rgba(0,255,65,0.35)';
+      }
+    });
+  });
+});
+
+/* ── Scroll reveal ────────────────────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secKey = sections[entry.target.id];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot navigation ─────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

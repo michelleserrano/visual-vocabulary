@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classic Mac · UI Styles</title>
+  <!-- Chicago/Geneva/Charcoal are system fonts — no import needed. Monospace fallback to screen-appropriate fonts. -->
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --bg:        #d4d4d4;  /* Classic System gray */
+    --bg-white:  #ffffff;
+    --bg-dark:   #555555;
+    --bg-darker: #333333;
+    --t1:        #000000;
+    --t2:        #333333;
+    --t3:        #666666;
+    --t-inv:     #ffffff;
+    --r:         0px;
+    --r-dialog:  4px;
+    --f:         'Chicago', 'Charcoal', Geneva, Helvetica, system-ui, monospace;
+    --f-sm:      Geneva, 'Helvetica Neue', Helvetica, system-ui, sans-serif;
+    /* Bevel box-shadow recipes */
+    --bevel-btn:      inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #888, inset 2px 2px #e0e0e0;
+    --bevel-btn-down: inset 1px 1px #000, inset -1px -1px #fff, inset 2px 2px #888, inset -2px -2px #e0e0e0;
+    --bevel-panel:    inset -1px -1px #888, inset 1px 1px #fff;
+    --ease:      steps(1);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--f);
+    background: var(--bg);
+    color: var(--t1);
+    -webkit-font-smoothing: none;
+  }
+
+  :focus-visible {
+    outline: 1px dotted #000;
+    outline-offset: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     MAC MENU BAR (sticky nav)
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-white);
+    border-bottom: 1px solid #000;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    gap: 0;
+    font-family: var(--f-sm);
+    font-size: 12px;
+    font-weight: bold;
+    user-select: none;
+  }
+
+  .menubar-apple {
+    font-size: 14px;
+    margin-right: 10px;
+    cursor: default;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .menubar-sep { flex: 1; }
+
+  .menubar-item {
+    padding: 0 8px;
+    cursor: default;
+    white-space: nowrap;
+    height: 20px;
+    display: flex;
+    align-items: center;
+  }
+  .menubar-item:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  .tnav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+    padding: 0 8px;
+    height: 14px;
+    border: 1px solid #000;
+    box-shadow: var(--bevel-btn);
+    background: var(--bg);
+    font-family: var(--f-sm);
+    margin-right: 4px;
+    flex-shrink: 0;
+  }
+  .tnav-back:active { box-shadow: var(--bevel-btn-down); }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    height: 14px;
+    background: var(--bg);
+    box-shadow: var(--bevel-btn);
+    border: 1px solid #000;
+    font-family: var(--f-sm);
+    font-size: 11px;
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .tnav-dl:active { box-shadow: var(--bevel-btn-down); }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS — Mac radio button style
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .prog-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bg-white);
+    border: 1px solid #555;
+    cursor: pointer;
+    padding: 0;
+    transition: none;
+  }
+  .prog-dot:hover   { background: #bbb; }
+  .prog-dot.active  { background: #000; border-color: #000; }
+  .prog-dot:focus-visible { outline: 1px dotted #000; outline-offset: 2px; }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  .sec {
+    margin-top: 48px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.18s linear, transform 0.18s linear;
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  .sec-hd {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .sec-pill {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    color: #000;
+    background: var(--bg);
+    border: 1px solid #000;
+    box-shadow: var(--bevel-btn);
+    padding: 1px 5px;
+    font-family: var(--f-sm);
+  }
+
+  .sec-title {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--t2);
+    font-family: var(--f-sm);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── Spec callout ───────────────────── */
+  .spec-callout {
+    background: var(--bg);
+    border: 1px solid #888;
+    box-shadow: var(--bevel-panel);
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .spec-callout-ico {
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: var(--f-sm);
+  }
+  .spec-callout-text {
+    font-size: 11px;
+    line-height: 1.55;
+    color: var(--t2);
+    font-family: var(--f-sm);
+  }
+  .spec-callout-text strong {
+    font-weight: bold;
+    color: var(--t1);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10px;
+  }
+
+  /* ═══════════════════════════════════════
+     MAC WINDOW CHROME
+  ═══════════════════════════════════════ */
+  .mac-window {
+    border: 1px solid #000;
+    background: var(--bg-white);
+    box-shadow: 2px 2px 0 #888, 3px 3px 0 #555;
+  }
+
+  .mac-titlebar {
+    height: 20px;
+    background: linear-gradient(180deg, #fff 0%, #bbb 100%);
+    border-bottom: 1px solid #000;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Drag stripes behind the title */
+  .mac-titlebar::before {
+    content: '';
+    position: absolute;
+    left: 22px;
+    right: 4px;
+    top: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 1px,
+      rgba(0,0,0,0.12) 1px,
+      rgba(0,0,0,0.12) 2px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .mac-closebox {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #000;
+    background: var(--bg);
+    box-shadow: var(--bevel-btn);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 7px;
+    line-height: 1;
+    font-family: var(--f-sm);
+    position: relative;
+    z-index: 1;
+    color: transparent;
+  }
+  .mac-closebox:hover { color: #000; }
+  .mac-closebox:hover::after { content: '✕'; font-size: 7px; line-height: 1; }
+  .mac-closebox:active { box-shadow: var(--bevel-btn-down); }
+
+  .mac-title-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: bold;
+    font-family: var(--f-sm);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(180deg, #fff 0%, #bbb 100%);
+    padding: 0 6px;
+  }
+
+  .mac-content {
+    padding: 16px;
+    background: var(--bg-white);
+  }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero { padding-top: 28px; }
+
+  .hero-kicker {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #000;
+    border: 1px solid #888;
+    background: var(--bg);
+    padding: 2px 8px;
+    margin-bottom: 12px;
+    font-family: var(--f-sm);
+    box-shadow: var(--bevel-btn);
+  }
+
+  .hero-h1 {
+    font-size: clamp(40px, 8vw, 72px);
+    font-weight: bold;
+    color: var(--t1);
+    line-height: 0.95;
+    margin-bottom: 12px;
+    font-family: 'Chicago', 'Charcoal', Geneva, Helvetica, system-ui, monospace;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-desc {
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--t2);
+    max-width: 55ch;
+    margin-bottom: 16px;
+    font-family: var(--f-sm);
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .hero-tag {
+    background: var(--bg);
+    border: 1px solid #888;
+    box-shadow: var(--bevel-btn);
+    padding: 2px 8px;
+    font-size: 10px;
+    font-family: var(--f-sm);
+    color: var(--t2);
+  }
+
+  .hero-widget {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .hero-widget-card {
+    background: var(--bg);
+    border: 1px solid #888;
+    box-shadow: var(--bevel-btn);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 175px;
+  }
+  .hw-icon {
+    width: 32px; height: 32px;
+    background: var(--bg);
+    border: 1px solid #888;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    box-shadow: var(--bevel-btn);
+  }
+  .hw-title { font-size: 11px; font-weight: bold; color: var(--t1); font-family: var(--f-sm); margin-bottom: 1px; }
+  .hw-sub   { font-size: 10px; color: var(--t3); font-family: var(--f-sm); }
+
+  /* ═══════════════════════════════════════
+     01 · COLOR PALETTE
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+    gap: 8px;
+  }
+
+  .swatch {
+    border: 1px solid #888;
+    overflow: hidden;
+    background: var(--bg-white);
+    box-shadow: 1px 1px 0 #888;
+  }
+  .swatch-color { height: 52px; border-bottom: 1px solid #ccc; }
+  .swatch-body  { padding: 6px 7px; background: var(--bg); }
+  .swatch-hex   { font-size: 9px; font-weight: bold; color: var(--t1); display: block; margin-bottom: 1px; font-family: 'Courier New', Courier, monospace; }
+  .swatch-name  { font-size: 8px; color: var(--t3); font-family: var(--f-sm); }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    border: 1px solid #888;
+    background: var(--bg-white);
+    overflow: hidden;
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid #ddd;
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta { text-align: right; }
+  .tr-lbl  { font-size: 8px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; color: #555; display: block; margin-bottom: 2px; font-family: var(--f-sm); }
+  .tr-spec { font-size: 8px; color: var(--t3); line-height: 1.4; font-family: 'Courier New', Courier, monospace; }
+
+  .ts-72pt  { font-size: 72px; line-height: 1; font-family: var(--f); }
+  .ts-48pt  { font-size: 48px; line-height: 1.05; font-family: var(--f); }
+  .ts-36pt  { font-size: 36px; line-height: 1.1; font-family: var(--f); }
+  .ts-24pt  { font-size: 24px; font-family: var(--f); }
+  .ts-18pt  { font-size: 18px; font-family: var(--f-sm); }
+  .ts-14pt  { font-size: 14px; font-family: var(--f-sm); }
+  .ts-12pt  { font-size: 12px; font-family: var(--f-sm); }
+  .ts-10pt  { font-size: 10px; font-family: var(--f-sm); }
+  .ts-9pt   { font-size: 9px; font-family: var(--f-sm); }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: var(--bg);
+    border: 1px solid #000;
+    box-shadow: var(--bevel-btn);
+    padding: 4px 20px;
+    font-family: var(--f-sm);
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    white-space: nowrap;
+    min-width: 60px;
+    text-decoration: none;
+    transition: none;
+    line-height: 1.4;
+  }
+  .btn:active,
+  .btn.state-active { box-shadow: var(--bevel-btn-down) !important; }
+  .btn:disabled { color: #888; cursor: not-allowed; opacity: 0.6; }
+
+  /* Default button — double border */
+  .btn-default {
+    box-shadow: inset 0 0 0 2px #000, var(--bevel-btn);
+  }
+  .btn-default:active,
+  .btn-default.state-active { box-shadow: inset 0 0 0 2px #000, var(--bevel-btn-down) !important; }
+
+  /* Inverted / selected */
+  .btn-p {
+    background: #000;
+    color: #fff;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  .btn-p:active,
+  .btn-p.state-p-active { background: #555 !important; box-shadow: none !important; }
+
+  .btn-sm { padding: 2px 12px; font-size: 10px; min-width: 0; }
+
+  .state-hover   { background: #e8e8e8 !important; }
+  .state-p-hover { background: #222 !important; }
+
+  .btn-states { display: flex; flex-direction: column; gap: 20px; }
+  .state-row-label { font-size: 9px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; color: var(--t3); margin-bottom: 10px; font-family: var(--f-sm); }
+  .state-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+  .state-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .state-lbl  { font-size: 8px; font-weight: bold; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t3); font-family: var(--f-sm); }
+
+  .btn-variants {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    padding-top: 14px; margin-top: 14px;
+    border-top: 1px solid #ccc;
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORM INPUTS
+  ═══════════════════════════════════════ */
+  .form-title {
+    font-size: 12px; font-weight: bold; color: var(--t1); margin-bottom: 3px;
+    font-family: var(--f-sm);
+  }
+  .form-sub {
+    font-size: 10px; color: var(--t3); margin-bottom: 14px; line-height: 1.5;
+    font-family: var(--f-sm);
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fg-full   { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 3px; }
+  .label { font-size: 11px; font-weight: bold; color: var(--t1); font-family: var(--f-sm); }
+  .hint  { font-size: 9px; color: var(--t3); margin-top: 2px; font-family: var(--f-sm); }
+
+  .inp {
+    background: var(--bg-white);
+    box-shadow: inset 1px 1px #888, inset -1px -1px #e0e0e0;
+    border: 1px solid #000;
+    border-radius: 0;
+    padding: 4px 6px;
+    font-family: var(--f-sm);
+    font-size: 12px;
+    color: #000;
+    outline: none;
+    width: 100%;
+    transition: none;
+  }
+  .inp::placeholder { color: #aaa; }
+  .inp:focus { outline: 2px solid #000; outline-offset: 1px; }
+
+  .sel {
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6'%3E%3Cpath d='M0 0h9L4.5 6z' fill='%23000'/%3E%3C/svg%3E") no-repeat right 6px center;
+    box-shadow: var(--bevel-btn);
+    border: 1px solid #000;
+    border-radius: 0;
+    padding: 4px 22px 4px 6px;
+    font-family: var(--f-sm);
+    font-size: 12px;
+    color: #000;
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+  }
+  .sel:focus { outline: 2px solid #000; outline-offset: 1px; }
+
+  .ta { resize: vertical; min-height: 72px; line-height: 1.45; }
+
+  /* Mac Checkbox — square, ✓ when checked */
+  .chk-group { display: flex; flex-direction: column; gap: 8px; }
+  .chk-row {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; user-select: none;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 14px; height: 14px; flex-shrink: 0;
+    background: var(--bg-white);
+    border: 1px solid #555;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; line-height: 1; font-weight: bold;
+    color: #000;
+  }
+  .chk-mark { display: none; }
+  .chk-in:checked + .chk-box .chk-mark { display: block; }
+  .chk-in:focus-visible + .chk-box { outline: 1px dotted #000; outline-offset: 1px; }
+  .chk-txt { font-size: 11px; color: #000; font-family: var(--f-sm); }
+
+  /* Mac Radio — circle with dot */
+  .rad-box {
+    width: 14px; height: 14px; flex-shrink: 0;
+    background: var(--bg-white);
+    border: 1px solid #555;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .rad-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #000;
+    display: none;
+  }
+  .chk-in:checked + .rad-box .rad-dot { display: block; }
+  .chk-in:focus-visible + .rad-box { outline: 1px dotted #000; outline-offset: 1px; }
+
+  /* Mac Toggle — horizontal on/off switch */
+  .tgl-rows { display: flex; flex-direction: column; }
+  .tgl-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0; gap: 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title { font-size: 11px; font-weight: bold; color: #000; font-family: var(--f-sm); }
+  .tgl-desc  { font-size: 9px; color: var(--t3); margin-top: 1px; font-family: var(--f-sm); }
+
+  .tgl { flex-shrink: 0; cursor: pointer; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+
+  .tgl-track {
+    display: flex;
+    width: 52px; height: 16px;
+    border: 1px solid #000;
+    background: var(--bg);
+    box-shadow: var(--bevel-btn);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .tgl-off, .tgl-on {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: bold; font-family: var(--f-sm);
+    color: #666; z-index: 1; pointer-events: none;
+  }
+  .tgl-thumb {
+    position: absolute;
+    width: 24px; height: 12px;
+    background: var(--bg);
+    border: 1px solid #888;
+    box-shadow: var(--bevel-btn);
+    top: 1px; left: 1px;
+    transition: none;
+    z-index: 2;
+  }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb { left: 25px; }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS (Mac document windows)
+  ═══════════════════════════════════════ */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+    gap: 16px;
+  }
+
+  .card-thumb {
+    height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    border-bottom: 1px solid #000;
+  }
+  /* Classic Mac hatched patterns */
+  .ct1 { background: repeating-linear-gradient(45deg, #d4d4d4 0px, #d4d4d4 2px, #c0c0c0 2px, #c0c0c0 4px); }
+  .ct2 { background: repeating-linear-gradient(-45deg, #d4d4d4 0px, #d4d4d4 2px, #c0c0c0 2px, #c0c0c0 4px); }
+  .ct3 { background: repeating-linear-gradient(0deg, #d4d4d4 0px, #d4d4d4 3px, #bbb 3px, #bbb 4px); }
+
+  .card-in { padding: 12px; }
+  .card-eye {
+    font-size: 8px; font-weight: bold; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #555; margin-bottom: 4px; font-family: var(--f-sm);
+  }
+  .card-h {
+    font-size: 12px; font-weight: bold; color: #000; margin-bottom: 6px; font-family: var(--f-sm);
+  }
+  .card-body-text {
+    font-size: 10px; line-height: 1.5; color: var(--t2); margin-bottom: 10px; font-family: var(--f-sm);
+  }
+  .card-ft {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 8px; border-top: 1px solid #ddd;
+  }
+  .card-av {
+    width: 20px; height: 20px;
+    border: 1px solid #888;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: bold; color: #000;
+    background: var(--bg); font-family: var(--f-sm);
+  }
+  .card-dt { font-size: 9px; color: var(--t3); font-family: var(--f-sm); }
+  .card-act {
+    background: var(--bg);
+    box-shadow: var(--bevel-btn);
+    border: 1px solid #000;
+    padding: 2px 8px;
+    font-family: var(--f-sm);
+    font-size: 10px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    transition: none;
+  }
+  .card-act:active { box-shadow: var(--bevel-btn-down); }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS — Audio CD Player
+  ═══════════════════════════════════════ */
+  .player-body {
+    padding: 14px;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* LCD display — Classic Mac yellow-green screen */
+  .player-lcd {
+    background: #b8c890;
+    border: 1px solid #666;
+    box-shadow: inset 1px 1px #555, inset -1px -1px #d8e8a0;
+    padding: 8px 12px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+  .lcd-disc {
+    width: 48px; height: 48px;
+    border: 2px solid #555;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #444, #aaa 25%, #444 50%, #888 75%, #444);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .lcd-disc-inner {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #b8c890;
+    border: 1px solid #555;
+  }
+  .lcd-track { font-size: 9px; font-family: 'Courier New', Courier, monospace; color: #2a3a12; margin-bottom: 3px; }
+  .lcd-track-title { font-size: 12px; font-weight: bold; font-family: 'Courier New', Courier, monospace; color: #1a2a08; }
+  .lcd-time { font-size: 22px; font-family: 'Courier New', Courier, monospace; color: #1a2a08; font-weight: bold; letter-spacing: 2px; line-height: 1; }
+
+  /* Segmented progress bar */
+  .prog-seg-outer {
+    background: var(--bg);
+    border: 1px solid #888;
+    padding: 6px 8px;
+    box-shadow: inset 1px 1px #555, inset -1px -1px #ddd;
+  }
+  .prog-seg-track {
+    height: 14px;
+    background: #888;
+    display: flex;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid #555;
+    box-shadow: inset 1px 1px #333;
+  }
+  .prog-seg {
+    flex: 1;
+    background: #bbb;
+    height: 100%;
+  }
+  .prog-seg.lit { background: #1a2a08; }
+  .prog-times {
+    display: flex; justify-content: space-between; margin-top: 4px;
+  }
+  .ptime { font-size: 9px; font-weight: bold; color: #555; font-family: 'Courier New', Courier, monospace; }
+
+  /* Transport controls */
+  .pc-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .pc-btn {
+    background: var(--bg);
+    box-shadow: var(--bevel-btn);
+    border: 1px solid #000;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000;
+    padding: 4px 10px;
+    font-size: 13px;
+    font-family: var(--f-sm);
+    min-width: 36px;
+    height: 28px;
+    transition: none;
+  }
+  .pc-btn:active { box-shadow: var(--bevel-btn-down); }
+  .pc-btn-lg { padding: 4px 18px; font-size: 16px; min-width: 52px; }
+
+  /* Volume / slider controls */
+  .slider-list { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #888; padding-top: 12px; }
+  .slider-item { display: flex; align-items: center; gap: 8px; }
+  .sl-lbl { font-size: 10px; font-weight: bold; color: #333; min-width: 64px; font-family: var(--f-sm); }
+  .sl-val { font-size: 10px; font-weight: bold; color: #000; min-width: 28px; text-align: right; font-family: 'Courier New', Courier, monospace; }
+
+  .rng {
+    -webkit-appearance: none;
+    flex: 1; height: 12px;
+    background: var(--bg-white);
+    border: 1px solid #888;
+    box-shadow: inset 1px 1px #555;
+    outline: none; cursor: pointer;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 22px;
+    background: var(--bg);
+    border: 1px solid #000;
+    box-shadow: var(--bevel-btn);
+    cursor: pointer;
+    border-radius: 0;
+  }
+  .rng::-moz-range-thumb {
+    width: 14px; height: 22px;
+    border-radius: 0;
+    background: var(--bg);
+    border: 1px solid #000;
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAV — Launcher panel
+  ═══════════════════════════════════════ */
+  .navdemo-inner {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .nd-screen { padding: 12px 14px 0; background: var(--bg-white); }
+  .nd-title  { font-size: 14px; font-weight: bold; color: var(--t1); margin-bottom: 2px; font-family: var(--f); }
+  .nd-sub    { font-size: 10px; color: var(--t3); margin-bottom: 10px; font-family: var(--f-sm); }
+
+  .nd-search {
+    background: var(--bg-white);
+    box-shadow: inset 1px 1px #888, inset -1px -1px #ddd;
+    border: 1px solid #888;
+    padding: 4px 8px;
+    display: flex; align-items: center; gap: 6px;
+    color: #aaa; font-size: 11px; font-family: var(--f-sm);
+    margin-bottom: 10px;
+  }
+
+  .nd-items { display: flex; flex-direction: column; gap: 1px; margin-bottom: 0; }
+  .nd-item {
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 6px 8px;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg-white);
+    cursor: default;
+  }
+  .nd-item:first-child { border-top: 1px solid #ddd; }
+  .nd-item:hover { background: #000; }
+  .nd-item:hover .nd-item-title,
+  .nd-item:hover .nd-item-sub { color: #fff; }
+
+  .nd-ico {
+    width: 28px; height: 28px; flex-shrink: 0;
+    background: var(--bg);
+    border: 1px solid #888;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .nd-item-title { font-size: 11px; font-weight: bold; color: #000; font-family: var(--f-sm); }
+  .nd-item-sub   { font-size: 9px; color: var(--t3); font-family: var(--f-sm); }
+
+  /* Launcher toolbar at bottom */
+  .mac-launcher {
+    background: var(--bg);
+    border-top: 1px solid #000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 4px;
+    gap: 2px;
+  }
+
+  .lnch-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--f-sm); padding: 0; flex: 1;
+  }
+  .lnch-ico {
+    width: 36px; height: 36px;
+    background: var(--bg);
+    border: 1px solid #888;
+    box-shadow: var(--bevel-btn);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    transition: none;
+  }
+  .lnch-item.lnch-on .lnch-ico {
+    background: #000;
+    box-shadow: var(--bevel-btn-down);
+    border-color: #000;
+  }
+  .lnch-lbl { font-size: 8px; font-weight: bold; color: #555; white-space: nowrap; }
+  .lnch-item.lnch-on .lnch-lbl { color: #000; }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .page { padding: 0 12px 60px; }
+    .topnav { padding: 0 8px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg-full { grid-column: 1; }
+    .tr { grid-template-columns: 60px 1fr; gap: 8px; padding: 8px 10px; }
+    .ts-72pt { font-size: 40px; }
+    .ts-48pt { font-size: 30px; }
+    .palette-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); }
+    .state-row { gap: 8px; }
+    .player-lcd { grid-template-columns: auto 1fr; }
+    .lcd-time { grid-column: 1 / -1; text-align: center; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Mac Menu Bar ─────────────────── -->
+<nav class="topnav" role="navigation" aria-label="Menu bar">
+  <span class="menubar-apple" aria-label="Apple menu">&#63743;</span>
+  <a class="tnav-back" href="../../index.html">← Gallery</a>
+  <span class="menubar-item" aria-hidden="true">File</span>
+  <span class="menubar-item" aria-hidden="true">Edit</span>
+  <span class="menubar-item" aria-hidden="true">View</span>
+  <span class="menubar-item" aria-hidden="true">Special</span>
+  <span class="menubar-sep"></span>
+  <a class="tnav-dl" href="style-guide.md" download="classic-mac-style-guide.md">↓ Download .md</a>
+</nav>
+
+<!-- ── Side progress dots ────────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"     aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"       aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"   aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"      aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Form Inputs"  aria-label="Jump to Form Inputs"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"        aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"     aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"   aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <div class="mac-window">
+      <div class="mac-titlebar">
+        <div class="mac-closebox" role="button" tabindex="0" aria-label="Close window"></div>
+        <span class="mac-title-text">Welcome to Classic Mac</span>
+      </div>
+      <div class="mac-content">
+        <div class="hero-kicker">Graphical UI &middot; 1984&ndash;1999</div>
+        <h1 class="hero-h1">Classic Mac</h1>
+        <p class="hero-desc">The desktop metaphor made real. Gray surfaces, 1px black borders, beveled 3D buttons, and window chrome built from four inset shadows. A complete design system encoded entirely in pixels — at 72 DPI.</p>
+        <div class="hero-tags">
+          <span class="hero-tag">Chicago &middot; system font</span>
+          <span class="hero-tag">4-bit grayscale palette</span>
+          <span class="hero-tag">Bevel-and-emboss system</span>
+          <span class="hero-tag">WCAG: max contrast by default</span>
+        </div>
+        <div class="hero-widget">
+          <div class="hero-widget-card">
+            <div class="hw-icon">🖥</div>
+            <div><div class="hw-title">The Desktop</div><div class="hw-sub">#d4d4d4 everywhere</div></div>
+          </div>
+          <div class="hero-widget-card">
+            <div class="hw-icon">🪟</div>
+            <div><div class="hw-title">Window Chrome</div><div class="hw-sub">Gradient titlebar + bevel</div></div>
+          </div>
+          <div class="hero-widget-card">
+            <div class="hw-icon">🖱</div>
+            <div><div class="hw-title">One Button</div><div class="hw-sub">Click · drag · release</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ─────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">01</span>
+      <h2 class="sec-title" id="colors-h">Color Palette</h2>
+    </div>
+    <div class="mac-window">
+      <div class="mac-titlebar">
+        <div class="mac-closebox" role="button" tabindex="0" aria-label="Close"></div>
+        <span class="mac-title-text">About Colors&hellip;</span>
+      </div>
+      <div class="mac-content">
+        <div class="spec-callout">
+          <span class="spec-callout-ico">◉</span>
+          <p class="spec-callout-text">The Classic Mac palette was 4-bit: 16 shades of gray. The color system is: <strong>#ffffff</strong> for content areas, <strong>#d4d4d4</strong> for chrome and desktop, <strong>#000000</strong> for all borders. There is no accent color — maximum contrast is the default state.</p>
+        </div>
+        <div class="palette-grid">
+          <div class="swatch"><div class="swatch-color" style="background:#d4d4d4"></div><div class="swatch-body"><span class="swatch-hex">#d4d4d4</span><span class="swatch-name">--bg · desktop</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#ffffff; border-bottom:1px solid #ddd;"></div><div class="swatch-body"><span class="swatch-hex">#ffffff</span><span class="swatch-name">--bg-white · content</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#555555"></div><div class="swatch-body"><span class="swatch-hex">#555555</span><span class="swatch-name">--bg-dark · shadow</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#333333"></div><div class="swatch-body"><span class="swatch-hex">#333333</span><span class="swatch-name">--bg-darker</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#000000"></div><div class="swatch-body"><span class="swatch-hex">#000000</span><span class="swatch-name">--t1 · borders</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#333333"></div><div class="swatch-body"><span class="swatch-hex">#333333</span><span class="swatch-name">--t2 · secondary</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#666666"></div><div class="swatch-body"><span class="swatch-hex">#666666</span><span class="swatch-name">--t3 · disabled</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#888888"></div><div class="swatch-body"><span class="swatch-hex">#888888</span><span class="swatch-name">bevel-dark</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#e0e0e0"></div><div class="swatch-body"><span class="swatch-hex">#e0e0e0</span><span class="swatch-name">bevel-light</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#bbbbbb"></div><div class="swatch-body"><span class="swatch-hex">#bbbbbb</span><span class="swatch-name">titlebar-end</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#cccccc"></div><div class="swatch-body"><span class="swatch-hex">#cccccc</span><span class="swatch-name">divider</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#ffffff; border:1px solid #ccc;"></div><div class="swatch-body"><span class="swatch-hex">#ffffff</span><span class="swatch-name">--t-inv · on black</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ─────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">02</span>
+      <h2 class="sec-title" id="type-h">Typography Scale</h2>
+    </div>
+    <div class="mac-window">
+      <div class="mac-titlebar">
+        <div class="mac-closebox" role="button" tabindex="0" aria-label="Close"></div>
+        <span class="mac-title-text">Font Sample</span>
+      </div>
+      <div class="mac-content">
+        <div class="spec-callout">
+          <span class="spec-callout-ico">Aa</span>
+          <p class="spec-callout-text"><strong>'Chicago'</strong> — the primary display font at large sizes. <strong>Geneva</strong> — the workhorse for UI labels and body text at 9–14pt. Both were designed for 72 DPI screens. Disable anti-aliasing: <strong>-webkit-font-smoothing: none</strong>.</p>
+        </div>
+        <div class="typescale">
+          <div class="tr"><div class="tr-meta"><span class="tr-lbl">72pt</span><span class="tr-spec">Chicago<br>Display</span></div><div class="ts-72pt">Chicago</div></div>
+          <div class="tr"><div class="tr-meta"><span class="tr-lbl">48pt</span><span class="tr-spec">Chicago<br>Title</span></div><div class="ts-48pt">Chicago</div></div>
+          <div class="tr"><div class="tr-meta"><span class="tr-lbl">36pt</span><span class="tr-spec">Chicago<br>H1</span></div><div class="ts-36pt">Classic Mac</div></div>
+          <div class="tr"><div class="tr-meta"><span class="tr-lbl">24pt</span><span class="tr-spec">Chicago<br>H2</span></div><div class="ts-24pt">System 7.5</div></div>
+          <div class="tr"><div class="tr-meta"><span class="tr-lbl">18pt</span><span class="tr-spec">Geneva<br>H3</span></div><div class="ts-18pt">The quick brown fox jumps</div></div>
+          <div class="tr"><div class="tr-meta"><span class="tr-lbl">14pt</span><span class="tr-spec">Geneva<br>Body Lg</span></div><div class="ts-14pt">The quick brown fox jumps over the lazy dog</div></div>
+          <div class="tr"><div class="tr-meta"><span class="tr-lbl">12pt</span><span class="tr-spec">Geneva<br>Body</span></div><div class="ts-12pt">The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</div></div>
+          <div class="tr"><div class="tr-meta"><span class="tr-lbl">10pt</span><span class="tr-spec">Geneva<br>Small</span></div><div class="ts-10pt">The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. Sphinx of black quartz, judge my vow.</div></div>
+          <div class="tr"><div class="tr-meta"><span class="tr-lbl">9pt</span><span class="tr-spec">Geneva<br>Caption</span></div><div class="ts-9pt">The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. Sphinx of black quartz, judge my vow. How vexingly quick daft zebras jump.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">03</span>
+      <h2 class="sec-title" id="btn-h">Buttons</h2>
+    </div>
+    <div class="mac-window">
+      <div class="mac-titlebar">
+        <div class="mac-closebox" role="button" tabindex="0" aria-label="Close"></div>
+        <span class="mac-title-text">Button Styles</span>
+      </div>
+      <div class="mac-content">
+        <div class="spec-callout">
+          <span class="spec-callout-ico">↓</span>
+          <p class="spec-callout-text">Mac buttons use four inset box-shadows: <strong>inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #888, inset 2px 2px #e0e0e0</strong>. The <em>Default button</em> (dialog accept action) adds a bold double border: <strong>inset 0 0 0 2px #000</strong>. Press state flips all shadows.</p>
+        </div>
+        <div class="btn-states">
+          <div>
+            <p class="state-row-label">Standard Button</p>
+            <div class="state-row">
+              <div class="state-wrap"><button class="btn">Default</button><span class="state-lbl">Rest</span></div>
+              <div class="state-wrap"><button class="btn state-hover" tabindex="-1" aria-hidden="true">Hover</button><span class="state-lbl">Hover</span></div>
+              <div class="state-wrap"><button class="btn state-active" tabindex="-1" aria-hidden="true">Pressed</button><span class="state-lbl">Pressed</span></div>
+              <div class="state-wrap"><button class="btn" disabled>Disabled</button><span class="state-lbl">Disabled</span></div>
+            </div>
+          </div>
+          <div>
+            <p class="state-row-label">Default Button &mdash; bold double border (dialog accept action)</p>
+            <div class="state-row">
+              <div class="state-wrap"><button class="btn btn-default">OK</button><span class="state-lbl">Rest</span></div>
+              <div class="state-wrap"><button class="btn btn-default state-hover" tabindex="-1" aria-hidden="true">OK</button><span class="state-lbl">Hover</span></div>
+              <div class="state-wrap"><button class="btn btn-default state-active" tabindex="-1" aria-hidden="true">OK</button><span class="state-lbl">Pressed</span></div>
+              <div class="state-wrap"><button class="btn btn-default" disabled>OK</button><span class="state-lbl">Disabled</span></div>
+            </div>
+          </div>
+          <div>
+            <p class="state-row-label">Inverted Button &mdash; selected or primary action</p>
+            <div class="state-row">
+              <div class="state-wrap"><button class="btn btn-p">Save</button><span class="state-lbl">Rest</span></div>
+              <div class="state-wrap"><button class="btn btn-p state-p-hover" tabindex="-1" aria-hidden="true">Save</button><span class="state-lbl">Hover</span></div>
+              <div class="state-wrap"><button class="btn btn-p state-p-active" tabindex="-1" aria-hidden="true">Save</button><span class="state-lbl">Pressed</span></div>
+              <div class="state-wrap"><button class="btn btn-p" disabled>Save</button><span class="state-lbl">Disabled</span></div>
+            </div>
+          </div>
+          <div class="btn-variants">
+            <button class="btn btn-default">OK</button>
+            <button class="btn">Cancel</button>
+            <button class="btn btn-sm">&#8984;Z Undo</button>
+            <button class="btn btn-sm">&#8984;C Copy</button>
+            <button class="btn btn-sm">&#8984;V Paste</button>
+            <button class="btn btn-p">Save As&hellip;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORM INPUTS ────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">04</span>
+      <h2 class="sec-title" id="inputs-h">Form Inputs</h2>
+    </div>
+    <div class="mac-window">
+      <div class="mac-titlebar">
+        <div class="mac-closebox" role="button" tabindex="0" aria-label="Close"></div>
+        <span class="mac-title-text">System Preferences</span>
+      </div>
+      <div class="mac-content">
+        <div class="spec-callout">
+          <span class="spec-callout-ico">⊙</span>
+          <p class="spec-callout-text">Text inputs: white background, <strong>border: 1px solid #000</strong>, inset shadow <strong>inset 1px 1px #888</strong>. Checkboxes are square (14px) with a ✓ mark when checked. Radios are circles with a black dot. Popup menus use the bevel button appearance with a ▾ arrow.</p>
+        </div>
+        <div class="form-title">User &amp; Network</div>
+        <p class="form-sub">Configure your user profile and network preferences. Changes take effect after restart.</p>
+        <div class="form-grid">
+          <div class="field">
+            <label class="label" for="fi-name">Full Name</label>
+            <input class="inp" type="text" id="fi-name" placeholder="Jane Smith" autocomplete="name">
+          </div>
+          <div class="field">
+            <label class="label" for="fi-at">AppleTalk Address</label>
+            <input class="inp" type="text" id="fi-at" placeholder="user@zone" autocomplete="off">
+          </div>
+          <div class="field">
+            <label class="label" for="fi-role">Startup Disk</label>
+            <select class="sel" id="fi-role">
+              <option>Macintosh HD</option>
+              <option>External Drive</option>
+              <option>Network Volume</option>
+              <option>CD-ROM</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="fi-pass">Owner Password</label>
+            <input class="inp" type="password" id="fi-pass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+          </div>
+          <div class="field fg-full">
+            <label class="label" for="fi-bio">Sharing Name</label>
+            <textarea class="inp ta" id="fi-bio" placeholder="Enter the name other users will see on your network…" rows="3"></textarea>
+            <span class="hint">Max 32 characters. Shown on AppleTalk network.</span>
+          </div>
+          <div class="field">
+            <span class="label" id="chk-lbl">File Sharing</span>
+            <div class="chk-group" role="group" aria-labelledby="chk-lbl">
+              <label class="chk-row">
+                <input class="chk-in" type="checkbox" checked>
+                <span class="chk-box"><span class="chk-mark">&#10003;</span></span>
+                <span class="chk-txt">Program Linking</span>
+              </label>
+              <label class="chk-row">
+                <input class="chk-in" type="checkbox">
+                <span class="chk-box"><span class="chk-mark">&#10003;</span></span>
+                <span class="chk-txt">Remote Access</span>
+              </label>
+              <label class="chk-row">
+                <input class="chk-in" type="checkbox" checked>
+                <span class="chk-box"><span class="chk-mark">&#10003;</span></span>
+                <span class="chk-txt">Guest Access</span>
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="label" id="rad-lbl">Memory Manager</span>
+            <div class="chk-group" role="radiogroup" aria-labelledby="rad-lbl">
+              <label class="chk-row">
+                <input class="chk-in" type="radio" name="mem" value="32">
+                <span class="rad-box"><span class="rad-dot"></span></span>
+                <span class="chk-txt">32-bit Addressing</span>
+              </label>
+              <label class="chk-row">
+                <input class="chk-in" type="radio" name="mem" value="vm" checked>
+                <span class="rad-box"><span class="rad-dot"></span></span>
+                <span class="chk-txt">Virtual Memory</span>
+              </label>
+              <label class="chk-row">
+                <input class="chk-in" type="radio" name="mem" value="ram">
+                <span class="rad-box"><span class="rad-dot"></span></span>
+                <span class="chk-txt">RAM Disk</span>
+              </label>
+            </div>
+          </div>
+          <div class="field fg-full">
+            <span class="label">Extensions &amp; Control Panels</span>
+            <div class="tgl-rows" style="margin-top:6px">
+              <div class="tgl-row">
+                <div class="tgl-info">
+                  <div class="tgl-title">Extensions Manager</div>
+                  <div class="tgl-desc">Load system extensions on startup</div>
+                </div>
+                <label class="tgl">
+                  <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Extensions Manager">
+                  <span class="tgl-track">
+                    <span class="tgl-off">off</span>
+                    <span class="tgl-on">on</span>
+                    <span class="tgl-thumb"></span>
+                  </span>
+                </label>
+              </div>
+              <div class="tgl-row">
+                <div class="tgl-info">
+                  <div class="tgl-title">Balloon Help</div>
+                  <div class="tgl-desc">Show help balloons when hovering</div>
+                </div>
+                <label class="tgl">
+                  <input class="tgl-in" type="checkbox" role="switch" aria-label="Balloon Help">
+                  <span class="tgl-track">
+                    <span class="tgl-off">off</span>
+                    <span class="tgl-on">on</span>
+                    <span class="tgl-thumb"></span>
+                  </span>
+                </label>
+              </div>
+              <div class="tgl-row">
+                <div class="tgl-info">
+                  <div class="tgl-title">Startup Screen</div>
+                  <div class="tgl-desc">Show &ldquo;Welcome to Macintosh&rdquo; on boot</div>
+                </div>
+                <label class="tgl">
+                  <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Startup Screen">
+                  <span class="tgl-track">
+                    <span class="tgl-off">off</span>
+                    <span class="tgl-on">on</span>
+                    <span class="tgl-thumb"></span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid #ccc;">
+          <button class="btn">Cancel</button>
+          <button class="btn btn-default">OK</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ──────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">05</span>
+      <h2 class="sec-title" id="cards-h">Cards</h2>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">&#9635;</span>
+      <p class="spec-callout-text">Each card <strong>is a Mac window</strong> — complete with titlebar, close box, drag stripes, and content area. The hatched backgrounds reference Classic Mac application window fill patterns. Drop shadow: <strong>2px 2px 0 #888, 3px 3px 0 #555</strong>.</p>
+    </div>
+    <div class="cards-row">
+      <article class="mac-window">
+        <div class="mac-titlebar">
+          <div class="mac-closebox" role="button" tabindex="0" aria-label="Close"></div>
+          <span class="mac-title-text">Design Notes</span>
+        </div>
+        <div class="card-thumb ct1">📐</div>
+        <div class="card-in">
+          <p class="card-eye">Design</p>
+          <h3 class="card-h">The Desktop Metaphor</h3>
+          <p class="card-body-text">Jef Raskin&rsquo;s original insight: make the computer feel like a physical desk. Windows, folders, documents — all borrowed from the physical world.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:6px">
+              <div class="card-av">J</div>
+              <span class="card-dt">3 min read</span>
+            </div>
+            <button class="card-act">Open &rarr;</button>
+          </div>
+        </div>
+      </article>
+      <article class="mac-window">
+        <div class="mac-titlebar">
+          <div class="mac-closebox" role="button" tabindex="0" aria-label="Close"></div>
+          <span class="mac-title-text">Tech Notes</span>
+        </div>
+        <div class="card-thumb ct2">&#9109;</div>
+        <div class="card-in">
+          <p class="card-eye">Engineering</p>
+          <h3 class="card-h">Four Inset Shadows</h3>
+          <p class="card-body-text">The entire depth system lives in four inset box-shadow values. White top-left, black bottom-right, mid-gray outer, near-white inner. One recipe, infinite surfaces.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:6px">
+              <div class="card-av">M</div>
+              <span class="card-dt">5 min read</span>
+            </div>
+            <button class="card-act">Open &rarr;</button>
+          </div>
+        </div>
+      </article>
+      <article class="mac-window">
+        <div class="mac-titlebar">
+          <div class="mac-closebox" role="button" tabindex="0" aria-label="Close"></div>
+          <span class="mac-title-text">Finder Help</span>
+        </div>
+        <div class="card-thumb ct3">🗂</div>
+        <div class="card-in">
+          <p class="card-eye">Accessibility</p>
+          <h3 class="card-h">Clarity Through Constraint</h3>
+          <p class="card-body-text">No gradients. No color. No rounded corners. Every affordance is legible at 72 DPI. The constraint IS the design language — and the result is near-perfect contrast.</p>
+          <div class="card-ft">
+            <div style="display:flex;align-items:center;gap:6px">
+              <div class="card-av">A</div>
+              <span class="card-dt">7 min read</span>
+            </div>
+            <button class="card-act">Open &rarr;</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ───────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">06</span>
+      <h2 class="sec-title" id="ctrl-h">Controls &middot; Sliders</h2>
+    </div>
+    <div class="mac-window">
+      <div class="mac-titlebar">
+        <div class="mac-closebox" role="button" tabindex="0" aria-label="Close"></div>
+        <span class="mac-title-text">Audio CD Player 2.0</span>
+      </div>
+      <div class="player-body">
+
+        <!-- LCD display panel -->
+        <div class="player-lcd">
+          <div class="lcd-disc" aria-hidden="true">
+            <div class="lcd-disc-inner"></div>
+          </div>
+          <div>
+            <div class="lcd-track">Track 01 of 12 &nbsp;&bull;&nbsp; Disc 1</div>
+            <div class="lcd-track-title" id="lcd-title">Weightless &middot; Marconi Union</div>
+            <div style="font-size:9px;font-family:'Courier New',Courier,monospace;color:#3a4a1a;margin-top:3px">Ambient / Focus</div>
+          </div>
+          <div class="lcd-time" id="lcd-time">1:07</div>
+        </div>
+
+        <!-- Segmented progress bar -->
+        <div class="prog-seg-outer" aria-label="Track progress">
+          <div class="prog-seg-track" id="seg-track" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
+            <!-- segments rendered by JS -->
+          </div>
+          <div class="prog-times">
+            <span class="ptime" id="curr-time">1:07</span>
+            <span class="ptime">3:42</span>
+          </div>
+        </div>
+
+        <!-- Transport buttons -->
+        <div class="pc-row">
+          <button class="pc-btn" aria-label="Previous track">&#9612;&#9664;</button>
+          <button class="pc-btn" aria-label="Rewind">&#9668;&#9668;</button>
+          <button class="pc-btn pc-btn-lg" id="play-btn" aria-label="Play" aria-pressed="false">
+            <span class="play-ico">&#9654;</span>
+            <span class="pause-ico" style="display:none">&#9646;&#9646;</span>
+          </button>
+          <button class="pc-btn" aria-label="Fast-forward">&#9654;&#9654;</button>
+          <button class="pc-btn" aria-label="Next track">&#9654;&#9612;</button>
+          <button class="pc-btn btn-sm" aria-label="Eject" style="margin-left:8px">&#9167;</button>
+        </div>
+
+        <!-- Volume / Balance sliders -->
+        <div class="slider-list">
+          <div class="slider-item">
+            <span class="sl-lbl">Volume</span>
+            <input class="rng" type="range" id="vol" min="0" max="100" value="68" aria-label="Volume">
+            <span class="sl-val" id="vol-v">68</span>
+          </div>
+          <div class="slider-item">
+            <span class="sl-lbl">Brightness</span>
+            <input class="rng" type="range" id="bright" min="0" max="100" value="45" aria-label="Brightness">
+            <span class="sl-val" id="bright-v">45%</span>
+          </div>
+          <div class="slider-item">
+            <span class="sl-lbl">Balance</span>
+            <input class="rng" type="range" id="bal" min="-50" max="50" value="0" aria-label="Left-right balance">
+            <span class="sl-val" id="bal-v">C</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAVIGATION ─────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">07</span>
+      <h2 class="sec-title" id="nav-h">Navigation Bar</h2>
+    </div>
+    <div class="mac-window">
+      <div class="mac-titlebar">
+        <div class="mac-closebox" role="button" tabindex="0" aria-label="Close"></div>
+        <span class="mac-title-text">Launcher &middot; Items</span>
+      </div>
+      <div class="navdemo-inner">
+        <div class="nd-screen">
+          <div class="nd-title">Good morning, Jane</div>
+          <div class="nd-sub">Tuesday, May 12 &nbsp;&bull;&nbsp; Macintosh HD &nbsp;&bull;&nbsp; 8:41 AM</div>
+          <div class="nd-search">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <circle cx="5" cy="5" r="3.5" stroke="#888" stroke-width="1.3"/>
+              <path d="M8 8l2.5 2.5" stroke="#888" stroke-width="1.3" stroke-linecap="square"/>
+            </svg>
+            Find&hellip;
+          </div>
+          <div class="nd-items">
+            <div class="nd-item">
+              <div class="nd-ico">🎵</div>
+              <div>
+                <div class="nd-item-title">Audio CD Player</div>
+                <div class="nd-item-sub">Now playing &middot; 1:07 / 3:42</div>
+              </div>
+            </div>
+            <div class="nd-item">
+              <div class="nd-ico">📋</div>
+              <div>
+                <div class="nd-item-title">To Do List</div>
+                <div class="nd-item-sub">5 items remaining &middot; 3 done</div>
+              </div>
+            </div>
+            <div class="nd-item">
+              <div class="nd-ico">🖨</div>
+              <div>
+                <div class="nd-item-title">LaserWriter 8</div>
+                <div class="nd-item-sub">Ready &middot; 1 job in queue</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <nav class="mac-launcher" aria-label="Launcher">
+          <button class="lnch-item lnch-on" aria-label="Finder" aria-current="page">
+            <div class="lnch-ico">🗂</div>
+            <span class="lnch-lbl">Finder</span>
+          </button>
+          <button class="lnch-item" aria-label="Documents">
+            <div class="lnch-ico">📄</div>
+            <span class="lnch-lbl">Documents</span>
+          </button>
+          <button class="lnch-item" aria-label="Control Panels">
+            <div class="lnch-ico">⚙️</div>
+            <span class="lnch-lbl">Control Panels</span>
+          </button>
+          <button class="lnch-item" aria-label="Network">
+            <div class="lnch-ico">🌐</div>
+            <span class="lnch-lbl">Network</span>
+          </button>
+          <button class="lnch-item" aria-label="Trash">
+            <div class="lnch-ico">🗑</div>
+            <span class="lnch-lbl">Trash</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Segmented progress bar ───────────── */
+const segTrack = document.getElementById('seg-track');
+const SEGS = 20;
+const TOTAL = 222;
+let currSec = 67;
+
+function buildSegs(val) {
+  segTrack.innerHTML = '';
+  const lit = Math.round((val / TOTAL) * SEGS);
+  for (let i = 0; i < SEGS; i++) {
+    const s = document.createElement('div');
+    s.className = 'prog-seg' + (i < lit ? ' lit' : '');
+    segTrack.appendChild(s);
+  }
+  segTrack.setAttribute('aria-valuenow', Math.round((val / TOTAL) * 100));
+}
+buildSegs(currSec);
+
+/* ── Sliders ──────────────────────────── */
+document.getElementById('vol').addEventListener('input', e => {
+  document.getElementById('vol-v').textContent = e.target.value;
+});
+document.getElementById('bright').addEventListener('input', e => {
+  document.getElementById('bright-v').textContent = e.target.value + '%';
+});
+document.getElementById('bal').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  document.getElementById('bal-v').textContent = v < -5 ? 'L' + Math.abs(v) : v > 5 ? 'R' + v : 'C';
+});
+
+/* ── Play/Pause ───────────────────────── */
+const playBtn = document.getElementById('play-btn');
+let playing = false;
+let playInterval;
+
+playBtn.addEventListener('click', () => {
+  playing = !playing;
+  playBtn.setAttribute('aria-pressed', String(playing));
+  playBtn.querySelector('.play-ico').style.display  = playing ? 'none' : '';
+  playBtn.querySelector('.pause-ico').style.display = playing ? '' : 'none';
+
+  if (playing) {
+    playInterval = setInterval(() => {
+      currSec = Math.min(currSec + 1, TOTAL);
+      buildSegs(currSec);
+      const t = `${Math.floor(currSec/60)}:${String(currSec%60).padStart(2,'0')}`;
+      document.getElementById('curr-time').textContent = t;
+      document.getElementById('lcd-time').textContent = t;
+      if (currSec >= TOTAL) { playing = false; clearInterval(playInterval); }
+    }, 1000);
+  } else {
+    clearInterval(playInterval);
+  }
+});
+
+/* ── Launcher nav ─────────────────────── */
+document.querySelectorAll('.lnch-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.lnch-item').forEach(n => {
+      n.classList.remove('lnch-on');
+      n.removeAttribute('aria-current');
+    });
+    item.classList.add('lnch-on');
+    item.setAttribute('aria-current', 'page');
+  });
+});
+
+/* ── Scroll reveal ────────────────────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const key = sections[entry.target.id];
+      if (key) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${key}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot navigation ──────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const key = dot.dataset.sec;
+    const id  = Object.entries(sections).find(([, v]) => v === key)?.[0];
+    if (id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+/* ── Close box (decorative) ───────────── */
+document.querySelectorAll('.mac-closebox').forEach(box => {
+  box.addEventListener('click', () => {
+    const win = box.closest('.mac-window, .navdemo-inner');
+    if (win) {
+      win.style.opacity = '0.4';
+      setTimeout(() => { win.style.opacity = ''; }, 400);
+    }
+  });
+  box.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') box.click();
+  });
+});
+</script>
+</body>
+</html>

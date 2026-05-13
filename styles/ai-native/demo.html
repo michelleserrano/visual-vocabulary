@@ -1,0 +1,2829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Native · UI Styles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS · AI-Native
+     The Claude.ai / Perplexity register —
+     warm gold on near-black, conversational shell.
+  ═══════════════════════════════════════ */
+  :root {
+    /* Surfaces — near-black, warm-undertoned */
+    --bg:        #0d0d11;
+    --surface:   #1a1a22;
+    --surface-2: #232330;
+    --surface-3: #2c2c3a;
+
+    /* Accent — warm gold, the only chromatic hue */
+    --accent:     #c8a868;
+    --accent-dim: #8b7355;
+    --accent-lo:  rgba(200, 168, 104, 0.14);
+    --accent-glow:rgba(200, 168, 104, 0.32);
+
+    /* Text — warm off-white scale */
+    --text:   #f4f1ec;
+    --text-2: #a8a39a;
+    --text-3: #6b665f;
+
+    /* Edges */
+    --border:   rgba(255, 255, 255, 0.06);
+    --border-2: rgba(255, 255, 255, 0.10);
+    --border-3: rgba(255, 255, 255, 0.16);
+
+    /* Semantic */
+    --ok:   #7fb88f;
+    --err:  #d97a6c;
+    --warn: #d9b56c;
+
+    /* Shape */
+    --r-xs:   4px;
+    --r-sm:   6px;
+    --r:      10px;
+    --r-md:   14px;
+    --r-lg:   20px;
+    --r-full: 9999px;
+
+    /* Motion — Apple spring */
+    --ease:    cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-out:cubic-bezier(0, 0, 0.2, 1);
+
+    /* Typography */
+    --f:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --f-m:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'ss01', 'cv11';
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: var(--accent-lo); color: var(--text); }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     STICKY TOP NAV
+  ═══════════════════════════════════════ */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13, 13, 17, 0.78);
+    backdrop-filter: saturate(140%) blur(18px);
+    -webkit-backdrop-filter: saturate(140%) blur(18px);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tnav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: color 0.18s var(--ease);
+  }
+  .tnav-back:hover { color: var(--text); }
+
+  .tnav-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--text);
+  }
+  .tnav-title-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-lo);
+    animation: pulse-dot 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.55; }
+  }
+
+  .tnav-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r-full);
+    font-family: var(--f);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: all 0.18s var(--ease);
+  }
+  .tnav-dl:hover {
+    color: var(--accent);
+    border-color: var(--border-3);
+    background: var(--surface-2);
+  }
+
+  /* ═══════════════════════════════════════
+     SIDE PROGRESS INDICATOR
+  ═══════════════════════════════════════ */
+  .progress-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 1rem 0.6rem;
+    background: rgba(26, 26, 34, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: var(--r-full);
+  }
+
+  .prog-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-3);
+    cursor: pointer;
+    transition: all 0.22s var(--ease);
+    border: none;
+    padding: 0;
+  }
+  .prog-dot:hover  { background: var(--text-2); transform: scale(1.4); }
+  .prog-dot.active { background: var(--accent); transform: scale(1.6); box-shadow: 0 0 0 4px var(--accent-lo); }
+  .prog-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  @media (max-width: 1100px) { .progress-nav { display: none; } }
+
+  /* ═══════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════ */
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 1.5rem 8rem;
+  }
+
+  /* ── Section ────────────────────────── */
+  .sec {
+    margin-top: 6rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  }
+  .sec.visible { opacity: 1; transform: translateY(0); }
+
+  .sec-hd {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sec-pill {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--text-3);
+    flex-shrink: 0;
+  }
+
+  .sec-title {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  /* ── Spec callout ───────────────────── */
+  .spec-callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--r);
+    padding: 0.875rem 1.125rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+  .spec-callout-ico {
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+    color: var(--accent);
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .spec-callout-text {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--text-2);
+    letter-spacing: -0.003em;
+  }
+  .spec-callout-text strong {
+    font-family: var(--f-m);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* ═══════════════════════════════════════
+     SIGNATURE: STREAMING SHIMMER
+     A low-contrast horizontal gradient sweep
+     that gives text a "mid-generation" feel.
+  ═══════════════════════════════════════ */
+  .stream-text {
+    background: linear-gradient(
+      90deg,
+      var(--text-2) 0%,
+      var(--text-2) 35%,
+      var(--text) 50%,
+      var(--text-2) 65%,
+      var(--text-2) 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 2.4s linear infinite;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Cursor caret — token-by-token blink */
+  .caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1em;
+    margin-left: 1px;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    animation: blink 1.05s steps(1) infinite;
+    border-radius: 1px;
+  }
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  /* ═══════════════════════════════════════
+     SIGNATURE: CITATION CHIPS
+  ═══════════════════════════════════════ */
+  .cite {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    margin: 0 1px 0 2px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r-xs);
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent);
+    text-decoration: none;
+    vertical-align: 0.18em;
+    transition: all 0.18s var(--ease);
+    cursor: pointer;
+  }
+  .cite:hover {
+    background: var(--accent-lo);
+    border-color: var(--accent-dim);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  /* ═══════════════════════════════════════
+     SIGNATURE: MESSAGE BUBBLES
+  ═══════════════════════════════════════ */
+  .msg {
+    display: flex;
+    gap: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+  .msg-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin-top: 0.15rem;
+  }
+  .msg-avatar.user {
+    background: var(--surface-2);
+    border: 1px solid var(--border-2);
+    color: var(--text-2);
+  }
+  .msg-avatar.ai {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+    color: var(--bg);
+    box-shadow: 0 0 0 1px rgba(200, 168, 104, 0.25);
+  }
+  .msg-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .msg-author {
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text-3);
+    margin-bottom: 0.375rem;
+    text-transform: lowercase;
+  }
+  .msg-bubble {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    letter-spacing: -0.003em;
+    color: var(--text);
+  }
+  .msg-bubble p { margin-bottom: 0.875rem; }
+  .msg-bubble p:last-child { margin-bottom: 0; }
+
+  .msg.user .msg-bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  /* Generating status */
+  .generating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-full);
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+    color: var(--text-2);
+    margin-top: 0.5rem;
+  }
+  .generating-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: gen-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes gen-pulse {
+    0%, 100% { transform: scale(0.7); opacity: 0.5; }
+    50%      { transform: scale(1.1); opacity: 1; }
+  }
+  .generating-time { color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+  /* ═══════════════════════════════════════
+     SIGNATURE: THINKING BLOCK (expandable)
+  ═══════════════════════════════════════ */
+  .thinking {
+    background: var(--surface);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r);
+    margin: 1rem 0 1.25rem;
+    overflow: hidden;
+    position: relative;
+  }
+  .thinking::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--r);
+    padding: 1px;
+    background: linear-gradient(120deg, transparent 30%, var(--accent-lo) 50%, transparent 70%);
+    background-size: 250% 100%;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    animation: thinking-pulse 3.6s linear infinite;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  @keyframes thinking-pulse {
+    0%   { background-position: 250% 0; }
+    100% { background-position: -250% 0; }
+  }
+
+  .thinking-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--f-m);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+    color: var(--text-2);
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.18s var(--ease);
+  }
+  .thinking-toggle:hover { color: var(--text); }
+  .thinking-chevron {
+    transition: transform 0.32s var(--ease);
+    color: var(--text-3);
+  }
+  .thinking[open] .thinking-chevron { transform: rotate(90deg); }
+  .thinking-label-meta {
+    margin-left: auto;
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .thinking-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s var(--ease);
+  }
+  .thinking[open] .thinking-body { max-height: 600px; }
+  .thinking-inner {
+    padding: 0 1rem 1rem 2.25rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+  .thinking-inner.has-border { border-top: 1px solid var(--border); padding-top: 0.875rem; }
+  .think-step {
+    font-family: var(--f-m);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    color: var(--text-2);
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    position: relative;
+  }
+  .think-step::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-dim);
+  }
+  .think-step:last-child { margin-bottom: 0; }
+
+  /* ═══════════════════════════════════════
+     SIGNATURE: ACTION CHIPS
+  ═══════════════════════════════════════ */
+  .action-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.875rem;
+    padding-top: 0.875rem;
+    border-top: 1px solid var(--border);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.3rem 0.7rem;
+    background: transparent;
+    border: 1px solid var(--border-2);
+    border-radius: var(--r-full);
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.18s var(--ease);
+  }
+  .chip:hover {
+    color: var(--text);
+    background: var(--surface);
+    border-color: var(--border-3);
+  }
+  .chip:active {
+    transform: scale(0.96);
+    background: var(--accent-lo);
+    color: var(--accent);
+    border-color: var(--accent-dim);
+  }
+  .chip.gold {
+    color: var(--accent);
+    border-color: var(--accent-dim);
+  }
+  .chip.gold:hover {
+    background: var(--accent-lo);
+  }
+  .chip svg { flex-shrink: 0; }
+
+  /* ═══════════════════════════════════════
+     SIGNATURE: SOURCES PANEL
+  ═══════════════════════════════════════ */
+  .sources {
+    margin-top: 1.25rem;
+    padding: 1rem 1.125rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+  }
+  .sources-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--text-3);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .sources-head-count {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .source {
+    display: flex;
+    gap: 0.625rem;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.18s var(--ease);
+  }
+  .source:last-child { border-bottom: none; }
+  .source:hover { opacity: 0.78; }
+  .source-num {
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r-xs);
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .source-favicon {
+    flex-shrink: 0;
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    background: var(--accent);
+    margin-top: 3px;
+  }
+  .source-favicon.f2 { background: #6b8db5; }
+  .source-favicon.f3 { background: #b58a6b; }
+  .source-body { flex: 1; min-width: 0; }
+  .source-title {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--text);
+    margin-bottom: 0.125rem;
+    line-height: 1.4;
+  }
+  .source-url {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    color: var(--text-3);
+    line-height: 1.4;
+  }
+
+  /* ═══════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    padding: 4rem 0 3rem;
+  }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--text-2);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-full);
+    padding: 0.3rem 0.75rem;
+    margin-bottom: 1.75rem;
+    text-transform: uppercase;
+  }
+  .hero-kicker-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-lo);
+  }
+
+  .hero-h1 {
+    font-size: clamp(2.75rem, 7vw, 4.5rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+  .hero-h1 .accent-fade {
+    background: linear-gradient(180deg, var(--text) 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-desc {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    letter-spacing: -0.005em;
+    color: var(--text-2);
+    max-width: 56ch;
+    margin-bottom: 2.25rem;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .hero-tag {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-full);
+    padding: 0.3rem 0.75rem;
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+    color: var(--text-2);
+  }
+
+  /* Hero conversation widget — the marquee */
+  .convo {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 1.5rem;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.04) inset,
+      0 24px 48px -16px rgba(0,0,0,0.5);
+  }
+
+  /* ═══════════════════════════════════════
+     01 · COLORS — as tool-call cards
+  ═══════════════════════════════════════ */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.875rem;
+  }
+
+  .color-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    transition: all 0.22s var(--ease);
+  }
+  .color-card:hover {
+    border-color: var(--border-2);
+    transform: translateY(-2px);
+  }
+  .color-card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    color: var(--text-3);
+    letter-spacing: 0.03em;
+  }
+  .color-card-head-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ok);
+  }
+  .color-card-head-status {
+    margin-left: auto;
+    color: var(--ok);
+    font-weight: 500;
+  }
+  .color-card-body {
+    padding: 0.875rem 1rem 1rem;
+    position: relative;
+  }
+  .color-swatch {
+    width: 100%;
+    height: 56px;
+    border-radius: var(--r-sm);
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .color-callsig {
+    font-family: var(--f-m);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--text-2);
+    word-break: break-all;
+  }
+  .color-callsig .fn  { color: var(--accent); }
+  .color-callsig .arg { color: #d97a6c; }
+  .color-callsig .ret { color: var(--text); font-weight: 500; }
+  .color-callsig .arrow { color: var(--text-3); margin: 0 0.25rem; }
+  .color-name {
+    margin-top: 0.5rem;
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    color: var(--text-3);
+    letter-spacing: 0.03em;
+  }
+
+  .palette-section-label {
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    text-transform: uppercase;
+    margin: 2rem 0 0.875rem;
+  }
+  .palette-section-label:first-child { margin-top: 0; }
+
+  /* Light/dark pair */
+  .mode-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .mode-card {
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .mode-card-head {
+    padding: 0.625rem 0.875rem;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    letter-spacing: 0.005em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .mode-card.dark { background: #0d0d11; }
+  .mode-card.dark .mode-card-head { color: var(--text-2); }
+  .mode-card.light { background: #faf9f5; color: #232020; }
+  .mode-card.light .mode-card-head { color: #6b665f; border-bottom-color: rgba(0,0,0,0.08); }
+  .mode-card-body { padding: 1rem; }
+  .mode-card-msg {
+    padding: 0.625rem 0.875rem;
+    border-radius: var(--r);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    margin-bottom: 0.625rem;
+  }
+  .mode-card.dark .mode-card-msg { background: var(--surface); color: var(--text); }
+  .mode-card.light .mode-card-msg { background: #f0ede5; color: #232020; }
+  .mode-card-cite {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px; height: 16px; padding: 0 4px;
+    background: var(--surface-2);
+    border-radius: 3px;
+    font-family: var(--f-m);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-left: 2px;
+  }
+  .mode-card.light .mode-card-cite { background: #e7e3d9; color: var(--accent-dim); }
+
+  /* ═══════════════════════════════════════
+     02 · TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  .typescale {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+
+  .tr {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 1.25rem;
+    align-items: baseline;
+    padding: 1.125rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .tr:last-child { border-bottom: none; }
+  .tr-meta {
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    line-height: 1.45;
+    color: var(--text-3);
+    letter-spacing: 0.005em;
+  }
+  .tr-meta-name {
+    color: var(--accent);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  .ts-disp    { font-size: 3.25rem;   font-weight: 600; letter-spacing: -0.04em;  line-height: 1.05; }
+  .ts-h1      { font-size: 2.25rem;   font-weight: 600; letter-spacing: -0.032em; line-height: 1.1; }
+  .ts-h2      { font-size: 1.625rem;  font-weight: 600; letter-spacing: -0.024em; line-height: 1.2; }
+  .ts-h3      { font-size: 1.25rem;   font-weight: 600; letter-spacing: -0.018em; line-height: 1.3; }
+  .ts-body    { font-size: 1rem;      font-weight: 400; letter-spacing: -0.005em; line-height: 1.7; }
+  .ts-sm      { font-size: 0.875rem;  font-weight: 400; letter-spacing: -0.003em; line-height: 1.55; color: var(--text-2); }
+  .ts-mono    { font-family: var(--f-m); font-size: 0.875rem; font-weight: 400; letter-spacing: 0;    line-height: 1.55; color: var(--text-2); }
+  .ts-cap     { font-family: var(--f-m); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-3); }
+
+  /* ═══════════════════════════════════════
+     03 · BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r);
+    padding: 0.55rem 1rem;
+    font-family: var(--f); font-size: 0.8125rem; font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--text);
+    cursor: pointer; white-space: nowrap; text-decoration: none;
+    transition: all 0.18s var(--ease);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--surface-2);
+    border-color: var(--border-3);
+  }
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .btn-p {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: transparent;
+    font-weight: 600;
+  }
+  .btn-p:hover:not(:disabled) {
+    background: #d4b878;
+    border-color: transparent;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-2);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--surface);
+    color: var(--text);
+    border-color: transparent;
+  }
+
+  .btn-destructive {
+    background: transparent;
+    border: 1px solid rgba(217, 122, 108, 0.32);
+    color: var(--err);
+  }
+  .btn-destructive:hover:not(:disabled) {
+    background: rgba(217, 122, 108, 0.08);
+    border-color: rgba(217, 122, 108, 0.48);
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-icon {
+    width: 32px; height: 32px;
+    padding: 0;
+  }
+
+  /* Active halo flash */
+  .btn-halo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s var(--ease);
+  }
+  .btn-halo.flash::before {
+    opacity: 0.18;
+    animation: halo-fade 0.55s var(--ease);
+  }
+  @keyframes halo-fade {
+    0%   { opacity: 0.32; transform: scale(1); }
+    100% { opacity: 0;    transform: scale(1.15); }
+  }
+
+  /* ⌘K shortcut button */
+  .btn-shortcut {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r);
+    padding: 0.4rem 0.75rem 0.4rem 0.875rem;
+    font-family: var(--f);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.18s var(--ease);
+  }
+  .btn-shortcut:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    padding: 1px 5px;
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    border-radius: 4px;
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--text-3);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+  }
+
+  .btn-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.625rem;
+  }
+  .btn-row-label {
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 0.625rem;
+  }
+
+  /* ═══════════════════════════════════════
+     04 · FORMS — chat input is the marquee
+  ═══════════════════════════════════════ */
+  .form-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 1.75rem;
+  }
+
+  /* Chat composer — the centerpiece */
+  .composer {
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r-md);
+    padding: 0.75rem 0.875rem 0.625rem;
+    transition: border-color 0.22s var(--ease), box-shadow 0.22s var(--ease);
+    margin-bottom: 2rem;
+  }
+  .composer:focus-within {
+    border-color: var(--accent-dim);
+    box-shadow: 0 0 0 3px var(--accent-lo);
+  }
+  .composer-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: var(--f);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    color: var(--text);
+    min-height: 1.55em;
+    max-height: 200px;
+  }
+  .composer-input::placeholder { color: var(--text-3); }
+  .composer-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .composer-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .composer-tool {
+    width: 28px; height: 28px;
+    background: transparent;
+    border: none;
+    border-radius: var(--r-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all 0.18s var(--ease);
+  }
+  .composer-tool:hover { color: var(--text); background: var(--surface); }
+  .composer-meta {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+  .char-count {
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .char-count.warn { color: var(--warn); }
+  .composer-send {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    color: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.18s var(--ease);
+  }
+  .composer-send:hover { background: #d4b878; transform: translateY(-1px); }
+  .composer-send:disabled {
+    background: var(--surface-2);
+    color: var(--text-3);
+    cursor: not-allowed;
+    transform: none;
+  }
+  .composer-helper {
+    margin-top: 0.625rem;
+    text-align: center;
+    font-size: 0.6875rem;
+    color: var(--text-3);
+    letter-spacing: -0.002em;
+  }
+
+  /* Standard form grid */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .fg-full { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 0.375rem; }
+  .label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-2);
+    letter-spacing: -0.003em;
+  }
+  .hint  {
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    color: var(--text-3);
+    letter-spacing: 0.005em;
+  }
+
+  .inp {
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r);
+    padding: 0.55rem 0.75rem;
+    font-family: var(--f);
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    color: var(--text);
+    outline: none;
+    width: 100%;
+    transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+  }
+  .inp::placeholder { color: var(--text-3); }
+  .inp:focus {
+    border-color: var(--accent-dim);
+    box-shadow: 0 0 0 3px var(--accent-lo);
+  }
+
+  .sel {
+    -webkit-appearance: none;
+    background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%236b665f' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    padding-right: 2.25rem;
+    cursor: pointer;
+  }
+
+  .ta { resize: vertical; min-height: 84px; line-height: 1.55; }
+
+  .chk-row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.375rem 0;
+  }
+  .chk-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chk-box {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    background: var(--bg);
+    border: 1px solid var(--border-3);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.18s var(--ease);
+  }
+  .chk-mark { opacity: 0; transition: opacity 0.12s; color: var(--bg); }
+  .chk-in:checked + .chk-box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .chk-in:checked + .chk-box .chk-mark { opacity: 1; }
+  .chk-in:focus-visible + .chk-box { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .chk-txt {
+    font-size: 0.8125rem;
+    color: var(--text);
+    letter-spacing: -0.003em;
+  }
+
+  /* Toggle */
+  .tgl-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.875rem 0;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .tgl-row:last-child { border-bottom: none; }
+  .tgl-info { flex: 1; }
+  .tgl-title { font-size: 0.875rem; font-weight: 500; color: var(--text); letter-spacing: -0.005em; }
+  .tgl-desc  { font-size: 0.75rem; color: var(--text-3); margin-top: 0.125rem; letter-spacing: -0.003em; }
+
+  .tgl { flex-shrink: 0; cursor: pointer; position: relative; }
+  .tgl-in { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tgl-track {
+    display: block;
+    width: 32px; height: 18px;
+    background: var(--surface-3);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r-full);
+    position: relative;
+    transition: background 0.24s var(--ease), border-color 0.24s var(--ease);
+  }
+  .tgl-thumb {
+    position: absolute; top: 1px; left: 1px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--text-2);
+    transition: transform 0.28s var(--ease), background 0.28s var(--ease);
+  }
+  .tgl-in:checked ~ .tgl-track {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .tgl-in:checked ~ .tgl-track .tgl-thumb {
+    transform: translateX(14px);
+    background: var(--bg);
+  }
+  .tgl-in:focus-visible ~ .tgl-track { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-full); }
+
+  /* ═══════════════════════════════════════
+     05 · CARDS — Source, Thinking, Tool Use
+  ═══════════════════════════════════════ */
+  .cards-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .card-label {
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Source card */
+  .card-source {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 1rem 1.125rem;
+    transition: all 0.22s var(--ease);
+  }
+  .card-source:hover { border-color: var(--border-2); transform: translateY(-1px); }
+  .card-source-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .card-source-favicon {
+    width: 16px; height: 16px;
+    border-radius: 3px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .card-source-url {
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    color: var(--text-3);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card-source-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.45rem;
+    background: var(--surface-2);
+    border-radius: var(--r-xs);
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .card-source-score-bar {
+    width: 28px; height: 3px;
+    background: var(--surface-3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .card-source-score-bar > i {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .card-source-title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.008em;
+    color: var(--text);
+    margin-bottom: 0.375rem;
+    line-height: 1.35;
+  }
+  .card-source-snippet {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--text-2);
+    letter-spacing: -0.003em;
+  }
+  .card-source-snippet mark {
+    background: var(--accent-lo);
+    color: var(--text);
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  /* Tool-Use card */
+  .card-tool {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .card-tool-head {
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    padding: 0.625rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-family: var(--f-m);
+    font-size: 0.75rem;
+    color: var(--text-2);
+  }
+  .card-tool-head-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ok);
+  }
+  .card-tool-fn {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .card-tool-time {
+    margin-left: auto;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.6875rem;
+  }
+  .card-tool-body {
+    padding: 0.875rem 1rem;
+    font-family: var(--f-m);
+    font-size: 0.75rem;
+    line-height: 1.7;
+  }
+  .ct-row { color: var(--text-3); }
+  .ct-row .ct-key   { color: var(--text-2); }
+  .ct-row .ct-val   { color: var(--text); }
+  .ct-row .ct-str   { color: #d9b56c; }
+  .ct-row .ct-num   { color: #7fb88f; }
+  .ct-divider {
+    margin: 0.625rem 0;
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+  .ct-result {
+    color: var(--text-2);
+  }
+  .ct-result .ct-result-label {
+    color: var(--text-3);
+    margin-right: 0.5rem;
+  }
+
+  /* ═══════════════════════════════════════
+     06 · CONTROLS — streaming simulator
+  ═══════════════════════════════════════ */
+  .player {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 1.5rem 1.625rem;
+  }
+
+  .player-top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .player-meta {
+    flex: 1;
+    min-width: 0;
+  }
+  .player-title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.008em;
+    color: var(--text);
+    margin-bottom: 0.15rem;
+  }
+  .player-sub {
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    color: var(--text-3);
+    letter-spacing: 0.005em;
+  }
+  .player-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.625rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-full);
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    font-weight: 500;
+    color: var(--text-2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .player-status.streaming { color: var(--accent); border-color: var(--accent-dim); }
+  .player-status-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--text-3);
+  }
+  .player-status.streaming .player-status-dot {
+    background: var(--accent);
+    animation: gen-pulse 1.4s ease-in-out infinite;
+  }
+
+  /* Streaming-text demo line */
+  .stream-demo {
+    padding: 1.125rem 1.25rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 1.25rem;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    letter-spacing: -0.003em;
+    color: var(--text);
+    min-height: 5.5em;
+  }
+
+  /* Transport row */
+  .transport {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .t-btn {
+    width: 34px; height: 34px;
+    background: transparent;
+    border: 1px solid var(--border-2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.18s var(--ease);
+  }
+  .t-btn:hover { color: var(--text); border-color: var(--border-3); background: var(--surface-2); }
+  .t-btn.t-play {
+    width: 38px; height: 38px;
+    background: var(--accent);
+    border-color: transparent;
+    color: var(--bg);
+  }
+  .t-btn.t-play:hover { background: #d4b878; transform: translateY(-1px); }
+  .t-btn.t-play[aria-pressed="true"] .play-ico { display: none; }
+  .t-btn.t-play[aria-pressed="false"] .pause-ico { display: none; }
+
+  .transport-spacer { flex: 1; }
+  .token-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.65rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    color: var(--text-2);
+    letter-spacing: 0.005em;
+  }
+  .token-counter .tc-num {
+    color: var(--accent);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scrubber-row { margin-bottom: 0.75rem; }
+  .rng {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: var(--r-full);
+    background: var(--surface-3);
+    outline: none;
+    cursor: pointer;
+  }
+  .rng::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    cursor: pointer;
+    box-shadow: 0 0 0 1px var(--accent);
+    transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease);
+  }
+  .rng::-webkit-slider-thumb:hover {
+    transform: scale(1.18);
+    box-shadow: 0 0 0 4px var(--accent-lo), 0 0 0 1px var(--accent);
+  }
+  .rng::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .scrub-times {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ═══════════════════════════════════════
+     07 · NAV — sidebar chat history
+  ═══════════════════════════════════════ */
+  .navdemo {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 480px;
+  }
+  .sidebar {
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 0.875rem;
+  }
+  .sb-newchat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r);
+    font-family: var(--f);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.18s var(--ease);
+    margin-bottom: 1.25rem;
+    text-align: left;
+    width: 100%;
+  }
+  .sb-newchat:hover { background: var(--surface-2); border-color: var(--border-3); }
+  .sb-newchat svg { flex-shrink: 0; color: var(--accent); }
+
+  .sb-section-label {
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 0 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+  .sb-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+  }
+  .sb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: var(--r-sm);
+    font-size: 0.8125rem;
+    color: var(--text-2);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.16s var(--ease);
+    position: relative;
+    letter-spacing: -0.003em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: transparent;
+    border: none;
+    font-family: var(--f);
+    text-align: left;
+    width: 100%;
+  }
+  .sb-item:hover { background: var(--surface); color: var(--text); }
+  .sb-item.active {
+    background: var(--surface);
+    color: var(--text);
+  }
+  .sb-item.active::before {
+    content: '';
+    position: absolute;
+    left: -0.875rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+  }
+  .sb-item-time {
+    margin-left: auto;
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    color: var(--text-3);
+    flex-shrink: 0;
+  }
+
+  .sb-footer {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  .sb-user {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: background 0.16s var(--ease);
+  }
+  .sb-user:hover { background: var(--surface); }
+  .sb-user-avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+    color: var(--bg);
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .sb-user-name {
+    font-size: 0.8125rem;
+    color: var(--text);
+    letter-spacing: -0.005em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sb-user-plan {
+    font-family: var(--f-m);
+    font-size: 0.625rem;
+    color: var(--text-3);
+    margin-left: auto;
+  }
+
+  /* Mock content panel */
+  .panel-mock {
+    padding: 1.75rem 2rem;
+    overflow: hidden;
+  }
+  .panel-mock-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .panel-mock-meta {
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    color: var(--text-3);
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.005em;
+  }
+  .panel-mock-body {
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    color: var(--text-2);
+    letter-spacing: -0.003em;
+  }
+  .panel-mock-body p { margin-bottom: 0.875rem; }
+
+  /* ═══════════════════════════════════════
+     CODE BLOCK with copy + language label
+  ═══════════════════════════════════════ */
+  .code-wrap {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin: 0.875rem 0 0;
+  }
+  .code-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0.75rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    color: var(--text-3);
+    letter-spacing: 0.005em;
+  }
+  .code-lang { color: var(--accent); }
+  .code-copy {
+    background: transparent;
+    border: none;
+    color: var(--text-3);
+    font-family: var(--f-m);
+    font-size: 0.6875rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    transition: all 0.18s var(--ease);
+  }
+  .code-copy:hover { color: var(--text); background: var(--surface); }
+  .code-copy.done { color: var(--ok); }
+  .code-body {
+    padding: 0.75rem 1rem;
+    font-family: var(--f-m);
+    font-size: 0.75rem;
+    line-height: 1.65;
+    color: var(--text);
+    overflow-x: auto;
+  }
+  .code-body .k { color: var(--accent); }
+  .code-body .s { color: var(--text-2); }
+  .code-body .c { color: var(--text-3); font-style: italic; }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 720px) {
+    .page { padding: 0 1rem 5rem; }
+    .topnav { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .tr { grid-template-columns: 96px 1fr; gap: 0.875rem; padding: 0.875rem 1.125rem; }
+    .ts-disp { font-size: 2.25rem; }
+    .ts-h1   { font-size: 1.75rem; }
+    .ts-h2   { font-size: 1.375rem; }
+    .palette-grid { grid-template-columns: 1fr; }
+    .mode-pair { grid-template-columns: 1fr; }
+    .navdemo { grid-template-columns: 1fr; min-height: auto; }
+    .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+    .panel-mock { padding: 1.25rem; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ── Sticky nav ────────────────────── -->
+<nav class="topnav" aria-label="Demo navigation">
+  <a class="tnav-back" href="../../index.html">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 2.5L4.5 7 9 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Back to gallery
+  </a>
+  <span class="tnav-title">
+    <span class="tnav-title-dot" aria-hidden="true"></span>
+    AI-Native
+  </span>
+  <a class="tnav-dl" href="./style-guide.md" download="ai-native-style-guide.md">
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 2v7.5M4.5 7l2.5 2.5 2.5-2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 12h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+    Download .md
+  </a>
+</nav>
+
+<!-- ── Side progress dots ────────────── -->
+<nav class="progress-nav" aria-label="Section navigation">
+  <button class="prog-dot active" data-sec="hero"     title="Overview"     aria-label="Jump to Overview"></button>
+  <button class="prog-dot"        data-sec="colors"   title="Colors"       aria-label="Jump to Colors"></button>
+  <button class="prog-dot"        data-sec="type"     title="Typography"   aria-label="Jump to Typography"></button>
+  <button class="prog-dot"        data-sec="buttons"  title="Buttons"      aria-label="Jump to Buttons"></button>
+  <button class="prog-dot"        data-sec="inputs"   title="Forms"        aria-label="Jump to Forms"></button>
+  <button class="prog-dot"        data-sec="cards"    title="Cards"        aria-label="Jump to Cards"></button>
+  <button class="prog-dot"        data-sec="controls" title="Controls"     aria-label="Jump to Controls"></button>
+  <button class="prog-dot"        data-sec="nav"      title="Navigation"   aria-label="Jump to Navigation"></button>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────── -->
+  <header class="hero sec visible" id="sec-hero">
+    <div class="hero-kicker">
+      <span class="hero-kicker-dot"></span>
+      Conversational Shell · 2024+
+    </div>
+    <h1 class="hero-h1">The interface <span class="accent-fade">listens, thinks,<br>and replies.</span></h1>
+    <p class="hero-desc">A design language where the canvas is a conversation — streaming text, cited sources, expandable reasoning. Warm gold on near-black, generous line-height, monospaced metadata. The Claude register, not the cold-blue register.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Inter + JetBrains Mono</span>
+      <span class="hero-tag">Streaming shimmer</span>
+      <span class="hero-tag">Citation chips</span>
+      <span class="hero-tag">Warm-gold accent only</span>
+      <span class="hero-tag">8px rhythm · Apple spring</span>
+    </div>
+
+    <!-- THE MARQUEE: a full conversational exchange -->
+    <div class="convo" id="convo">
+      <!-- User message -->
+      <div class="msg user">
+        <div class="msg-avatar user" aria-hidden="true">JS</div>
+        <div class="msg-body">
+          <div class="msg-author">jane · 12:48</div>
+          <div class="msg-bubble">How do I design an AI interface that doesn't feel like every other chatbot?</div>
+        </div>
+      </div>
+
+      <!-- Assistant message -->
+      <div class="msg ai">
+        <div class="msg-avatar ai" aria-hidden="true">★</div>
+        <div class="msg-body">
+          <div class="msg-author">claude · just now</div>
+
+          <!-- Thinking block (expandable) -->
+          <details class="thinking">
+            <summary class="thinking-toggle">
+              <svg class="thinking-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <path d="M3.5 2.5L6.5 5 3.5 7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Thinking
+              <span class="thinking-label-meta">4 steps · 1.2s</span>
+            </summary>
+            <div class="thinking-body">
+              <div class="thinking-inner has-border">
+                <div class="think-step">Parsing intent: the user wants <em>differentiation</em>, not a tutorial.</div>
+                <div class="think-step">Recalling Claude.ai, Perplexity, Cursor — what's their shared register?</div>
+                <div class="think-step">Naming three concrete signatures: streaming text, citations, expandable reasoning.</div>
+                <div class="think-step">Closing with a principle: the AI should feel like it's <em>still composing</em>.</div>
+              </div>
+            </div>
+          </details>
+
+          <div class="msg-bubble">
+            <p><span class="stream-text">The single biggest move is to design the surface as a conversation, not a form.</span> Drop the modal-and-button mental model. The user is talking to something that thinks out loud — show the thinking<a class="cite" href="#" data-cite="1">1</a>, show the sources<a class="cite" href="#" data-cite="2">2</a>, and let the text arrive token-by-token<a class="cite" href="#" data-cite="3">3</a> with a blinking caret<span class="caret" aria-hidden="true"></span></p>
+            <p>Three specific differentiators: <strong>warm gold</strong> instead of the default cold blue, <strong>citation chips</strong> rendered as small monospaced superscripts, and an <strong>expandable thinking panel</strong> that pulses subtly at its edge while the model is still reasoning.</p>
+          </div>
+
+          <!-- Action chips -->
+          <div class="action-chips">
+            <button class="chip" data-action="copy">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                <rect x="2.5" y="3.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M4.5 1.5h4a1 1 0 0 1 1 1v4" stroke="currentColor" stroke-width="1.2" fill="none"/>
+              </svg>
+              Copy
+            </button>
+            <button class="chip" data-action="regenerate">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                <path d="M9.5 5.5a4 4 0 1 1-1-2.7" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                <path d="M9.5 1.5v2.5h-2.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Regenerate
+            </button>
+            <button class="chip" data-action="continue">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                <path d="M3 5.5h5M5.5 3l2.5 2.5L5.5 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Continue
+            </button>
+            <button class="chip gold" data-action="cite">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                <path d="M3 4h2v2.5c0 1.5-1 2-2 2M6 4h2v2.5c0 1.5-1 2-2 2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+              </svg>
+              Cite
+            </button>
+            <span class="generating">
+              <span class="generating-dot" aria-hidden="true"></span>
+              Generating
+              <span class="generating-time" id="gen-time">0.42s</span>
+            </span>
+          </div>
+
+          <!-- Sources panel -->
+          <div class="sources" aria-label="Sources">
+            <div class="sources-head">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                <rect x="1.5" y="2" width="8" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M3.5 4.5h4M3.5 6.5h2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              Sources · <span class="sources-head-count">3</span>
+            </div>
+            <a href="#" class="source">
+              <span class="source-num">1</span>
+              <span class="source-favicon" aria-hidden="true"></span>
+              <span class="source-body">
+                <div class="source-title">Designing for AI: The Conversational Canvas</div>
+                <div class="source-url">claude.ai/research/conversational-canvas · 4 min read</div>
+              </span>
+            </a>
+            <a href="#" class="source">
+              <span class="source-num">2</span>
+              <span class="source-favicon f2" aria-hidden="true"></span>
+              <span class="source-body">
+                <div class="source-title">Why Perplexity Shows Its Sources</div>
+                <div class="source-url">perplexity.ai/blog/citations-as-ui · 6 min read</div>
+              </span>
+            </a>
+            <a href="#" class="source">
+              <span class="source-num">3</span>
+              <span class="source-favicon f3" aria-hidden="true"></span>
+              <span class="source-body">
+                <div class="source-title">Token Streaming and the Feel of Thought</div>
+                <div class="source-url">cursor.com/blog/streaming-ux · 3 min read</div>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 01 COLORS ─────────────────────── -->
+  <section class="sec" id="sec-colors" aria-labelledby="colors-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 01 / 08</span>
+      <h2 class="sec-title" id="colors-h">Colors · the gold register</h2>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">[palette]</span>
+      <p class="spec-callout-text">Near-black backgrounds with a warm undertone (<strong>#0d0d11</strong>), warm gold (<strong>#c8a868</strong>) as the only chromatic accent, and a warm off-white text scale. <strong>Never use cold blue or pure white</strong> — that's the ChatGPT register and it's not yours.</p>
+    </div>
+
+    <p class="palette-section-label">Surfaces · text · accent</p>
+    <div class="palette-grid">
+      <div class="color-card">
+        <div class="color-card-head"><span class="color-card-head-dot"></span>tool_call <span class="color-card-head-status">200 ok</span></div>
+        <div class="color-card-body">
+          <div class="color-swatch" style="background:#0d0d11"></div>
+          <div class="color-callsig"><span class="fn">getToken</span>(<span class="arg">"bg"</span>) <span class="arrow">→</span> <span class="ret">"#0d0d11"</span></div>
+          <div class="color-name">--bg · canvas, page background</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-card-head"><span class="color-card-head-dot"></span>tool_call <span class="color-card-head-status">200 ok</span></div>
+        <div class="color-card-body">
+          <div class="color-swatch" style="background:#1a1a22"></div>
+          <div class="color-callsig"><span class="fn">getToken</span>(<span class="arg">"surface"</span>) <span class="arrow">→</span> <span class="ret">"#1a1a22"</span></div>
+          <div class="color-name">--surface · assistant bubble, cards</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-card-head"><span class="color-card-head-dot"></span>tool_call <span class="color-card-head-status">200 ok</span></div>
+        <div class="color-card-body">
+          <div class="color-swatch" style="background:#232330"></div>
+          <div class="color-callsig"><span class="fn">getToken</span>(<span class="arg">"surface-2"</span>) <span class="arrow">→</span> <span class="ret">"#232330"</span></div>
+          <div class="color-name">--surface-2 · sources panel, raised</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-card-head"><span class="color-card-head-dot"></span>tool_call <span class="color-card-head-status">200 ok</span></div>
+        <div class="color-card-body">
+          <div class="color-swatch" style="background:#c8a868"></div>
+          <div class="color-callsig"><span class="fn">getToken</span>(<span class="arg">"accent"</span>) <span class="arrow">→</span> <span class="ret">"#c8a868"</span></div>
+          <div class="color-name">--accent · warm gold, sole chromatic hue</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-card-head"><span class="color-card-head-dot"></span>tool_call <span class="color-card-head-status">200 ok</span></div>
+        <div class="color-card-body">
+          <div class="color-swatch" style="background:#8b7355"></div>
+          <div class="color-callsig"><span class="fn">getToken</span>(<span class="arg">"accent-dim"</span>) <span class="arrow">→</span> <span class="ret">"#8b7355"</span></div>
+          <div class="color-name">--accent-dim · pressed, borders</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-card-head"><span class="color-card-head-dot"></span>tool_call <span class="color-card-head-status">200 ok</span></div>
+        <div class="color-card-body">
+          <div class="color-swatch" style="background:#f4f1ec"></div>
+          <div class="color-callsig"><span class="fn">getToken</span>(<span class="arg">"text"</span>) <span class="arrow">→</span> <span class="ret">"#f4f1ec"</span></div>
+          <div class="color-name">--text · warm off-white</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-card-head"><span class="color-card-head-dot"></span>tool_call <span class="color-card-head-status">200 ok</span></div>
+        <div class="color-card-body">
+          <div class="color-swatch" style="background:#a8a39a"></div>
+          <div class="color-callsig"><span class="fn">getToken</span>(<span class="arg">"text-2"</span>) <span class="arrow">→</span> <span class="ret">"#a8a39a"</span></div>
+          <div class="color-name">--text-2 · secondary copy</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-card-head"><span class="color-card-head-dot"></span>tool_call <span class="color-card-head-status">200 ok</span></div>
+        <div class="color-card-body">
+          <div class="color-swatch" style="background:#6b665f"></div>
+          <div class="color-callsig"><span class="fn">getToken</span>(<span class="arg">"text-3"</span>) <span class="arrow">→</span> <span class="ret">"#6b665f"</span></div>
+          <div class="color-name">--text-3 · metadata, captions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Light/dark pair -->
+    <p class="palette-section-label">Dark + Light mode pair</p>
+    <div class="mode-pair">
+      <div class="mode-card dark">
+        <div class="mode-card-head">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M9 6.5a4 4 0 0 1-5.5-5.5 4 4 0 1 0 5.5 5.5Z" stroke="currentColor" stroke-width="1.2" fill="rgba(200,168,104,0.18)"/></svg>
+          mode = "dark" · default
+        </div>
+        <div class="mode-card-body">
+          <div class="mode-card-msg">An interface that thinks in the dark<span class="mode-card-cite">1</span></div>
+          <div class="mode-card-msg" style="opacity:0.85">Generating response<span class="caret" aria-hidden="true" style="background:#c8a868"></span></div>
+        </div>
+      </div>
+      <div class="mode-card light">
+        <div class="mode-card-head">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.2" fill="rgba(200,168,104,0.18)"/><path d="M5.5 1v1M5.5 9v1M1 5.5h1M9 5.5h1M2.3 2.3l.7.7M8 8l.7.7M2.3 8.7l.7-.7M8 3l.7-.7" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          mode = "light" · paper
+        </div>
+        <div class="mode-card-body">
+          <div class="mode-card-msg">An interface that thinks on paper<span class="mode-card-cite">1</span></div>
+          <div class="mode-card-msg" style="opacity:0.85">Generating response<span class="caret" aria-hidden="true" style="background:#8b7355"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 02 TYPOGRAPHY ─────────────────── -->
+  <section class="sec" id="sec-type" aria-labelledby="type-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 02 / 08</span>
+      <h2 class="sec-title" id="type-h">Typography · Inter + JetBrains Mono</h2>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">[type-scale]</span>
+      <p class="spec-callout-text"><strong>Inter</strong> for body and display — a warm modern sans with excellent legibility at 15–17px body. <strong>JetBrains Mono</strong> for everything tagged "metadata": citations, code, timestamps, status pills. Tracking is obsessive at display sizes (<strong>-0.022em to -0.04em</strong>). Body line-height never below 1.6.</p>
+    </div>
+    <div class="typescale">
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-meta-name">display</span>52px / 600<br>−0.04em · lh 1.05</div>
+        <div class="ts-disp">A canvas that thinks.</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-meta-name">h1</span>36px / 600<br>−0.032em · lh 1.1</div>
+        <div class="ts-h1">Streaming response</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-meta-name">h2</span>26px / 600<br>−0.024em · lh 1.2</div>
+        <div class="ts-h2">A heading with intent</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-meta-name">h3</span>20px / 600<br>−0.018em · lh 1.3</div>
+        <div class="ts-h3">Section subhead</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-meta-name">body</span>16px / 400<br>−0.005em · lh 1.7</div>
+        <div class="ts-body"><span class="stream-text">The quick brown fox jumps over the lazy dog — generously spaced so the reader can breathe between tokens.</span></div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-meta-name">body sm</span>14px / 400<br>−0.003em · lh 1.55</div>
+        <div class="ts-sm">Secondary copy and helper text that doesn't compete with the main reading line.</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-meta-name">mono</span>JetBrains 14px<br>lh 1.55</div>
+        <div class="ts-mono">getToken("accent") → "#c8a868"</div>
+      </div>
+      <div class="tr">
+        <div class="tr-meta"><span class="tr-meta-name">caption</span>11px / 500<br>+0.04em · upper</div>
+        <div class="ts-cap">tool_call · 200 ok · 142ms</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 03 BUTTONS ────────────────────── -->
+  <section class="sec" id="sec-buttons" aria-labelledby="btn-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 03 / 08</span>
+      <h2 class="sec-title" id="btn-h">Buttons · pills, chips, shortcuts</h2>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">[action]</span>
+      <p class="spec-callout-text">Primary button is solid <strong>--accent</strong>. Secondary is a 1px <strong>--border-2</strong> outline. Ghost is invisible until hover. Action chips are pill-shaped, monospaced, and small — they live <em>under</em> a message, not next to it. Click any primary or chip to see the gold halo flash.</p>
+    </div>
+
+    <div class="btn-grid">
+      <div>
+        <p class="btn-row-label">Primary · Secondary · Ghost · Destructive</p>
+        <div class="btn-row">
+          <button class="btn btn-p btn-halo">Send message</button>
+          <button class="btn btn-halo">Cancel</button>
+          <button class="btn btn-ghost">Skip</button>
+          <button class="btn btn-destructive">Delete chat</button>
+          <button class="btn" disabled>Disabled</button>
+        </div>
+      </div>
+
+      <div>
+        <p class="btn-row-label">Icon buttons</p>
+        <div class="btn-row">
+          <button class="btn btn-icon" aria-label="Attach">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 4l-4 4a2 2 0 1 0 2.8 2.8L12 6.1a3.5 3.5 0 0 0-5-5l-5 5a5 5 0 0 0 7 7l4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="btn btn-icon" aria-label="Microphone">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="5.5" y="1.5" width="3" height="6.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 7a4 4 0 0 0 8 0M7 11v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+          <button class="btn btn-icon" aria-label="More">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3.5" cy="7" r="1" fill="currentColor"/><circle cx="7" cy="7" r="1" fill="currentColor"/><circle cx="10.5" cy="7" r="1" fill="currentColor"/></svg>
+          </button>
+          <button class="btn btn-icon btn-p btn-halo" aria-label="Send">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7l9-4-3 9-1.5-4-4.5-1Z" stroke="currentColor" stroke-width="1.3" fill="currentColor" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <p class="btn-row-label">Action chips · under-message row</p>
+        <div class="btn-row">
+          <button class="chip" data-action="copy">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="2.5" y="3.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 1.5h4a1 1 0 0 1 1 1v4" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+            Copy
+          </button>
+          <button class="chip" data-action="regenerate">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M9.5 5.5a4 4 0 1 1-1-2.7" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M9.5 1.5v2.5h-2.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Regenerate
+          </button>
+          <button class="chip" data-action="continue">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M3 5.5h5M5.5 3l2.5 2.5L5.5 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Continue
+          </button>
+          <button class="chip gold" data-action="cite">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M3 4h2v2.5c0 1.5-1 2-2 2M6 4h2v2.5c0 1.5-1 2-2 2" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+            Cite
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <p class="btn-row-label">Keyboard shortcut · ⌘K</p>
+        <div class="btn-row">
+          <button class="btn-shortcut">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="5.5" cy="5.5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M7.8 7.8L10 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Search anything
+            <span style="flex:1"></span>
+            <span class="kbd">⌘</span>
+            <span class="kbd">K</span>
+          </button>
+          <button class="btn-shortcut">
+            New thread
+            <span style="flex:1"></span>
+            <span class="kbd">⌘</span>
+            <span class="kbd">N</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 04 FORMS ──────────────────────── -->
+  <section class="sec" id="sec-inputs" aria-labelledby="inputs-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 04 / 08</span>
+      <h2 class="sec-title" id="inputs-h">Forms · the chat composer is the marquee</h2>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">[input]</span>
+      <p class="spec-callout-text">The <strong>chat composer</strong> is the single most important component in an AI-native interface. It anchors the screen, accepts paste/drag/voice, shows a character count, and ends with a circular gold send button. All other inputs follow its language: 1px <strong>--border-2</strong> at rest, gold glow-ring on focus.</p>
+    </div>
+
+    <div class="form-panel">
+      <!-- THE CHAT COMPOSER -->
+      <label class="label" for="composer-input" style="margin-bottom:0.5rem; display:block">Ask anything</label>
+      <div class="composer">
+        <textarea
+          id="composer-input"
+          class="composer-input"
+          placeholder="How can I help you today?"
+          rows="2"></textarea>
+        <div class="composer-row">
+          <div class="composer-tools">
+            <button class="composer-tool" aria-label="Attach file">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M9 4l-4.5 4.5a2.5 2.5 0 0 0 3.5 3.5l5.5-5.5a4 4 0 0 0-5.6-5.6L2.5 6.4a5.5 5.5 0 0 0 7.8 7.8l4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="composer-tool" aria-label="Voice input">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="6" y="1.5" width="3" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 7.5a4.5 4.5 0 0 0 9 0M7.5 12v1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </button>
+            <button class="composer-tool" aria-label="Tools menu">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 4h11M2 7.5h11M2 11h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="composer-meta">
+            <span class="char-count" id="char-count">0 / 4000</span>
+            <button class="composer-send btn-halo" id="composer-send" aria-label="Send message">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5l8-4-3 8-1.5-3.5L2.5 6.5Z" stroke="currentColor" stroke-width="1.3" fill="currentColor" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <p class="composer-helper">AI may make mistakes — verify important information.</p>
+
+      <!-- Standard fields below the composer -->
+      <div style="margin-top: 2rem; padding-top: 1.75rem; border-top: 1px solid var(--border)">
+        <p class="btn-row-label">Standard form fields</p>
+        <div class="form-grid">
+          <div class="field">
+            <label class="label" for="fi-name">Display name</label>
+            <input class="inp" type="text" id="fi-name" placeholder="Jane Smith" autocomplete="name">
+          </div>
+          <div class="field">
+            <label class="label" for="fi-email">Email</label>
+            <input class="inp" type="email" id="fi-email" placeholder="jane@example.com" autocomplete="email">
+          </div>
+          <div class="field">
+            <label class="label" for="fi-model">Model</label>
+            <select class="inp sel" id="fi-model">
+              <option>Claude Opus 4.5</option>
+              <option>Claude Sonnet 4</option>
+              <option>Claude Haiku 4</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="fi-temp">Temperature</label>
+            <input class="inp" type="text" id="fi-temp" value="0.7">
+            <span class="hint">Range 0.0 – 2.0 · default 0.7</span>
+          </div>
+          <div class="field fg-full">
+            <label class="label" for="fi-prompt">System prompt</label>
+            <textarea class="inp ta" id="fi-prompt" placeholder="You are a thoughtful assistant who…" rows="3"></textarea>
+          </div>
+          <div class="field">
+            <span class="label" id="chk-lbl">Capabilities</span>
+            <div role="group" aria-labelledby="chk-lbl">
+              <label class="chk-row">
+                <input class="chk-in" type="checkbox" checked>
+                <span class="chk-box"><svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="chk-txt">Web search</span>
+              </label>
+              <label class="chk-row">
+                <input class="chk-in" type="checkbox" checked>
+                <span class="chk-box"><svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="chk-txt">Code interpreter</span>
+              </label>
+              <label class="chk-row">
+                <input class="chk-in" type="checkbox">
+                <span class="chk-box"><svg class="chk-mark" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="chk-txt">Image generation</span>
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="label">Behavior</span>
+            <div>
+              <div class="tgl-row">
+                <div class="tgl-info">
+                  <div class="tgl-title">Show thinking</div>
+                  <div class="tgl-desc">Expose reasoning steps</div>
+                </div>
+                <label class="tgl">
+                  <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Show thinking">
+                  <span class="tgl-track"><span class="tgl-thumb"></span></span>
+                </label>
+              </div>
+              <div class="tgl-row">
+                <div class="tgl-info">
+                  <div class="tgl-title">Stream tokens</div>
+                  <div class="tgl-desc">Render as they generate</div>
+                </div>
+                <label class="tgl">
+                  <input class="tgl-in" type="checkbox" role="switch" checked aria-label="Stream tokens">
+                  <span class="tgl-track"><span class="tgl-thumb"></span></span>
+                </label>
+              </div>
+              <div class="tgl-row">
+                <div class="tgl-info">
+                  <div class="tgl-title">Save to history</div>
+                  <div class="tgl-desc">Encrypted at rest</div>
+                </div>
+                <label class="tgl">
+                  <input class="tgl-in" type="checkbox" role="switch" aria-label="Save to history">
+                  <span class="tgl-track"><span class="tgl-thumb"></span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CARDS ──────────────────────── -->
+  <section class="sec" id="sec-cards" aria-labelledby="cards-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 05 / 08</span>
+      <h2 class="sec-title" id="cards-h">Cards · source, thinking, tool-use</h2>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">[card]</span>
+      <p class="spec-callout-text">Three card types carry the AI-native register: <strong>Source cards</strong> show provenance, <strong>Thinking cards</strong> show reasoning, and <strong>Tool-Use cards</strong> show function calls as code. Each has its own anatomy — don't blend them.</p>
+    </div>
+
+    <div class="cards-stack">
+
+      <!-- Source card -->
+      <div>
+        <p class="card-label">Source card · with relevance score</p>
+        <article class="card-source">
+          <div class="card-source-head">
+            <span class="card-source-favicon" aria-hidden="true"></span>
+            <span class="card-source-url">claude.ai/research/designing-ai-interfaces</span>
+            <span class="card-source-score">
+              <span class="card-source-score-bar"><i style="width: 92%"></i></span>
+              0.92
+            </span>
+          </div>
+          <h3 class="card-source-title">Designing AI Interfaces That Don't Feel Like Chatbots</h3>
+          <p class="card-source-snippet">The single biggest move is to design the surface as a <mark>conversation, not a form</mark>. Drop the modal-and-button mental model — show thinking, show sources, and let text arrive token-by-token.</p>
+        </article>
+      </div>
+
+      <!-- Thinking card (standalone, expanded) -->
+      <div>
+        <p class="card-label">Thinking card · reasoning steps</p>
+        <details class="thinking" open>
+          <summary class="thinking-toggle">
+            <svg class="thinking-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3.5 2.5L6.5 5 3.5 7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Thought for 1.2s
+            <span class="thinking-label-meta">5 steps · 286 tokens</span>
+          </summary>
+          <div class="thinking-body">
+            <div class="thinking-inner has-border">
+              <div class="think-step">User asks for AI interface differentiation, not basics.</div>
+              <div class="think-step">Three references stand out: Claude.ai, Perplexity, Cursor.</div>
+              <div class="think-step">Their shared register: warm gold, citations, streaming text.</div>
+              <div class="think-step">Cold-blue ChatGPT register is the foil — name it explicitly.</div>
+              <div class="think-step">Close on a principle: the AI should feel like it's still composing.</div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Tool-Use card -->
+      <div>
+        <p class="card-label">Tool-Use card · function call + result</p>
+        <article class="card-tool">
+          <div class="card-tool-head">
+            <span class="card-tool-head-dot"></span>
+            <span><span class="card-tool-fn">search_web</span><span style="color:var(--text-3)">(</span>query<span style="color:var(--text-3)">, </span>top_k<span style="color:var(--text-3)">)</span></span>
+            <span class="card-tool-time">142ms</span>
+          </div>
+          <div class="card-tool-body">
+            <div class="ct-row"><span class="ct-key">query:</span> <span class="ct-str">"AI interface design differentiation"</span></div>
+            <div class="ct-row"><span class="ct-key">top_k:</span> <span class="ct-num">3</span></div>
+            <div class="ct-row"><span class="ct-key">filter:</span> <span class="ct-str">"published &gt; 2024-01-01"</span></div>
+            <hr class="ct-divider">
+            <div class="ct-result"><span class="ct-result-label">returned</span> <span class="ct-val">3 results · 0.92 avg relevance · cached for 24h</span></div>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 06 CONTROLS ───────────────────── -->
+  <section class="sec" id="sec-controls" aria-labelledby="ctrl-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 06 / 08</span>
+      <h2 class="sec-title" id="ctrl-h">Controls · streaming-response simulator</h2>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">[stream]</span>
+      <p class="spec-callout-text">Press play to see the streaming shimmer in motion. The scrubber moves through the response, the token counter increments, and the status pill flips to <strong>streaming</strong>. Regenerate restarts from token 0. This is the canonical "AI is thinking" affordance.</p>
+    </div>
+
+    <div class="player">
+      <div class="player-top">
+        <div class="player-meta">
+          <div class="player-title">Designing AI interfaces that don't feel like chatbots</div>
+          <div class="player-sub">claude-opus-4.5 · streaming · temp 0.7</div>
+        </div>
+        <span class="player-status" id="player-status">
+          <span class="player-status-dot"></span>
+          paused
+        </span>
+      </div>
+
+      <!-- Streaming demo text -->
+      <div class="stream-demo" id="stream-demo">
+        <span id="stream-content">The single biggest move is to design the surface as a conversation, not a form. Drop the modal-and-button mental model.</span><span class="caret" id="stream-caret" aria-hidden="true" style="display:none"></span>
+      </div>
+
+      <!-- Transport -->
+      <div class="transport">
+        <button class="t-btn" aria-label="Restart" id="t-restart">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11.5 7a4.5 4.5 0 1 1-1.2-3" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M11.5 1.5V4h-2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </button>
+        <button class="t-btn t-play btn-halo" id="play-btn" aria-label="Play" aria-pressed="false">
+          <svg class="play-ico" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2.5l8 4.5-8 4.5V2.5Z" fill="currentColor"/></svg>
+          <svg class="pause-ico" width="14" height="14" viewBox="0 0 14 14" fill="none" style="display:none"><path d="M4.5 2.5h2.5v9H4.5V2.5ZM8.5 2.5H11v9H8.5V2.5Z" fill="currentColor"/></svg>
+        </button>
+        <button class="t-btn" aria-label="Regenerate" id="t-regen">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11.5 7a4.5 4.5 0 0 1-7.7 3.2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M11.5 1.5V4h-2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </button>
+        <div class="transport-spacer"></div>
+        <span class="token-counter">
+          <span class="tc-num" id="tc-num">0</span> /
+          <span style="color:var(--text-3)">512</span>
+          <span style="color:var(--text-3)">tokens</span>
+        </span>
+      </div>
+
+      <!-- Scrubber -->
+      <div class="scrubber-row">
+        <input class="rng" type="range" id="scrubber" min="0" max="100" value="0" aria-label="Generation progress">
+        <div class="scrub-times">
+          <span id="scrub-start">0.0s</span>
+          <span>2.4s</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 NAV ────────────────────────── -->
+  <section class="sec" id="sec-nav" aria-labelledby="nav-h">
+    <div class="sec-hd">
+      <span class="sec-pill" aria-hidden="true">§ 07 / 08</span>
+      <h2 class="sec-title" id="nav-h">Navigation · sidebar chat history</h2>
+    </div>
+    <div class="spec-callout">
+      <span class="spec-callout-ico">[nav]</span>
+      <p class="spec-callout-text">Sidebar nav lives on the left. <strong>New Chat</strong> button at top — always available. Conversation history grouped by recency. Settings and user account at the bottom. Active item: warmer surface tint plus a <strong>2px gold left-rule</strong> — the opposite of a heavy highlight bar.</p>
+    </div>
+
+    <div class="navdemo">
+      <aside class="sidebar" aria-label="Chat history">
+        <button class="sb-newchat">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 2.5v8M2.5 6.5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          New chat
+        </button>
+
+        <p class="sb-section-label">Today</p>
+        <div class="sb-list">
+          <button class="sb-item active">
+            Designing AI interfaces
+            <span class="sb-item-time">12:48</span>
+          </button>
+          <button class="sb-item">
+            Spacing rhythm on 8px grid
+            <span class="sb-item-time">10:22</span>
+          </button>
+        </div>
+
+        <p class="sb-section-label" style="margin-top: 1rem">Yesterday</p>
+        <div class="sb-list">
+          <button class="sb-item">
+            React state with useReducer
+            <span class="sb-item-time">Mon</span>
+          </button>
+          <button class="sb-item">
+            Drought-tolerant garden plan
+            <span class="sb-item-time">Mon</span>
+          </button>
+          <button class="sb-item">
+            Untitled chat
+            <span class="sb-item-time">Mon</span>
+          </button>
+        </div>
+
+        <div class="sb-footer">
+          <div class="sb-user">
+            <div class="sb-user-avatar">M</div>
+            <span class="sb-user-name">Michelle P.</span>
+            <span class="sb-user-plan">Pro</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="panel-mock">
+        <h3 class="panel-mock-title">Designing AI interfaces</h3>
+        <p class="panel-mock-meta">claude-opus-4.5 · 12 messages · started 12:48</p>
+        <div class="panel-mock-body">
+          <p>The conversation panel renders here. Active sidebar item carries the gold left-rule and a warmer background — never a heavy fill or border, just a tonal shift.</p>
+          <p>Notice the left-rule sits flush in the gutter, not on the item itself. That keeps the active indicator from competing with the message content while still being instantly readable.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code block to close the section -->
+    <div class="code-wrap" style="margin-top:1.5rem">
+      <div class="code-head">
+        <span class="code-lang">css</span>
+        <button class="code-copy" data-copy="active-rule">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="2.5" y="3.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 1.5h4a1 1 0 0 1 1 1v4" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+          Copy
+        </button>
+      </div>
+      <pre class="code-body" id="copy-active-rule">.sb-item.active <span class="c">/* warmer surface + gold left-rule */</span>
+  <span class="k">background</span>: <span class="s">var(--surface)</span>;
+.sb-item.active::before
+  <span class="k">content</span>: <span class="s">''</span>;
+  <span class="k">position</span>: <span class="s">absolute</span>;
+  <span class="k">left</span>: <span class="s">-0.875rem</span>;
+  <span class="k">width</span>: <span class="s">2px</span>;
+  <span class="k">background</span>: <span class="s">var(--accent)</span>;</pre>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+/* ── Composer character count ─────────── */
+const composer = document.getElementById('composer-input');
+const charCount = document.getElementById('char-count');
+const sendBtn = document.getElementById('composer-send');
+const MAX_CHARS = 4000;
+
+function updateChars() {
+  const len = composer.value.length;
+  charCount.textContent = `${len} / ${MAX_CHARS}`;
+  charCount.classList.toggle('warn', len > MAX_CHARS * 0.9);
+  sendBtn.disabled = len === 0;
+}
+composer.addEventListener('input', () => {
+  composer.style.height = 'auto';
+  composer.style.height = Math.min(composer.scrollHeight, 200) + 'px';
+  updateChars();
+});
+updateChars();
+
+/* ── Generating timer (hero) ──────────── */
+const genTime = document.getElementById('gen-time');
+if (genTime) {
+  let t = 0.42;
+  setInterval(() => {
+    t = (t + 0.1) % 99.9;
+    genTime.textContent = t.toFixed(2) + 's';
+  }, 100);
+}
+
+/* ── Citation chip hover sync ─────────── */
+document.querySelectorAll('.cite').forEach(c => {
+  c.addEventListener('mouseenter', () => {
+    const n = c.dataset.cite;
+    document.querySelectorAll('.source').forEach(s => {
+      const num = s.querySelector('.source-num');
+      if (num && num.textContent === n) s.style.background = 'var(--surface)';
+    });
+  });
+  c.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.source').forEach(s => s.style.background = '');
+  });
+});
+
+/* ── Action chip halo flash ───────────── */
+function flashHalo(el) {
+  el.classList.remove('flash');
+  void el.offsetWidth; /* reflow */
+  el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 600);
+}
+document.querySelectorAll('.btn-halo').forEach(b => {
+  b.addEventListener('click', () => flashHalo(b));
+});
+
+/* ── Action-chip click feedback ───────── */
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const original = chip.innerHTML;
+    if (chip.dataset.action === 'copy') {
+      chip.innerHTML = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5L9 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied';
+      chip.style.color = 'var(--ok)';
+      chip.style.borderColor = 'rgba(127,184,143,0.32)';
+      setTimeout(() => {
+        chip.innerHTML = original;
+        chip.style.color = '';
+        chip.style.borderColor = '';
+      }, 1400);
+    }
+  });
+});
+
+/* ── Sidebar item activation ──────────── */
+document.querySelectorAll('.sb-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+/* ── Code copy button ─────────────────── */
+document.querySelectorAll('.code-copy').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const targetId = 'copy-' + btn.dataset.copy;
+    const pre = document.getElementById(targetId);
+    if (!pre) return;
+    const text = pre.innerText;
+    navigator.clipboard?.writeText(text);
+    const original = btn.innerHTML;
+    btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5L9 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied';
+    btn.classList.add('done');
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.classList.remove('done');
+    }, 1400);
+  });
+});
+
+/* ── Streaming-response simulator ─────── */
+const playBtn = document.getElementById('play-btn');
+const scrubber = document.getElementById('scrubber');
+const tcNum = document.getElementById('tc-num');
+const status = document.getElementById('player-status');
+const scrubStart = document.getElementById('scrub-start');
+const streamContent = document.getElementById('stream-content');
+const streamCaret = document.getElementById('stream-caret');
+const streamDemo = document.getElementById('stream-demo');
+const tRestart = document.getElementById('t-restart');
+const tRegen = document.getElementById('t-regen');
+
+const FULL_TEXT = 'The single biggest move is to design the surface as a conversation, not a form. Drop the modal-and-button mental model. The user is talking to something that thinks out loud — show the thinking, show the sources, and let the text arrive token-by-token with a blinking caret.';
+const TOTAL_TOKENS = 512;
+const TOTAL_TIME_MS = 2400;
+
+let playing = false;
+let progress = 0;
+let lastTick = 0;
+let rafId = null;
+
+function setPlaying(p) {
+  playing = p;
+  playBtn.setAttribute('aria-pressed', String(p));
+  playBtn.setAttribute('aria-label', p ? 'Pause' : 'Play');
+  status.firstElementChild.nextSibling.nodeValue = ' ' + (p ? 'streaming' : 'paused');
+  status.classList.toggle('streaming', p);
+  if (streamCaret) streamCaret.style.display = p ? 'inline-block' : 'none';
+  if (streamDemo) streamDemo.classList.toggle('shimmering', p);
+}
+
+function applyProgress(pct) {
+  scrubber.value = pct;
+  scrubStart.textContent = (pct * TOTAL_TIME_MS / 100 / 1000).toFixed(1) + 's';
+  tcNum.textContent = Math.round(pct * TOTAL_TOKENS / 100);
+  const chars = Math.round(pct * FULL_TEXT.length / 100);
+  streamContent.textContent = FULL_TEXT.slice(0, chars);
+  if (playing) {
+    streamContent.classList.add('stream-text');
+  } else {
+    streamContent.classList.remove('stream-text');
+  }
+}
+
+function tick(ts) {
+  if (!playing) { rafId = null; return; }
+  if (!lastTick) lastTick = ts;
+  const dt = ts - lastTick;
+  lastTick = ts;
+  progress += (dt / TOTAL_TIME_MS) * 100;
+  if (progress >= 100) {
+    progress = 100;
+    applyProgress(100);
+    setPlaying(false);
+    streamContent.classList.remove('stream-text');
+    rafId = null;
+    return;
+  }
+  applyProgress(progress);
+  rafId = requestAnimationFrame(tick);
+}
+
+playBtn.addEventListener('click', () => {
+  if (playing) {
+    setPlaying(false);
+    streamContent.classList.remove('stream-text');
+    lastTick = 0;
+  } else {
+    if (progress >= 100) progress = 0;
+    setPlaying(true);
+    lastTick = 0;
+    rafId = requestAnimationFrame(tick);
+  }
+});
+scrubber.addEventListener('input', e => {
+  progress = parseFloat(e.target.value);
+  applyProgress(progress);
+});
+tRestart.addEventListener('click', () => {
+  progress = 0;
+  applyProgress(0);
+  setPlaying(false);
+  streamContent.classList.remove('stream-text');
+});
+tRegen.addEventListener('click', () => {
+  progress = 0;
+  applyProgress(0);
+  setPlaying(true);
+  lastTick = 0;
+  if (!rafId) rafId = requestAnimationFrame(tick);
+});
+applyProgress(progress);
+
+/* ── Scroll reveal + active dot ───────── */
+const sections = {
+  'sec-hero':     'hero',
+  'sec-colors':   'colors',
+  'sec-type':     'type',
+  'sec-buttons':  'buttons',
+  'sec-inputs':   'inputs',
+  'sec-cards':    'cards',
+  'sec-controls': 'controls',
+  'sec-nav':      'nav',
+};
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const secKey = sections[entry.target.id];
+      if (secKey) {
+        document.querySelectorAll('.prog-dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.prog-dot[data-sec="${secKey}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.sec').forEach(el => observer.observe(el));
+
+/* ── Progress dot navigation ──────────── */
+document.querySelectorAll('.prog-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const secKey = dot.dataset.sec;
+    const secId  = Object.entries(sections).find(([, v]) => v === secKey)?.[0];
+    if (secId) {
+      const el = document.getElementById(secId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>
