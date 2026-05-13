@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UI Styles — Visual Design Library</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,SOFT,WONK,wght@0,9..144,0..100,0..1,400..800;1,9..144,0..100,0..1,400..700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -21,9 +22,10 @@
       --text-3:   rgba(240,240,238,0.28);
       --live:     #4ade80;
       --live-bg:  rgba(74,222,128,0.10);
-      --head: 'Bricolage Grotesque', sans-serif;
-      --body: 'DM Sans', sans-serif;
-      --mono: 'DM Mono', monospace;
+      --head:    'Bricolage Grotesque', sans-serif;
+      --display: 'Fraunces', 'Times New Roman', Georgia, serif;
+      --body:    'DM Sans', sans-serif;
+      --mono:    'DM Mono', monospace;
       --ease-out:    cubic-bezier(0, 0, 0.2, 1);
       --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -46,12 +48,20 @@
       display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem;
     }
     .wordmark {
-      font-family: var(--head);
-      font-size: clamp(2.75rem, 5.5vw, 5rem);
-      font-weight: 800;
-      letter-spacing: -0.045em;
-      line-height: 0.92;
-      text-transform: uppercase;
+      font-family: var(--display);
+      font-optical-sizing: auto;
+      font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 0;
+      font-size: clamp(3rem, 6.4vw, 5.75rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 0.95;
+    }
+    .wordmark .wm-italic {
+      font-style: italic;
+      font-weight: 400;
+      font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+      letter-spacing: -0.015em;
+      padding-left: 0.04em;
     }
     .header-meta { text-align: right; padding-bottom: 0.2rem; }
     .meta-count {
@@ -562,7 +572,7 @@
 <div class="wrap">
   <header>
     <div class="header-inner">
-      <h1 class="wordmark">UI&nbsp;Styles</h1>
+      <h1 class="wordmark">UI&nbsp;<span class="wm-italic">Styles</span></h1>
       <div class="header-meta">
         <span class="meta-count" id="hcount">12 styles</span>
         <p class="meta-desc">A reference library of visual design systems for AI-generated UI.</p>
